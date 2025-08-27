@@ -17,7 +17,7 @@ export class block extends Component {
     yIndex: number = -1
 
     dir: number = -1 // 0 la khong co huong, 1 la ngang, 2 la len xuong
-
+    isExited: boolean = false
     freezeNum: number = -1
     isSelected = false
     private touchOffset: Vec3 = Vec3.ZERO;
@@ -222,7 +222,7 @@ export class block extends Component {
         const minY = -IngameLogic.getInstance().blockBg.getComponent(UITransform).contentSize.height / 2 + BLOCK_GAP;
 
         // Tính toán động biên có thể di chuyển thực tế
-        const dynamicBounds = IngameLogic.getInstance().currentSelectBlock. calculateShapeAwareBounds(currentGridPos);
+        const dynamicBounds = IngameLogic.getInstance().currentSelectBlock.calculateShapeAwareBounds(currentGridPos);
 
         // Chuyển đổi thành biên tọa độ thế giới
         const worldMinX = minX + dynamicBounds.minCol * (BLOCK_SIZE + BLOCK_GAP);
@@ -532,6 +532,33 @@ export class block extends Component {
 
         // Chờ tween chạy xong
         await delay(moveTime);
+    }
+    public getBlockSize(): { width: number, height: number } {
+        switch (this.typeIndex) {
+            case 1: return { width: 1, height: 1 };
+            case 2: return { width: 2, height: 1 };
+            case 3: return { width: 3, height: 1 };
+            case 4: return { width: 1, height: 2 };
+            case 5: return { width: 1, height: 3 };
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10: return { width: 2, height: 2 };
+            case 11:
+            case 12: return { width: 2, height: 3 };
+            case 13: return { width: 3, height: 3 };
+            case 14: return { width: 1, height: 4 };
+            case 15:
+            case 16:
+            case 21:
+            case 22: return { width: 3, height: 2 };
+            case 17:
+            case 18:
+            case 19:
+            case 20: return { width: 2, height: 3 };
+            default: return { width: 1, height: 1 };
+        }
     }
 
 }

@@ -66,7 +66,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
 
 
     public getSprite(name) {
-        console.log(this.spriteMap[name])
+        console.log(name)
         return this.spriteMap[name]
     }
 

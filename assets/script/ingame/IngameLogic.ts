@@ -4,6 +4,7 @@ import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
 import { block } from './block';
 import { BaseSingleton } from '../Base/BaseSingleton';
+import { exit } from './exit';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -21,7 +22,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     blockBg: Node = null
 
+    @property(Node)
+    bg: Node = null
 
+    blockClearNum: number = 0
     rowNum = 0
     colNum = 0
     blockTotalNum = 0
@@ -40,11 +44,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         let levelConfig = LeveConfig[0]
         this.rowNum = levelConfig.rowNum
         this.colNum = levelConfig.colNum
-        let sizeBg = new Size(this.colNum * 100 + 50, this.rowNum * 100 + 50)
+        let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
-
+        this.bg.getComponent(UITransform).setContentSize(new Size(this.colNum * 100 + 50, this.rowNum * 100 + 50))
         this.initBlock(levelConfig.blocks)
         this.initBlockLimit()
+        this.initExit(levelConfig.exits)
     }
 
     initBlock(arr: any[]) {
@@ -67,6 +72,21 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             }
             blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, dir, data.iceNumber)
             console.log("den day")
+        }
+    }
+
+    initExit(arr: any[]) {
+        for (let i = 0; i < arr.length; i++) {
+            const data = arr[i]
+            const blockNode = PoolManager.getInstance().getNode('exit', this.blockBg)
+            const x = data.x * (BLOCK_SIZE + BLOCK_GAP)
+            const y = data.y * (BLOCK_SIZE + BLOCK_GAP)
+            const pos = this.getRealPos(v2(x, y))
+            blockNode.setPosition(pos)
+            const blockComp = blockNode.getComponent(exit)
+            // Lấy số từ chuỗi
+
+            blockComp.init(i, data.typeIndex, data.colorIndex, data.size, data.x, data.y)
         }
     }
 
@@ -321,6 +341,118 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             }
         }
     }
+    checkExitCondition(block: block): boolean {
+        const exits = this.node.getComponentsInChildren(exit);
+        // for (const exit of exits) {
+        //     if (exit.canAcceptBlock(block)) {
+        //         block.tryPlaceBlock();
+        //         // Xóa khỏi dữ liệu chiếm dụng
+        //         this.updateBlockLimitData(block, false)
+        //         // cc.log(this.blockLimitData)
+        //         IngameLogic.getInstance().currentSelectBlock = null
+        //         // Xóa khỏi scene
+        //         // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
+        //         block.isExited = true
+        //         this.blockClearNum += 1
+        //         block.setActive(false)
+        //         block.hideDir()
+
+
+        //         if (IngameLogic.getInstance().level == 1) {
+        //             this.guideStep += 1
+        //             this.setGuideStep()
+        //         }
+
+        //         // Logic hoạt hình
+        //         let moveX = 0, moveY = 0, moveX2 = 0, moveY2 = 0
+        //         if (exit.typeIndex == 1) {
+        //             moveY = 50
+        //             moveY2 = block.node.getComponent(UITransform).height
+        //         }
+        //         if (exit.typeIndex == 2) {
+        //             moveX = 50
+        //             moveX2 = block.node.getComponent(UITransform).width
+        //         }
+        //         if (exit.typeIndex == 3) {
+        //             moveY = -50
+        //             moveY2 = -block.node.getComponent(UITransform).height
+        //         }
+        //         if (exit.typeIndex == 4) {
+        //             moveX = -50
+        //             moveX2 = -block.node.getComponent(UITransform).width
+        //         }
+        //         const act = cc.moveBy(0.2, moveX, moveY)
+        //         cc.tween(block.node).then(act).call(() => {
+        //             const act = cc.moveBy(0.2, moveX2, moveY2)
+        //             cc.tween(block.sprite.node).then(act).call(() => [
+        //                 block.node.destroy()
+        //             ]).start()
+
+        //             switch (exit.typeIndex) {
+        //                 case 1:
+        //                     {
+        //                         for (let i = 0; i < exit.size; i++) {
+        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
+        //                             eff.x = i * 100 + 50
+        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
+        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
+        //                             effParitcle.gravity = cc.v2(0, 200)
+        //                             effParitcle.resetSystem()
+        //                         }
+        //                     }
+        //                     break
+        //                 case 2:
+        //                     {
+        //                         for (let i = 0; i < exit.size; i++) {
+        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
+        //                             eff.x = 30
+        //                             eff.y = i * 100 + 50
+        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
+        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
+        //                             effParitcle.gravity = cc.v2(0, 0)
+        //                             effParitcle.resetSystem()
+        //                         }
+        //                     }
+        //                     break
+        //                 case 3:
+        //                     {
+        //                         for (let i = 0; i < exit.size; i++) {
+        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
+        //                             eff.x = i * 100 + 50
+        //                             eff.y = 50
+        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
+        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
+        //                             effParitcle.gravity = cc.v2(0, -200)
+        //                             effParitcle.resetSystem()
+        //                         }
+        //                     }
+        //                     break
+        //                 case 4:
+        //                     {
+        //                         for (let i = 0; i < exit.size; i++) {
+        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
+        //                             eff.x = 0
+        //                             eff.y = i * 100 + 50
+        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
+        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
+        //                             effParitcle.gravity = cc.v2(0, 0)
+        //                             effParitcle.resetSystem()
+        //                         }
+        //                     }
+        //                     break
+        //             }
+
+        //         }).start()
+
+        //         // Tiến trình game
+        //         this.checkGame()
+        //         return true;
+        //     }
+        // }
+
+         return false;
+    }
+
 }
 
 
