@@ -25,30 +25,30 @@ export const LeveConfig = [
             }
         ],
         "exits": [
-            {
-                "typeIndex": 1,
-                "colorIndex": 1,
-                "x": 0,
-                "y": 0,
-                "size": 2
-            },
+            // {
+            //     "typeIndex": 1,
+            //     "colorIndex": 3,
+            //     "x": 0,
+            //     "y": 0,
+            //     "size": 2
+            // },
             {
                 "typeIndex": 0,
-                "colorIndex": 1,
+                "colorIndex": 3,
                 "x": 4,
                 "y": 2,
                 "size": 2,
             },
             {
                 "typeIndex": 2,
-                "colorIndex": 1,
+                "colorIndex": 3,
                 "x": 0,
                 "y": 0,
                 "size": 2
             },
             {
                 "typeIndex": 3,
-                "colorIndex": 1,
+                "colorIndex": 3,    
                 "x": 0,
                 "y": 5,
                 "size": 2

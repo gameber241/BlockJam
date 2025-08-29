@@ -16,7 +16,6 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
                 "", // load tất cả trong resources/
                 (finished: number, total: number) => {
                     const percent = (finished / total * 100).toFixed(2);
-                    console.log(`Loading... ${percent}%`);
                 },
                 (err, assets: Asset[]) => {
                     if (err) {
@@ -34,7 +33,6 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
                         }
                         else if (asset instanceof Prefab) {
                             PoolManager.getInstance().setPrefab(asset.name, asset);
-                            console.log("Prefab loaded:", asset.name);
                         }
                         else if (asset instanceof SpriteFrame) {
                             if (!this.spriteMap[asset.name]) {
@@ -66,7 +64,6 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
 
 
     public getSprite(name) {
-        console.log(name)
         return this.spriteMap[name]
     }
 

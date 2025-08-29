@@ -484,19 +484,15 @@ export class block extends Component {
 
     public tryPlaceBlock(): boolean {
         // Tính toán vị trí lưới hiện tại
-        console.log("Before tween1:", this.node.position);
         const gridPos = this.getCurrentGridPosition();
-        console.log("Before tween14:", this.node.position);
         // Kiểm tra có thể đặt không
         if (IngameLogic.getInstance().canPlaceBlock(this, gridPos.x, gridPos.y)) {
-            console.log("Before tween2:", this.node.position);
             // Cập nhật chỉ số vị trí block
             this.xIndex = gridPos.x;
             this.yIndex = gridPos.y;
 
             // Reset dữ liệu chiếm dụng sân khấu
             IngameLogic.getInstance().initBlockLimit()
-            console.log("Before tween3:", this.node.position);
 
             // Căn chỉnh vào lưới
             this.alignToGrid();
@@ -524,7 +520,6 @@ export class block extends Component {
 
         // Thời gian di chuyển (giới hạn từ 0.1s đến 0.5s)
         const moveTime = misc.clampf(distance / 500, 0.1, 0.5);
-        console.log("Before tween:", this.node.position, " -> target:", targetPos3D);
         // Tween node tới vị trí mới
         tween(this.node)
             .to(moveTime, { position: targetPos3D }, { easing: 'quartOut' })
@@ -536,31 +531,36 @@ export class block extends Component {
     public getBlockSize(): { width: number, height: number } {
         switch (this.typeIndex) {
             case 1: return { width: 1, height: 1 };
-            case 2: return { width: 2, height: 1 };
-            case 3: return { width: 3, height: 1 };
-            case 4: return { width: 1, height: 2 };
-            case 5: return { width: 1, height: 3 };
+            case 2: return { width: 3, height: 1 };
+            case 3: return { width: 1, height: 3 };
+            case 4: return { width: 2, height: 1 };
+            case 5: return { width: 1, height: 2 };
             case 6:
             case 7:
             case 8:
-            case 9:
-            case 10: return { width: 2, height: 2 };
-            case 11:
-            case 12: return { width: 2, height: 3 };
-            case 13: return { width: 3, height: 3 };
-            case 14: return { width: 1, height: 4 };
+            case 9: return { width: 2, height: 2 };
+            case 10:
+            case 11: return { width: 3, height: 2 };
+            case 12:
+            case 13:
+            case 14:
             case 15:
             case 16:
-            case 21:
-            case 22: return { width: 3, height: 2 };
-            case 17:
+            case 17: return { width: 2, height: 3 };
             case 18:
-            case 19:
-            case 20: return { width: 2, height: 3 };
-            default: return { width: 1, height: 1 };
+            case 19: return { width: 3, height: 2 };
+            case 20: return { width: 3, height: 3 };
         }
     }
 
+
+    hideDir() {
+
+    }
+
+    protected update(dt: number): void {
+        
+    }
 }
 
 

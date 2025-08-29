@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, Node, Prefab, Size, UITransform, v2, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Enum, EPhysics2DDrawFlags, Node, PhysicsSystem2D, Prefab, Size, tween, UITransform, v2, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -25,6 +25,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     bg: Node = null
 
+    @property({ type: Node })
+    guide: Node = null
+    /** Bước hướng dẫn hiện tại */
+    guideStep: number = 0
+
     blockClearNum: number = 0
     rowNum = 0
     colNum = 0
@@ -33,7 +38,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     currentColorIndex = -1
     currentSelectBlock: block = null
     blockLimitData: number[][] = []
-
+    level: number = 1
     status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.RUNING
     protected async start() {
         await ResourcesManager.getInstance().loadAllResources()
@@ -41,6 +46,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     init() {
+        PhysicsSystem2D.instance.debugDrawFlags = EPhysics2DDrawFlags.Aabb | EPhysics2DDrawFlags.Pair;
         let levelConfig = LeveConfig[0]
         this.rowNum = levelConfig.rowNum
         this.colNum = levelConfig.colNum
@@ -71,7 +77,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 dir = data.dir
             }
             blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, dir, data.iceNumber)
-            console.log("den day")
         }
     }
 
@@ -102,7 +107,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         const result: block[] = [];
 
         for (const block of blocks) {
-            console.log(this.isPositionInBlock(worldPos, block))
+        
             if (this.isPositionInBlock(worldPos, block)) {
                 result.push(block);
             }
@@ -116,14 +121,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
     private isPositionInBlock(worldPos: Vec2, block: block): boolean {
         const shape = block.getBlockShape();
-        console.log(shape)
+       
         // Đổi từ worldPos sang localPos trong block
         const localPos = block.node.getComponent(UITransform)!.convertToNodeSpaceAR(new Vec3(worldPos.x, worldPos.y));
 
         // Tính index trên grid
         const gridX = Math.floor(localPos.x / BLOCK_SIZE);
         const gridY = Math.floor(localPos.y / BLOCK_SIZE);
-        console.log("gridX=", gridX, "gridY=", gridY);
 
         if (gridY >= 0 && gridY < shape.length &&
             gridX >= 0 && gridX < shape[gridY].length) {
@@ -136,7 +140,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     updateBlockLimitData(block: block, isAdd: boolean) {
         const shape = block.getBlockShape();
-        console.log(shape)
         // Xóa chiếm dụng cũ
         for (let y = 0; y < shape.length; y++) {
             for (let x = 0; x < shape[y].length; x++) {
@@ -343,116 +346,131 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
     checkExitCondition(block: block): boolean {
         const exits = this.node.getComponentsInChildren(exit);
-        // for (const exit of exits) {
-        //     if (exit.canAcceptBlock(block)) {
-        //         block.tryPlaceBlock();
-        //         // Xóa khỏi dữ liệu chiếm dụng
-        //         this.updateBlockLimitData(block, false)
-        //         // cc.log(this.blockLimitData)
-        //         IngameLogic.getInstance().currentSelectBlock = null
-        //         // Xóa khỏi scene
-        //         // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
-        //         block.isExited = true
-        //         this.blockClearNum += 1
-        //         block.setActive(false)
-        //         block.hideDir()
+        for (const ex of exits) {
+            if (ex.canAcceptBlock(block)) {
+                block.tryPlaceBlock();
 
+                // Xóa khỏi dữ liệu chiếm dụng
+                this.updateBlockLimitData(block, false);
+                IngameLogic.getInstance().currentSelectBlock = null;
 
-        //         if (IngameLogic.getInstance().level == 1) {
-        //             this.guideStep += 1
-        //             this.setGuideStep()
-        //         }
+                // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT);
+                block.isExited = true;
+                this.blockClearNum += 1;
+                block.setActive(false);
+                block.hideDir();
 
-        //         // Logic hoạt hình
-        //         let moveX = 0, moveY = 0, moveX2 = 0, moveY2 = 0
-        //         if (exit.typeIndex == 1) {
-        //             moveY = 50
-        //             moveY2 = block.node.getComponent(UITransform).height
-        //         }
-        //         if (exit.typeIndex == 2) {
-        //             moveX = 50
-        //             moveX2 = block.node.getComponent(UITransform).width
-        //         }
-        //         if (exit.typeIndex == 3) {
-        //             moveY = -50
-        //             moveY2 = -block.node.getComponent(UITransform).height
-        //         }
-        //         if (exit.typeIndex == 4) {
-        //             moveX = -50
-        //             moveX2 = -block.node.getComponent(UITransform).width
-        //         }
-        //         const act = cc.moveBy(0.2, moveX, moveY)
-        //         cc.tween(block.node).then(act).call(() => {
-        //             const act = cc.moveBy(0.2, moveX2, moveY2)
-        //             cc.tween(block.sprite.node).then(act).call(() => [
-        //                 block.node.destroy()
-        //             ]).start()
+                if (IngameLogic.getInstance().level === 1) {
+                    this.guideStep += 1;
+                    this.setGuideStep();
+                }
 
-        //             switch (exit.typeIndex) {
-        //                 case 1:
-        //                     {
-        //                         for (let i = 0; i < exit.size; i++) {
-        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
-        //                             eff.x = i * 100 + 50
-        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
-        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
-        //                             effParitcle.gravity = cc.v2(0, 200)
-        //                             effParitcle.resetSystem()
-        //                         }
-        //                     }
-        //                     break
-        //                 case 2:
-        //                     {
-        //                         for (let i = 0; i < exit.size; i++) {
-        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
-        //                             eff.x = 30
-        //                             eff.y = i * 100 + 50
-        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
-        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
-        //                             effParitcle.gravity = cc.v2(0, 0)
-        //                             effParitcle.resetSystem()
-        //                         }
-        //                     }
-        //                     break
-        //                 case 3:
-        //                     {
-        //                         for (let i = 0; i < exit.size; i++) {
-        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
-        //                             eff.x = i * 100 + 50
-        //                             eff.y = 50
-        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
-        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
-        //                             effParitcle.gravity = cc.v2(0, -200)
-        //                             effParitcle.resetSystem()
-        //                         }
-        //                     }
-        //                     break
-        //                 case 4:
-        //                     {
-        //                         for (let i = 0; i < exit.size; i++) {
-        //                             const eff = PoolManager.getInstance().getNode('eff_exit', exit.node)
-        //                             eff.x = 0
-        //                             eff.y = i * 100 + 50
-        //                             const effParitcle = eff.getComponent(cc.ParticleSystem)
-        //                             effParitcle.endColor = new cc.Color().fromHEX(BLOCK_COLOR[exit.colorIndex - 1])
-        //                             effParitcle.gravity = cc.v2(0, 0)
-        //                             effParitcle.resetSystem()
-        //                         }
-        //                     }
-        //                     break
-        //             }
+                // --- Logic hoạt hình ---
+                let moveX = 0, moveY = 0, moveX2 = 0, moveY2 = 0;
+                const uiTrans = block.node.getComponent(UITransform)!;
 
-        //         }).start()
+                switch (ex.typeIndex) {
+                    case 1:
+                        moveY = 50;
+                        moveY2 = uiTrans.height;
+                        break;
+                    case 2:
+                        moveX = 50;
+                        moveX2 = uiTrans.width;
+                        break;
+                    case 3:
+                        moveY = -50;
+                        moveY2 = -uiTrans.height;
+                        break;
+                    case 4:
+                        moveX = -50;
+                        moveX2 = -uiTrans.width;
+                        break;
+                }
 
-        //         // Tiến trình game
-        //         this.checkGame()
-        //         return true;
-        //     }
+                tween(block.node)
+                    .by(0.2, { position: new Vec3(moveX, moveY) })
+                    .call(() => {
+                        tween(block.icon)
+                            .by(0.2, { position: new Vec3(moveX2, moveY2) })
+                            .call(() => {
+                                block.node.destroy();
+                            })
+                            .start();
+
+                        // --- Hiệu ứng ---
+                        switch (ex.typeIndex) {
+                            case 1:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                                    // eff.setPosition(i * 100 + 50, 0);
+                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                                    // effParticle.gravity = new Vec2(0, 200);
+                                    // effParticle.resetSystem();
+                                }
+                                break;
+                            case 2:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                                    // eff.setPosition(30, i * 100 + 50);
+                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                                    // effParticle.gravity = new Vec2(0, 0);
+                                    // effParticle.resetSystem();
+                                }
+                                break;
+                            case 3:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                                    // eff.setPosition(i * 100 + 50, 50);
+                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                                    // effParticle.gravity = new Vec2(0, -200);
+                                    // effParticle.resetSystem();
+                                }
+                                break;
+                            case 4:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                                    eff.setPosition(0, i * 100 + 50);
+                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                                    // effParticle.gravity = new Vec2(0, 0);
+                                    // effParticle.resetSystem();
+                                }
+                                break;
+                        }
+                    })
+                    .start();
+
+                // Tiến trình game
+                this.checkGame();
+                return true;
+            }
+        }
+
+        return false;
+    }
+    setGuideStep() {
+        // if (this.guideStep == 0) {
+        //     this.guide.children[0].active = true
+        //     this.guide.children[1].active = false
+        // } else if (this.guideStep == 1) {
+        //     this.guide.children[0].active = false
+        //     this.guide.children[1].active = true
+        // } else {
+        //     this.guide.children[0].active = false
+        //     this.guide.children[1].active = false
         // }
-
-         return false;
     }
 
+
+    checkGame() {
+        if (this.blockClearNum >= this.blockTotalNum) {
+            // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
+        }
+    }
 }
 
 
