@@ -62,14 +62,14 @@ export class exit extends Component {
                 posCollider = v3(0, 10)
                 sizeCollider = new Size(BLOCK_SIZE, sizeNode.height - 20)
                 break;
-            case 3: // up
+            case 2: // up
                 sizeNode = new Size(BLOCK_SIZE * this.size, BLOCK_SIZE / 2)
                 pos = v3(this.node.position.x, this.node.position.y + BLOCK_SIZE)
                 sizeColliderNode = new Size(sizeNode.width - 20, BLOCK_SIZE)
                 posCollider = v3(10, this.colliderNode.position.y - BLOCK_SIZE / 2)
                 sizeCollider = new Size(sizeNode.width - 20, BLOCK_SIZE)
                 break;
-            case 2: // down
+            case 3: // down
                 sizeNode = new Size(BLOCK_SIZE * this.size, BLOCK_SIZE / 2)
                 pos = v3(this.node.position.x, this.node.position.y - BLOCK_SIZE / 2)
                 sizeColliderNode = new Size(sizeNode.width - 20, BLOCK_SIZE)
@@ -93,12 +93,12 @@ export class exit extends Component {
     private checkInterval: number = 0.3;
     onCollisionStay(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         // if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
-        console.log(otherCollider.node.name, "")
+
         if (otherCollider.node.name == "block" && IngameLogic.getInstance().currentSelectBlock) {
-            console.log("den day")
             const now = game.totalTime / 1000; // Chuyển đổi sang giây
             if (now - this.lastCheckTime >= this.checkInterval) {
                 this.lastCheckTime = now;
+                console.log("den day")
                 if (IngameLogic.getInstance().checkExitCondition(IngameLogic.getInstance().currentSelectBlock)) {
                     // Đã bị exit loại bỏ, thoát trực tiếp
                     return;
@@ -117,23 +117,27 @@ export class exit extends Component {
 
         // 2. Kiểm tra kích thước có phù hợp không
         const blockSize = block.getBlockSize();
-        if (this.typeIndex === 1 || this.typeIndex === 3) { // Cửa trên và dưới
+        if (this.typeIndex === 2 || this.typeIndex === 3) { // Cửa trên và dưới
             if (blockSize.width > this.size) {
+                console.log("den day ne 1")
                 return false;
             }
         } else { // Cửa trái và phải
             if (blockSize.height > this.size) {
+                console.log("den day ne 2")
                 return false;
             }
         }
 
         // 3. Kiểm tra vị trí có thẳng hàng không
         if (!this.isBlockAligned(block)) {
+            console.log("den day ne 3")
             return false;
         }
 
         // 4. Kiểm tra đã có block khác ở exit chưa
         if (this.isBlockExited(block)) {
+            console.log("den day ne 4")
             return false;
         }
 
@@ -162,22 +166,23 @@ export class exit extends Component {
                     const exitMax = this.yIndex + this.size - 1
                     return (currentGridPos.y >= this.yIndex && blockMax <= exitMax) && currentGridPos.x === this.xIndex
                 }
-
-            case 2: // cửa dưới
-                {
-                    const blockCount = Math.floor(block.node.getComponent(UITransform).width / BLOCK_SIZE) - 1
-                    const blockMax = currentGridPos.x + blockCount
-                    const exitMax = this.xIndex + this.size - 1
-                    return (currentGridPos.x >= this.xIndex && blockMax <= exitMax) && currentGridPos.y === this.yIndex
-                }
-
-            case 3: // cửa trên
+            case 2: // cửa trên
                 {
                     const blockCount = Math.floor(block.node.getComponent(UITransform).width / BLOCK_SIZE) - 1
                     const blockMax = currentGridPos.x + blockCount
                     const exitMax = this.xIndex + this.size - 1
                     return (currentGridPos.x >= this.xIndex && blockMax <= exitMax) && currentGridPos.y + (blockSize.height - 1) === this.yIndex;
                 }
+            case 3: // cửa dưới
+                {
+                    const blockCount = Math.floor(block.node.getComponent(UITransform).width / BLOCK_SIZE) - 1
+                    const blockMax = currentGridPos.x + blockCount  // 3
+                    const exitMax = this.xIndex + this.size - 1 // 1
+                    console.log(currentGridPos.x, this.index, blockMax, exitMax, currentGridPos.y, this.yIndex, "2131231313")
+                    return (currentGridPos.x >= this.xIndex && blockMax <= exitMax) && currentGridPos.y === this.yIndex
+                }
+
+
 
         }
     }

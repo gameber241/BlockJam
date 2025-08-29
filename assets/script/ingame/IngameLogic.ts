@@ -368,13 +368,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 // --- Logic hoạt hình ---
                 let moveX = 0, moveY = 0, moveX2 = 0, moveY2 = 0;
                 const uiTrans = block.node.getComponent(UITransform)!;
-
+                console.log(ex.typeIndex)
                 switch (ex.typeIndex) {
-                    case 1:
+                    case 2:
                         moveY = 50;
                         moveY2 = uiTrans.height;
                         break;
-                    case 2:
+                    case 0:
                         moveX = 50;
                         moveX2 = uiTrans.width;
                         break;
@@ -382,7 +382,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                         moveY = -50;
                         moveY2 = -uiTrans.height;
                         break;
-                    case 4:
+                    case 1:
                         moveX = -50;
                         moveX2 = -uiTrans.width;
                         break;
