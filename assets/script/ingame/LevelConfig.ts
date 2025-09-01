@@ -2,6 +2,16 @@ export const LeveConfig = [
     {
         "rowNum": 6,
         "colNum": 5,
+        "border": [
+            [1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1]
+
+        ],
+
         "blocks": [
             {
                 "isWall": false,

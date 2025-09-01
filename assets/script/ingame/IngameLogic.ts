@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, EPhysics2DDrawFlags, Node, PhysicsSystem2D, Prefab, Size, tween, UITransform, v2, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Enum, EPhysics2DDrawFlags, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -51,11 +51,14 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         this.rowNum = levelConfig.rowNum
         this.colNum = levelConfig.colNum
         let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
+
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
         this.bg.getComponent(UITransform).setContentSize(new Size(this.colNum * 100 + 50, this.rowNum * 100 + 50))
+        this.initBlockBg()
         this.initBlock(levelConfig.blocks)
         this.initBlockLimit()
         this.initExit(levelConfig.exits)
+
     }
 
     initBlock(arr: any[]) {
@@ -78,6 +81,24 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             }
             blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, dir, data.iceNumber)
         }
+
+
+    }
+
+    initBlockBg() {
+        const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
+        for (let i = 0; i < this.rowNum; i++) {
+            for (let j = 0; j < this.colNum; j++) {
+                const blockBgNode = PoolManager.getInstance().getNode('blockBg', this.blockBg)
+                blockBgNode.getComponent(UITransform).width = blockBgNode.getComponent(UITransform).height = BLOCK_SIZE
+                // blockBgNode.getChildByName('test_label').getComponent(Label).string = `x${j}:y${i}`
+                const x = startPos.x + BLOCK_SIZE * j + BLOCK_GAP * j + BLOCK_SIZE / 2 + BLOCK_GAP
+                const y = startPos.y + BLOCK_SIZE * i + BLOCK_GAP * i + BLOCK_SIZE / 2 + BLOCK_GAP
+                blockBgNode.setPosition(v3(x, y))
+            }
+        }
+        // Tạo lại viền
+        this.createBlockBorders(startPos);
     }
 
     initExit(arr: any[]) {
@@ -107,7 +128,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         const result: block[] = [];
 
         for (const block of blocks) {
-        
+
             if (this.isPositionInBlock(worldPos, block)) {
                 result.push(block);
             }
@@ -121,7 +142,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
     private isPositionInBlock(worldPos: Vec2, block: block): boolean {
         const shape = block.getBlockShape();
-       
+
         // Đổi từ worldPos sang localPos trong block
         const localPos = block.node.getComponent(UITransform)!.convertToNodeSpaceAR(new Vec3(worldPos.x, worldPos.y));
 
@@ -470,6 +491,121 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         if (this.blockClearNum >= this.blockTotalNum) {
             // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
         }
+    }
+
+    private createBlockBorders(startPos: Vec2) {
+        const minX = 0;
+        const maxX = this.colNum - 1;
+        const minY = 0;
+        const maxY = this.rowNum - 1;
+
+        // 1. Tạo viền trên (không bao gồm góc)
+        for (let j = 0; j < this.colNum; j++) {
+            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
+            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
+            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
+
+            let x = startPos.x + BLOCK_SIZE * j + BLOCK_GAP * j + BLOCK_SIZE / 2 + BLOCK_GAP;
+            let y = startPos.y + BLOCK_SIZE * maxY + BLOCK_GAP * maxY + BLOCK_SIZE / 2 + BLOCK_GAP;
+            y += (BLOCK_SIZE + 50) / 2;
+
+            borderNode.setPosition(v3(x, y));
+            console.log("den day ne", v3(x, y))
+            this.setBorderSpriteFrame(borderNode, 'PA_Machine_1_11_1_1'); // Hình viền trên
+        }
+
+        // 2. Tạo viền dưới (không bao gồm góc)
+        for (let j = 0; j < this.colNum; j++) {
+            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
+            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
+            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
+
+            let x = startPos.x + BLOCK_SIZE * j + BLOCK_GAP * j + BLOCK_SIZE / 2 + BLOCK_GAP;
+            let y = startPos.y + BLOCK_GAP * minY + BLOCK_SIZE / 2;
+
+            y -= (BLOCK_SIZE + 78) / 2;
+
+            borderNode.setPosition(v3(x, y));
+            
+            this.setBorderSpriteFrame(borderNode, 'PA_Machine_3_11_1_1'); // Hình viền dưới
+        }
+
+        // 3. Tạo viền trái (không bao gồm góc)
+        for (let i = 0; i < this.rowNum; i++) {
+            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
+            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
+            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
+
+            let x = startPos.x + BLOCK_GAP * minX + BLOCK_SIZE / 2;
+            let y = startPos.y + BLOCK_SIZE * i + BLOCK_GAP * i + BLOCK_SIZE / 2 + BLOCK_GAP;
+
+            x -= (BLOCK_SIZE + 50) / 2;
+
+            borderNode.setPosition(v3(x, y));
+
+            this.setBorderSpriteFrame(borderNode, 'PA_Machine_4_11_1_1'); // Hình viền trái
+        }
+
+        // 4. Tạo viền phải (không bao gồm góc)
+        for (let i = 0; i < this.rowNum; i++) {
+            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
+            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
+            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
+
+            let x = startPos.x + BLOCK_SIZE * maxX + BLOCK_GAP * maxX + BLOCK_SIZE / 2 + BLOCK_GAP;
+            let y = startPos.y + BLOCK_SIZE * i + BLOCK_GAP * i + BLOCK_SIZE / 2 + BLOCK_GAP;
+
+            x += (BLOCK_SIZE + 50) / 2;
+
+            borderNode.setPosition(v3(x, y));
+
+            this.setBorderSpriteFrame(borderNode, 'PA_Machine_2_11_1_1'); // Hình viền phải
+        }
+
+        // 5. Tạo bốn góc (thêm riêng)
+        this.createCornerBorder(startPos, minX, minY, 'PA_Machine_TC_4'); // Góc trái dưới
+        this.createCornerBorder(startPos, maxX, minY, 'PA_Machine_TC_3'); // Góc phải dưới
+        this.createCornerBorder(startPos, minX, maxY, 'PA_Machine_TC_1'); // Góc trái trên
+        this.createCornerBorder(startPos, maxX, maxY, 'PA_Machine_TC_2'); // Góc phải trên
+    }
+
+    private setBorderSpriteFrame(node: Node, frameName: string) {
+        const sprite = node.getComponent(Sprite);
+        if (!sprite) return;
+
+        const spriteFrame = ResourcesManager.getInstance().getSprite(frameName);
+        if (spriteFrame) {
+            sprite.spriteFrame = spriteFrame;
+        }
+    }
+
+
+    private createCornerBorder(startPos: Vec2, col: number, row: number, frameName: string) {
+        const x = startPos.x + BLOCK_SIZE * col + BLOCK_GAP * col + BLOCK_SIZE / 2 + BLOCK_GAP;
+        const y = startPos.y + BLOCK_SIZE * row + BLOCK_GAP * row + BLOCK_SIZE / 2 + BLOCK_GAP;
+
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (col === 0 && row === 0) {
+            offsetX = -(BLOCK_SIZE + 50) / 2;
+            offsetY = -(BLOCK_SIZE + 50) / 2;
+        } else if (col === this.colNum - 1 && row === 0) {
+            offsetX = (BLOCK_SIZE + 50) / 2;
+            offsetY = -(BLOCK_SIZE + 50) / 2;
+        } else if (col === 0 && row === this.rowNum - 1) {
+            offsetX = -(BLOCK_SIZE + 50) / 2;
+            offsetY = (BLOCK_SIZE + 50) / 2;
+        } else if (col === this.colNum - 1 && row === this.rowNum - 1) {
+            offsetX = (BLOCK_SIZE + 50) / 2;
+            offsetY = (BLOCK_SIZE + 50) / 2;
+        }
+
+        const cornerNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
+        // cornerNode.getComponent(UITransform).width = BLOCK_SIZE;
+        // cornerNode.getComponent(UITransform).height = BLOCK_SIZE;
+        cornerNode.setPosition(v3(x + offsetX, y + offsetY));
+        this.setBorderSpriteFrame(cornerNode, frameName);
     }
 }
 
