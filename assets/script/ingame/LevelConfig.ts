@@ -15,24 +15,14 @@ export const LeveConfig = [
         "blocks": [
             {
                 "isWall": false,
-                "typeIndex": 3,
+                "typeIndex": 20,
                 "colorIndex": 3,
                 "iceNumber": 0,
                 "colorList": [],
-                "dir": "0",
+                "dir": 1,
                 "x": 0,
                 "y": 0,
             },
-            {
-                "isWall": false,
-                "typeIndex": 3,
-                "colorIndex": 3,
-                "iceNumber": 0,
-                "colorList": [],
-                "dir": "0",
-                "x": 1,
-                "y": 1,
-            }
         ],
         "exits": [
             // {

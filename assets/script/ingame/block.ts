@@ -55,6 +55,7 @@ export class block extends Component {
         this.freezeNum = freezeNum
         this.dir = dir
         this.initSprite()
+        this.initDir()
     }
 
 
@@ -99,8 +100,8 @@ export class block extends Component {
                 break
             case 10:
             case 11:
-                size = new Size(300, 300)
-                offSet = new Vec2(150, 150)
+                size = new Size(300, 200)
+                offSet = new Vec2(150, 100)
                 break
             case 12:
             case 13:
@@ -136,13 +137,9 @@ export class block extends Component {
 
 
     onTouchStart(event: EventTouch) {
-        // if (IngameLogic.getInstance().currentSelectBlock) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
-        // Lấy tất cả block bị chạm (sắp xếp theo zIndex)
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
-        // Nếu không chạm vào block nào, trả về trực tiếp
         if (touchedBlocks.length === 0) return;
-        // Luôn chọn block ở tầng trên cùng 
         const block = touchedBlocks[touchedBlocks.length - 1];
 
         // Skill logic
@@ -559,7 +556,85 @@ export class block extends Component {
     }
 
     protected update(dt: number): void {
-        
+
+    }
+
+    initDir() {
+        console.log(this.dir)
+        if (this.dir == 0) {
+            this.dirNode.active = false
+        } else {
+            /**
+             * Vertical
+             */
+            const nodeTransform = this.node.getComponent(UITransform)!;
+            const dirTransform = this.dirNode.getComponent(UITransform)!;
+
+            if (this.dir === 1) {
+                this.dirNode.active = true
+                this.dirNode.getComponent(UITransform).height = this.node.getComponent(UITransform).height
+                console.log("den day")
+
+                // Vertical
+                this.dirNode.active = true;
+                dirTransform.height = nodeTransform.height;
+
+                switch (this.typeIndex) {
+                    case 1: case 2: case 3: case 4: case 5:
+                    case 18: case 19: case 20:
+                        this.dirNode.setPosition((nodeTransform.width - dirTransform.width) / 2, this.dirNode.position.y);
+                        break;
+
+                    case 7: case 9: case 13: case 14: case 17:
+                        this.dirNode.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE) / 2, this.dirNode.position.y);
+                        break;
+
+                    case 6: case 8: case 12: case 15: case 16:
+                        this.dirNode.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE) / 2, this.dirNode.position.y);
+                        break;
+
+                    case 11:
+                        this.dirNode.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE * 2) / 2, this.dirNode.position.y);
+                        break;
+
+                    case 10:
+                        this.dirNode.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE * 2) / 2, this.dirNode.position.y);
+                        break;
+                }
+
+            } else if (this.dir === 2) {
+                // Horizontal
+                this.dirNode.active = true;
+                dirTransform.width = nodeTransform.width;
+
+                switch (this.typeIndex) {
+                    case 1: case 2: case 3: case 4: case 5:
+                    case 18: case 19: case 20:
+                        this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height) / 2);
+                        break;
+
+                    case 7: case 6: case 18: case 10: case 11:
+                        this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height + BLOCK_SIZE) / 2);
+                        break;
+
+                    case 9: case 10: case 16: case 22:
+                        this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height - BLOCK_SIZE) / 2);
+                        break;
+
+                    case 11: case 19:
+                        this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height + BLOCK_SIZE * 2) / 2);
+                        break;
+
+                    case 12: case 20:
+                        this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height - BLOCK_SIZE * 2) / 2);
+                        break;
+                }
+            }
+
+            // Set sprite frame
+            const sprite = this.dirNode.getComponent(Sprite)!;
+            sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`PA_Up_Down_1_${this.dir}`);
+        }
     }
 }
 

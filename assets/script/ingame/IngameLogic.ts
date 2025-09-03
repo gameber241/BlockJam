@@ -79,7 +79,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             } else {
                 dir = data.dir
             }
-            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, dir, data.iceNumber)
+            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir)
         }
 
 
@@ -526,7 +526,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             y -= (BLOCK_SIZE + 78) / 2;
 
             borderNode.setPosition(v3(x, y));
-            
+
             this.setBorderSpriteFrame(borderNode, 'PA_Machine_3_11_1_1'); // Hình viền dưới
         }
 
