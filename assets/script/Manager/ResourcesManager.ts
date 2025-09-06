@@ -54,8 +54,6 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
                         }
                     }
 
-                    console.log("✅ All resources loaded!");
-
                     resolve();
                 }
             );

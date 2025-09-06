@@ -41,7 +41,6 @@ export class PoolManager extends BaseSingleton<PoolManager> {
             tempPre = this._dictPrefab[prefab];
             name = prefab;
             if (!tempPre) {
-                console.warn("Pool invalid prefab name =", name);
                 return null;
             }
         } else {

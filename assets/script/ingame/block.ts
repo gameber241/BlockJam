@@ -45,6 +45,7 @@ export class block extends Component {
     @property(BoxCollider2D)
     collider: BoxCollider2D = null
 
+    sibilingCurrent = -1
 
     init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number) {
         this.index = index
@@ -56,6 +57,7 @@ export class block extends Component {
         this.dir = dir
         this.initSprite()
         this.initDir()
+        this.initPos = v3(this.node.position.clone());
     }
 
 
@@ -141,7 +143,7 @@ export class block extends Component {
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
         if (touchedBlocks.length === 0) return;
         const block = touchedBlocks[touchedBlocks.length - 1];
-
+        this.sibilingCurrent = this.node.getSiblingIndex()
         // Skill logic
         if (IngameLogic.getInstance().currentSkillIndex == 0) {
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
@@ -220,7 +222,7 @@ export class block extends Component {
 
         // Tính toán động biên có thể di chuyển thực tế
         const dynamicBounds = IngameLogic.getInstance().currentSelectBlock.calculateShapeAwareBounds(currentGridPos);
-
+        console.log(dynamicBounds)
         // Chuyển đổi thành biên tọa độ thế giới
         const worldMinX = minX + dynamicBounds.minCol * (BLOCK_SIZE + BLOCK_GAP);
         const worldMaxX = minX + dynamicBounds.maxCol * (BLOCK_SIZE + BLOCK_GAP);
@@ -240,7 +242,6 @@ export class block extends Component {
             newPos.x = misc.clampf(newPos.x, worldMinX, worldMaxX);
             newPos.y = misc.clampf(newPos.y, worldMinY, worldMaxY);
         }
-
 
         // Áp dụng vị trí mới
         IngameLogic.getInstance().currentSelectBlock.node.position = v3(newPos);
@@ -267,7 +268,7 @@ export class block extends Component {
         // Reset trạng thái
         block.isSelected = false;
         block.setActive(false);
-        block.node.setSiblingIndex(0);
+        block.node.setSiblingIndex(this.sibilingCurrent);
 
         event.propagationStopped = true;
     }
@@ -278,78 +279,78 @@ export class block extends Component {
                 return [
                     [1]
                 ];
-            case 2: // Block 2x1
+            case 2:
                 return [
                     [1, 1, 1]
                 ];
-            case 3: // Block 3x1
+            case 3:
                 return [
                     [1],
                     [1],
                     [1]
                 ];
-            case 4: // Block 1x2
+            case 4:
                 return [
                     [1, 1]
                 ];
-            case 5: // Block 1x3
+            case 5:
                 return [
                     [1],
                     [1]
                 ];
-            case 6: // Block 2x2
+            case 6:
                 return [
                     [1, 1],
                     [0, 1]
                 ];
-            case 7: // Block đặc biệt
+            case 7:
                 return [
-                    [1, 1],
-                    [1, 0]
+                    [1, 0],
+                    [1, 1]
                 ];
             case 8:
                 return [
-                    [0, 1],
-                    [1, 1]
+                    [1, 1],
+                    [0, 1]
                 ];
             case 9:
                 return [
-                    [1, 0],
-                    [1, 1]
+                    [1, 1],
+                    [1, 0]
                 ];
             case 10:
                 return [
-                    [1, 1, 1],
-                    [0, 0, 1]
+                    [0, 0, 1],
+                    [1, 1, 1]
                 ]
             case 11:
                 return [
-                    [1, 1, 1],
-                    [1, 0, 0]
+                    [1, 0, 0],
+                    [1, 1, 1]
                 ]
             case 12:
                 return [
+                    [1, 1],
                     [0, 1],
-                    [0, 1],
-                    [1, 1]
+                    [0, 1]
                 ]
             case 13:
-                return [
-                    [1, 0],
-                    [1, 0],
-                    [1, 1]
-                ]
-            case 14:
                 return [
                     [1, 1],
                     [1, 0],
                     [1, 0]
                 ]
+            case 14:
+                return [
+                    [1, 0],
+                    [1, 0],
+                    [1, 1]
+                ]
             case 15:
                 return [
-                    [1, 1],
                     [0, 1],
-                    [0, 1]
+                    [0, 1],
+                    [1, 1]
                 ]
             case 16:
                 return [
@@ -365,13 +366,13 @@ export class block extends Component {
                 ]
             case 18:
                 return [
-                    [1, 1, 1],
-                    [0, 1, 0]
+                    [0, 1, 0],
+                    [1, 1, 1]
                 ]
             case 19:
                 return [
-                    [0, 1, 0],
-                    [1, 1, 1]
+                    [1, 1, 1],
+                    [0, 1, 0]
                 ]
             case 20:
                 return [
@@ -467,10 +468,9 @@ export class block extends Component {
         bounds.maxCol = currentPos.x + checkDirection(1, 0);
         bounds.minRow = currentPos.y - checkDirection(0, -1);
         bounds.maxRow = currentPos.y + checkDirection(0, 1);
-
+        console.log(IngameLogic.getInstance().blockLimitData.reverse())
         // Khôi phục chiếm dụng block hiện tại
         // IngameLogic.getInstance().updateBlockLimitData(this, true);
-
         return bounds;
     }
 
@@ -560,7 +560,7 @@ export class block extends Component {
     }
 
     initDir() {
-        console.log(this.dir)
+
         if (this.dir == 0) {
             this.dirNode.active = false
         } else {
@@ -573,11 +573,10 @@ export class block extends Component {
             if (this.dir === 1) {
                 this.dirNode.active = true
                 this.dirNode.getComponent(UITransform).height = this.node.getComponent(UITransform).height
-                console.log("den day")
+
 
                 // Vertical
                 this.dirNode.active = true;
-                dirTransform.height = nodeTransform.height;
 
                 switch (this.typeIndex) {
                     case 1: case 2: case 3: case 4: case 5:
@@ -605,11 +604,10 @@ export class block extends Component {
             } else if (this.dir === 2) {
                 // Horizontal
                 this.dirNode.active = true;
-                dirTransform.width = nodeTransform.width;
-
+                this.dirNode.getComponent(UITransform).width = this.node.getComponent(UITransform).width
                 switch (this.typeIndex) {
                     case 1: case 2: case 3: case 4: case 5:
-                    case 18: case 19: case 20:
+                    case 16: case 17: case 20:
                         this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height) / 2);
                         break;
 
@@ -617,17 +615,17 @@ export class block extends Component {
                         this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height + BLOCK_SIZE) / 2);
                         break;
 
-                    case 9: case 10: case 16: case 22:
+                    case 9: case 10: case 16: case 22: case 19:
                         this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height - BLOCK_SIZE) / 2);
                         break;
 
-                    case 11: case 19:
+                    case 11: case 19: case 14: case 15:
                         this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height + BLOCK_SIZE * 2) / 2);
                         break;
 
-                    case 12: case 20:
-                        this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height - BLOCK_SIZE * 2) / 2);
-                        break;
+                    // case 20:
+                    //     this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height - BLOCK_SIZE * 2) / 2);
+                    //     break;
                 }
             }
 

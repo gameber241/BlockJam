@@ -5,6 +5,7 @@ import { PoolManager } from '../Manager/PoolManager';
 import { block } from './block';
 import { BaseSingleton } from '../Base/BaseSingleton';
 import { exit } from './exit';
+import { border } from './border';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -54,7 +55,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
         this.bg.getComponent(UITransform).setContentSize(new Size(this.colNum * 100 + 50, this.rowNum * 100 + 50))
+
         this.initBlockBg()
+        this.createBlockBorders(levelConfig.border)
         this.initBlock(levelConfig.blocks)
         this.initBlockLimit()
         this.initExit(levelConfig.exits)
@@ -97,8 +100,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 blockBgNode.setPosition(v3(x, y))
             }
         }
-        // Tạo lại viền
-        this.createBlockBorders(startPos);
+
     }
 
     initExit(arr: any[]) {
@@ -244,96 +246,91 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             const blockComp = blockCompArr[i]
             switch (blockComp.typeIndex) {
                 case 1:
-                    // Ô 1*1
+
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     break
                 case 2:
-                    // Ô 3*1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 2] = 1
                     break
                 case 3:
-                    // Ô 1*3
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
 
                     break
                 case 4:
-                    // Ô 2*1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     break
                 case 5:
-                    // Ô 1*2
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-
                     break
                 case 6:
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     break
                 case 7:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     break
 
                 case 8:
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     break
                 case 9:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     break
                 case 10:
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 2] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
                     break
                 case 11:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 2] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
+
                     break
                 case 12:
-
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
-                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
 
                 case 13:
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
-                    break
-                case 14:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
+                    break
+                case 14:
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
                     break
                 case 15:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     break
                 case 16:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
-                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
+                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 2] = 1
                     break
                 case 17:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
@@ -342,16 +339,16 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
                     break
                 case 18:
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
+                    break
+                case 19:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 2] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
-                    break
-                case 19:
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 3] = 1
                     break
                 case 20:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
@@ -364,6 +361,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
             }
         }
+
+        console.log(this.blockLimitData.reverse())
     }
     checkExitCondition(block: block): boolean {
         const exits = this.node.getComponentsInChildren(exit);
@@ -389,19 +388,18 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 // --- Logic hoạt hình ---
                 let moveX = 0, moveY = 0, moveX2 = 0, moveY2 = 0;
                 const uiTrans = block.node.getComponent(UITransform)!;
-                console.log(ex.typeIndex)
                 switch (ex.typeIndex) {
                     case 2:
-                        moveY = 50;
-                        moveY2 = uiTrans.height;
+                        moveY = -50;
+                        moveY2 = -uiTrans.height;
                         break;
                     case 0:
                         moveX = 50;
                         moveX2 = uiTrans.width;
                         break;
                     case 3:
-                        moveY = -50;
-                        moveY2 = -uiTrans.height;
+                        moveY = 50;
+                        moveY2 = uiTrans.height;
                         break;
                     case 1:
                         moveX = -50;
@@ -493,80 +491,22 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         }
     }
 
-    private createBlockBorders(startPos: Vec2) {
-        const minX = 0;
-        const maxX = this.colNum - 1;
-        const minY = 0;
-        const maxY = this.rowNum - 1;
+    private createBlockBorders(borders) {
+        const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
 
-        // 1. Tạo viền trên (không bao gồm góc)
-        for (let j = 0; j < this.colNum; j++) {
-            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
-            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
-            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
+        for (let i = 0; i < borders.length; i++) {
 
-            let x = startPos.x + BLOCK_SIZE * j + BLOCK_GAP * j + BLOCK_SIZE / 2 + BLOCK_GAP;
-            let y = startPos.y + BLOCK_SIZE * maxY + BLOCK_GAP * maxY + BLOCK_SIZE / 2 + BLOCK_GAP;
-            y += (BLOCK_SIZE + 50) / 2;
+            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg)
 
-            borderNode.setPosition(v3(x, y));
-            console.log("den day ne", v3(x, y))
-            this.setBorderSpriteFrame(borderNode, 'PA_Machine_1_11_1_1'); // Hình viền trên
+            this.setBorderSpriteFrame(borderNode, "wall_" + borders[i].id)
+            const x = startPos.x + BLOCK_SIZE * borders[i].x + BLOCK_SIZE / 2
+            const y = startPos.y + BLOCK_SIZE * borders[i].y + BLOCK_SIZE / 2
+            borderNode.getComponent(border).init(borders[i].id, v3(x, y))
+
+
         }
 
-        // 2. Tạo viền dưới (không bao gồm góc)
-        for (let j = 0; j < this.colNum; j++) {
-            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
-            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
-            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
 
-            let x = startPos.x + BLOCK_SIZE * j + BLOCK_GAP * j + BLOCK_SIZE / 2 + BLOCK_GAP;
-            let y = startPos.y + BLOCK_GAP * minY + BLOCK_SIZE / 2;
-
-            y -= (BLOCK_SIZE + 78) / 2;
-
-            borderNode.setPosition(v3(x, y));
-
-            this.setBorderSpriteFrame(borderNode, 'PA_Machine_3_11_1_1'); // Hình viền dưới
-        }
-
-        // 3. Tạo viền trái (không bao gồm góc)
-        for (let i = 0; i < this.rowNum; i++) {
-            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
-            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
-            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
-
-            let x = startPos.x + BLOCK_GAP * minX + BLOCK_SIZE / 2;
-            let y = startPos.y + BLOCK_SIZE * i + BLOCK_GAP * i + BLOCK_SIZE / 2 + BLOCK_GAP;
-
-            x -= (BLOCK_SIZE + 50) / 2;
-
-            borderNode.setPosition(v3(x, y));
-
-            this.setBorderSpriteFrame(borderNode, 'PA_Machine_4_11_1_1'); // Hình viền trái
-        }
-
-        // 4. Tạo viền phải (không bao gồm góc)
-        for (let i = 0; i < this.rowNum; i++) {
-            const borderNode = PoolManager.getInstance().getNode('blockBorder', this.blockBg);
-            // borderNode.getComponent(UITransform).width = BLOCK_SIZE;
-            // borderNode.getComponent(UITransform).height = BLOCK_SIZE;
-
-            let x = startPos.x + BLOCK_SIZE * maxX + BLOCK_GAP * maxX + BLOCK_SIZE / 2 + BLOCK_GAP;
-            let y = startPos.y + BLOCK_SIZE * i + BLOCK_GAP * i + BLOCK_SIZE / 2 + BLOCK_GAP;
-
-            x += (BLOCK_SIZE + 50) / 2;
-
-            borderNode.setPosition(v3(x, y));
-
-            this.setBorderSpriteFrame(borderNode, 'PA_Machine_2_11_1_1'); // Hình viền phải
-        }
-
-        // 5. Tạo bốn góc (thêm riêng)
-        this.createCornerBorder(startPos, minX, minY, 'PA_Machine_TC_4'); // Góc trái dưới
-        this.createCornerBorder(startPos, maxX, minY, 'PA_Machine_TC_3'); // Góc phải dưới
-        this.createCornerBorder(startPos, minX, maxY, 'PA_Machine_TC_1'); // Góc trái trên
-        this.createCornerBorder(startPos, maxX, maxY, 'PA_Machine_TC_2'); // Góc phải trên
     }
 
     private setBorderSpriteFrame(node: Node, frameName: string) {
