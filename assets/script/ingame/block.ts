@@ -202,7 +202,7 @@ export class block extends Component {
      * Xử lý sự kiện chạm di chuyển
      */
     private onTouchMove(event: EventTouch) {
-
+ 
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
@@ -212,7 +212,6 @@ export class block extends Component {
         let newPos: Vec3 = touchPos.subtract(
             IngameLogic.getInstance().currentSelectBlock.touchOffset
         );
-
         // Lấy vị trí lưới hiện tại
         const currentGridPos = IngameLogic.getInstance().currentSelectBlock.getCurrentGridPosition();
 
@@ -222,7 +221,6 @@ export class block extends Component {
 
         // Tính toán động biên có thể di chuyển thực tế
         const dynamicBounds = IngameLogic.getInstance().currentSelectBlock.calculateShapeAwareBounds(currentGridPos);
-        console.log(dynamicBounds)
         // Chuyển đổi thành biên tọa độ thế giới
         const worldMinX = minX + dynamicBounds.minCol * (BLOCK_SIZE + BLOCK_GAP);
         const worldMaxX = minX + dynamicBounds.maxCol * (BLOCK_SIZE + BLOCK_GAP);
@@ -248,6 +246,7 @@ export class block extends Component {
 
         event.propagationStopped = true;
     }
+    
 
     /**
      * Xử lý sự kiện chạm kết thúc
@@ -300,8 +299,8 @@ export class block extends Component {
                 ];
             case 6:
                 return [
-                    [1, 1],
-                    [0, 1]
+                    [0, 1],
+                    [1, 1]
                 ];
             case 7:
                 return [
@@ -416,8 +415,8 @@ export class block extends Component {
         const relativePos = this.node.position.clone().subtract(startPos);
 
         // Tính vị trí lưới gần nhất
-        const gridX = Math.floor((relativePos.x + BLOCK_SIZE / 2) / (BLOCK_SIZE + BLOCK_GAP));
-        const gridY = Math.floor((relativePos.y + BLOCK_SIZE / 2) / (BLOCK_SIZE + BLOCK_GAP));
+        const gridX = Math.round(relativePos.x / (BLOCK_SIZE + BLOCK_GAP));
+        const gridY = Math.round(relativePos.y / (BLOCK_SIZE + BLOCK_GAP));
 
         return { x: gridX, y: gridY };
     }
@@ -468,7 +467,6 @@ export class block extends Component {
         bounds.maxCol = currentPos.x + checkDirection(1, 0);
         bounds.minRow = currentPos.y - checkDirection(0, -1);
         bounds.maxRow = currentPos.y + checkDirection(0, 1);
-        console.log(IngameLogic.getInstance().blockLimitData.reverse())
         // Khôi phục chiếm dụng block hiện tại
         // IngameLogic.getInstance().updateBlockLimitData(this, true);
         return bounds;

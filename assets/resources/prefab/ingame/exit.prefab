@@ -238,7 +238,7 @@
     "tag": 0,
     "_group": 1,
     "_density": 0,
-    "_sensor": false,
+    "_sensor": true,
     "_friction": 0,
     "_restitution": 0,
     "_offset": {

@@ -357,12 +357,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
                     break
-
-
             }
         }
-
-        console.log(this.blockLimitData.reverse())
     }
     checkExitCondition(block: block): boolean {
         const exits = this.node.getComponentsInChildren(exit);
