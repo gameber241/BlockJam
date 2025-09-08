@@ -25,7 +25,7 @@ export const LeveConfig = [
             { id: 3, x: 0, y: 2 },
             { id: 3, x: 0, y: 3 },
 
- 
+
             { id: 5, x: 0, y: 5 },
             { id: 6, x: 4, y: 5 },
             { id: 7, x: 4, y: 0 },
@@ -37,7 +37,7 @@ export const LeveConfig = [
                 "typeIndex": 7,
                 "colorIndex": 2,
                 "iceNumber": 0,
-                "colorList": [3, 4, 5],
+                "colorList": [3],
                 "dir": 0,
                 "x": 0,
                 "y": 3,
@@ -47,7 +47,7 @@ export const LeveConfig = [
                 "typeIndex": 5,
                 "colorIndex": 6,
                 "iceNumber": 0,
-                "colorList": [],
+                "colorList": [3],
                 "dir": 0,
                 "x": 2,
                 "y": 2,

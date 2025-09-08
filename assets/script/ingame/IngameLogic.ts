@@ -82,7 +82,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             } else {
                 dir = data.dir
             }
-            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir)
+            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir, data.colorList)
         }
 
 

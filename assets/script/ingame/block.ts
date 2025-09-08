@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider, BoxCollider2D, Component, EventTouch, Input, Label, misc, Node, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider, BoxCollider2D, Component, EventTouch, Input, instantiate, Label, misc, Node, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BLOCK_GAP, BLOCK_SIZE, ENUM_GAME_STATUS, IngameLogic } from './IngameLogic';
 import { delay } from '../Utils';
@@ -20,6 +20,7 @@ export class block extends Component {
     isExited: boolean = false
     freezeNum: number = -1
     isSelected = false
+    colors: number[] = []
     private touchOffset: Vec3 = Vec3.ZERO;
     private originalPos: Vec3 = Vec3.ZERO;
     private initPos: Vec3 = Vec3.ZERO;
@@ -47,7 +48,7 @@ export class block extends Component {
 
     sibilingCurrent = -1
 
-    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number) {
+    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors) {
         this.index = index
         this.typeIndex = typeIndex
         this.colorIndex = colorIndex
@@ -58,6 +59,41 @@ export class block extends Component {
         this.initSprite()
         this.initDir()
         this.initPos = v3(this.node.position.clone());
+        this.colors = colors
+        this.initListColor(colors)
+    }
+
+
+
+    initListColor(colors: number[]) {
+        colors.forEach((e, index) => {
+            let newIcon = instantiate(this.icon)
+            this.listColor.addChild(newIcon)
+            newIcon.setScale(1 - 0.3 * (index + 1), 1 - 0.3 * (index + 1))
+            newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${e}_${this.typeIndex}`)
+            const childSize = newIcon.getComponent(UITransform).contentSize;
+            const scaledW = childSize.width * newIcon.scale.x;
+            const scaledH = childSize.height * newIcon.scale.y;
+
+            // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
+            const posX = (this.node.getComponent(UITransform).width - scaledW) / 2;
+            const posY = (this.node.getComponent(UITransform).height - scaledH) / 2;
+
+            newIcon.setPosition(new Vec3(posX, posY, 0));
+
+            // switch (this.typeIndex) {
+            //     case 5: case 1: case 2: case 3: case 4: case 20:
+            //         const childSize = newIcon.getComponent(UITransform).contentSize;
+            //         const scaledW = childSize.width * newIcon.scale.x;
+            //         const scaledH = childSize.height * newIcon.scale.y;
+
+            //         // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
+            //         const posX = (this.node.getComponent(UITransform).width - scaledW) / 2;
+            //         const posY = (this.node.getComponent(UITransform).height - scaledH) / 2;
+
+            //         newIcon.setPosition(new Vec3(posX, posY, 0));
+            // }
+        })
     }
 
 
@@ -202,7 +238,7 @@ export class block extends Component {
      * Xử lý sự kiện chạm di chuyển
      */
     private onTouchMove(event: EventTouch) {
- 
+
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
@@ -246,7 +282,7 @@ export class block extends Component {
 
         event.propagationStopped = true;
     }
-    
+
 
     /**
      * Xử lý sự kiện chạm kết thúc
