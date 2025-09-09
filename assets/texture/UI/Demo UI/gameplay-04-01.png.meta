@@ -2,7 +2,7 @@
   "ver": "1.0.25",
   "importer": "image",
   "imported": true,
-  "uuid": "87ee8bc2-7c6d-496d-8481-d212b74775e0",
+  "uuid": "c4dce202-d520-4a62-80fe-e060e5d26d99",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "87ee8bc2-7c6d-496d-8481-d212b74775e0@6c48a",
+      "uuid": "c4dce202-d520-4a62-80fe-e060e5d26d99@6c48a",
       "displayName": "gameplay-04-01",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "87ee8bc2-7c6d-496d-8481-d212b74775e0",
+        "imageUuidOrDatabaseUri": "c4dce202-d520-4a62-80fe-e060e5d26d99",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "87ee8bc2-7c6d-496d-8481-d212b74775e0@f9941",
+      "uuid": "c4dce202-d520-4a62-80fe-e060e5d26d99@f9941",
       "displayName": "gameplay-04-01",
       "id": "f9941",
       "name": "spriteFrame",
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "87ee8bc2-7c6d-496d-8481-d212b74775e0@6c48a",
+        "imageUuidOrDatabaseUri": "c4dce202-d520-4a62-80fe-e060e5d26d99@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.11",
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "87ee8bc2-7c6d-496d-8481-d212b74775e0@f9941"
+    "redirect": "c4dce202-d520-4a62-80fe-e060e5d26d99@f9941"
   }
 }

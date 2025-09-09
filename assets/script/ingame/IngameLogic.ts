@@ -6,6 +6,7 @@ import { block } from './block';
 import { BaseSingleton } from '../Base/BaseSingleton';
 import { exit } from './exit';
 import { border } from './border';
+import { BlockJamManager } from '../Manager/BlockJamManager';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -39,16 +40,15 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     currentColorIndex = -1
     currentSelectBlock: block = null
     blockLimitData: number[][] = []
-    level: number = 1
-    status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.RUNING
-    protected async start() {
-        await ResourcesManager.getInstance().loadAllResources()
+    status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.UNRUNING
+    protected start() {
         this.init()
+        this.status = ENUM_GAME_STATUS.RUNING
     }
 
     init() {
         PhysicsSystem2D.instance.debugDrawFlags = EPhysics2DDrawFlags.Aabb | EPhysics2DDrawFlags.Pair;
-        let levelConfig = LeveConfig[0]
+        let levelConfig = LeveConfig[BlockJamManager.getInstance().level - 1]
         this.rowNum = levelConfig.rowNum
         this.colNum = levelConfig.colNum
         let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
@@ -376,7 +376,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 block.setActive(false);
                 block.hideDir();
 
-                if (IngameLogic.getInstance().level === 1) {
+                if (BlockJamManager.getInstance().level === 1) {
                     this.guideStep += 1;
                     this.setGuideStep();
                 }
