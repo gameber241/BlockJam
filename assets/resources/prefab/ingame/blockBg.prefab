@@ -101,13 +101,13 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 5,
-      "g": 41,
-      "b": 235,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "7d8f9b89-4fd1-4c9f-a3ab-38ec7cded7ca@f9941",
+      "__uuid__": "0b6b5926-9a93-4bd3-a2d1-8ccfe4feea9b@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,

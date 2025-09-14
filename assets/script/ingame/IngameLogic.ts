@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, EPhysics2DDrawFlags, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -24,8 +24,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     blockBg: Node = null
 
-    @property(Node)
-    bg: Node = null
+    @property(Label)
+    levelLabel: Label
 
     @property({ type: Node })
     guide: Node = null
@@ -41,9 +41,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     currentSelectBlock: block = null
     blockLimitData: number[][] = []
     status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.UNRUNING
+
+
     protected start() {
         this.init()
         this.status = ENUM_GAME_STATUS.RUNING
+        this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
     }
 
     init() {
@@ -54,9 +57,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
 
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
-        this.bg.getComponent(UITransform).setContentSize(new Size(this.colNum * 100 + 50, this.rowNum * 100 + 50))
-
-        this.initBlockBg()
+        this.initBlockBg(levelConfig.board)
         this.createBlockBorders(levelConfig.border)
         this.initBlock(levelConfig.blocks)
         this.initBlockLimit()
@@ -88,10 +89,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     }
 
-    initBlockBg() {
+    initBlockBg(boards) {
+        let board = [...boards].reverse()
         const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
         for (let i = 0; i < this.rowNum; i++) {
             for (let j = 0; j < this.colNum; j++) {
+                if (board[i][j] == 0) continue
                 const blockBgNode = PoolManager.getInstance().getNode('blockBg', this.blockBg)
                 blockBgNode.getComponent(UITransform).width = blockBgNode.getComponent(UITransform).height = BLOCK_SIZE
                 // blockBgNode.getChildByName('test_label').getComponent(Label).string = `x${j}:y${i}`
@@ -231,19 +234,26 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         return true;
     }
     initBlockLimit() {
+        let levelConfig = LeveConfig[BlockJamManager.getInstance().level - 1]
+        let board = [...levelConfig.board].reverse()
         this.blockLimitData = []
         for (let i = 0; i < this.rowNum; i++) {
             this.blockLimitData[i] = []
         }
         for (let i = 0; i < this.rowNum; i++) {
             for (let j = 0; j < this.colNum; j++) {
+
                 this.blockLimitData[i][j] = 0
+                if (board[i][j] == 0) {
+                    this.blockLimitData[i][j] = 1
+                }
             }
         }
 
         const blockCompArr = this.blockBg.getComponentsInChildren(block)
         for (let i = 0; i < blockCompArr.length; i++) {
             const blockComp = blockCompArr[i]
+
             switch (blockComp.typeIndex) {
                 case 1:
 
@@ -307,7 +317,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
-
+                    break
                 case 13:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
@@ -357,8 +367,28 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
                     this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
                     break
+                case 21:
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
+                    break
+                case 22:
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex + 3][blockComp.xIndex] = 1
+                    break
+                case 23:
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 2] = 1
+                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 3] = 1
+                    break
             }
         }
+
+        console.log([...this.blockLimitData].reverse())
     }
     checkExitCondition(block: block): boolean {
         const exits = this.node.getComponentsInChildren(exit);
@@ -483,6 +513,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     checkGame() {
         if (this.blockClearNum >= this.blockTotalNum) {
+            console.log("win")
             // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
         }
     }

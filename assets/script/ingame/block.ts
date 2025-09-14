@@ -76,23 +76,27 @@ export class block extends Component {
             const scaledH = childSize.height * newIcon.scale.y;
 
             // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
-            const posX = (this.node.getComponent(UITransform).width - scaledW) / 2;
-            const posY = (this.node.getComponent(UITransform).height - scaledH) / 2;
+            let posX: number = 0
+            let posY: number = 0
+
+
+            switch (this.typeIndex) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                    posX = (this.node.getComponent(UITransform).width - scaledW) / 2;
+                    posY = (this.node.getComponent(UITransform).height - scaledH) / 2;
+                    break;
+            }
+
 
             newIcon.setPosition(new Vec3(posX, posY, 0));
-
-            // switch (this.typeIndex) {
-            //     case 5: case 1: case 2: case 3: case 4: case 20:
-            //         const childSize = newIcon.getComponent(UITransform).contentSize;
-            //         const scaledW = childSize.width * newIcon.scale.x;
-            //         const scaledH = childSize.height * newIcon.scale.y;
-
-            //         // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
-            //         const posX = (this.node.getComponent(UITransform).width - scaledW) / 2;
-            //         const posY = (this.node.getComponent(UITransform).height - scaledH) / 2;
-
-            //         newIcon.setPosition(new Vec3(posX, posY, 0));
-            // }
         })
     }
 
@@ -161,6 +165,18 @@ export class block extends Component {
             case 20:
                 size = new Size(300, 300)
                 offSet = new Vec2(150, 100)
+                break
+            case 21:
+                size = new Size(200, 200)
+                offSet = new Vec2(100, 100)
+                break
+            case 22:
+                size = new Size(100, 400)
+                offSet = new Vec2(50, 200)
+                break
+            case 23:
+                size = new Size(400, 100)
+                offSet = new Vec2(200, 50)
                 break
         }
 
@@ -415,6 +431,23 @@ export class block extends Component {
                     [1, 1, 1],
                     [0, 1, 0]
                 ];
+            case 21:
+                return [
+                    [1, 1],
+                    [1, 1],
+
+                ];
+            case 22:
+                return [
+                    [1],
+                    [1],
+                    [1],
+                    [1]
+                ];
+            case 23:
+                return [
+                    [1, 1, 1, 1]
+                ];
         }
     }
 
@@ -581,6 +614,9 @@ export class block extends Component {
             case 18:
             case 19: return { width: 3, height: 2 };
             case 20: return { width: 3, height: 3 };
+            case 21: return { width: 2, height: 2 };
+            case 22: return { width: 1, height: 4 };
+            case 23: return { width: 4, height: 1 };
         }
     }
 
@@ -614,7 +650,7 @@ export class block extends Component {
 
                 switch (this.typeIndex) {
                     case 1: case 2: case 3: case 4: case 5:
-                    case 18: case 19: case 20:
+                    case 18: case 19: case 20: case 21:
                         this.dirNode.setPosition((nodeTransform.width - dirTransform.width) / 2, this.dirNode.position.y);
                         break;
 
@@ -641,7 +677,7 @@ export class block extends Component {
                 this.dirNode.getComponent(UITransform).width = this.node.getComponent(UITransform).width
                 switch (this.typeIndex) {
                     case 1: case 2: case 3: case 4: case 5:
-                    case 16: case 17: case 20:
+                    case 16: case 17: case 20: case 21:
                         this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height) / 2);
                         break;
 

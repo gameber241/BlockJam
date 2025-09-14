@@ -34,7 +34,16 @@ export class border extends Component {
                 this.node.setPosition(pos.x - BLOCK_SIZE, pos.y - BLOCK_SIZE)
                 break
 
+            case 10:
+                this.node.setPosition(pos.x, pos.y)
+                break
+            case 13:
+                this.node.setPosition(pos.x, pos.y)
+                break
 
+            case 14:
+                this.node.setPosition(pos.x, pos.y)
+                break
         }
     }
 }

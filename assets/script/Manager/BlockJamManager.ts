@@ -22,7 +22,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     hear: number = 0
 
-    level: number = 0
+    level: number = 14
 
     protected async start() {
         this.heartSystem = new HeartSystem()
@@ -57,18 +57,18 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
      * Khôi phục dữ liệu game từ localStorage
      */
     restore() {
-        const _data = sys.localStorage.getItem(STORAGE_KEY) as any
-        if (_data) {
-            const data = JSON.parse(_data)
-            if (data) {
-                this.level = typeof data.level == 'number' ? data.level : 1
-                this.coin = typeof data.score == 'number' ? data.score : 0
-            }
-        }
-        else {
-            this.level = 1
-            this.coin = 0
-        }
+        // const _data = sys.localStorage.getItem(STORAGE_KEY) as any
+        // if (_data) {
+        //     const data = JSON.parse(_data)
+        //     if (data) {
+        //         this.level = typeof data.level == 'number' ? data.level : 1
+        //         this.coin = typeof data.score == 'number' ? data.score : 0
+        //     }
+        // }
+        // else {
+        //     this.level = 1
+        //     this.coin = 0
+        // }
     }
 
     ShowMenuLayer() {
