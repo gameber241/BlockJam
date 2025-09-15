@@ -38,6 +38,7 @@ export class MenuLayer extends Component {
         this.UpdateCoin()
         director.on("UpDateHeart", this.UpdateHeartUI, this)
         this.rendorLevelPreview()
+        this.levelInf.active = false
     }
 
     protected onDisable(): void {

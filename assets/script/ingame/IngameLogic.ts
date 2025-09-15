@@ -29,6 +29,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     @property({ type: Node })
     guide: Node = null
+
+    @property(Node)
+    levelComplete: Node = null
+
     /** Bước hướng dẫn hiện tại */
     guideStep: number = 0
 
@@ -513,8 +517,15 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     checkGame() {
         if (this.blockClearNum >= this.blockTotalNum) {
-            console.log("win")
+            this.scheduleOnce(() => {
+                BlockJamManager.getInstance().coin += 25
+                BlockJamManager.getInstance().level += 1
+                BlockJamManager.getInstance().save()
+                this.levelComplete.active = true
+            }, 0.5)
             // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
+            this.status = ENUM_GAME_STATUS.UNRUNING
+
         }
     }
 
@@ -573,6 +584,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         // cornerNode.getComponent(UITransform).height = BLOCK_SIZE;
         cornerNode.setPosition(v3(x + offsetX, y + offsetY));
         this.setBorderSpriteFrame(cornerNode, frameName);
+    }
+
+    BtnContinue() {
+        this.node.destroy()
+        BlockJamManager.getInstance().ShowLobby()
     }
 }
 
