@@ -362,7 +362,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 2] = 1
-                    this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 3] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
                     break
                 case 20:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
@@ -401,19 +401,30 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 block.tryPlaceBlock();
 
                 // Xóa khỏi dữ liệu chiếm dụng
-                this.updateBlockLimitData(block, false);
+
                 IngameLogic.getInstance().currentSelectBlock = null;
 
                 // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT);
-                block.isExited = true;
-                this.blockClearNum += 1;
-                block.setActive(false);
-                block.hideDir();
 
-                if (BlockJamManager.getInstance().level === 1) {
-                    this.guideStep += 1;
-                    this.setGuideStep();
+                if (block.subcolor == false) {
+
+                    block.hideDir();
+                    this.updateBlockLimitData(block, false);
+                    block.isExited = true;
+
+                    block.setActive(false);
+                    this.blockClearNum += 1;
                 }
+                else {
+                    this.updateBlockLimitData(block, true);
+                }
+
+
+
+                // if (BlockJamManager.getInstance().level === 1) {
+                //     this.guideStep += 1;
+                //     this.setGuideStep();
+                // }
 
                 // --- Logic hoạt hình ---
                 let moveX = 0, moveY = 0, moveX2 = 0, moveY2 = 0;
@@ -436,62 +447,68 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                         moveX2 = -uiTrans.width;
                         break;
                 }
-
-                tween(block.node)
-                    .by(0.2, { position: new Vec3(moveX, moveY) })
+                console.log(block.icon)
+                tween(block.icon)
+                    .by(0.2, { position: new Vec3(moveX2, moveY2) })
                     .call(() => {
-                        tween(block.icon)
-                            .by(0.2, { position: new Vec3(moveX2, moveY2) })
-                            .call(() => {
-                                block.node.destroy();
-                            })
-                            .start();
-
-                        // --- Hiệu ứng ---
-                        switch (ex.typeIndex) {
-                            case 1:
-                                for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                                    // eff.setPosition(i * 100 + 50, 0);
-                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                                    // effParticle.gravity = new Vec2(0, 200);
-                                    // effParticle.resetSystem();
-                                }
-                                break;
-                            case 2:
-                                for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                                    // eff.setPosition(30, i * 100 + 50);
-                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                                    // effParticle.gravity = new Vec2(0, 0);
-                                    // effParticle.resetSystem();
-                                }
-                                break;
-                            case 3:
-                                for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                                    // eff.setPosition(i * 100 + 50, 50);
-                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                                    // effParticle.gravity = new Vec2(0, -200);
-                                    // effParticle.resetSystem();
-                                }
-                                break;
-                            case 4:
-                                for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                                    eff.setPosition(0, i * 100 + 50);
-                                    // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                                    // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                                    // effParticle.gravity = new Vec2(0, 0);
-                                    // effParticle.resetSystem();
-                                }
-                                break;
+                        if (block.subcolor == false) {
+                            block.node.destroy();
+                        }
+                        else {
+                            block.AddSubColor()
                         }
                     })
                     .start();
+                // tween(block.node)
+                //     .by(0.2, { position: new Vec3(moveX, moveY) })
+                //     .call(() => {
+
+
+                //         // --- Hiệu ứng ---
+                //         switch (ex.typeIndex) {
+                //             case 1:
+                //                 for (let i = 0; i < ex.size; i++) {
+                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                //                     // eff.setPosition(i * 100 + 50, 0);
+                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                //                     // effParticle.gravity = new Vec2(0, 200);
+                //                     // effParticle.resetSystem();
+                //                 }
+                //                 break;
+                //             case 2:
+                //                 for (let i = 0; i < ex.size; i++) {
+                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                //                     // eff.setPosition(30, i * 100 + 50);
+                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                //                     // effParticle.gravity = new Vec2(0, 0);
+                //                     // effParticle.resetSystem();
+                //                 }
+                //                 break;
+                //             case 3:
+                //                 for (let i = 0; i < ex.size; i++) {
+                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                //                     // eff.setPosition(i * 100 + 50, 50);
+                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                //                     // effParticle.gravity = new Vec2(0, -200);
+                //                     // effParticle.resetSystem();
+                //                 }
+                //                 break;
+                //             case 4:
+                //                 for (let i = 0; i < ex.size; i++) {
+                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
+                //                     eff.setPosition(0, i * 100 + 50);
+                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
+                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
+                //                     // effParticle.gravity = new Vec2(0, 0);
+                //                     // effParticle.resetSystem();
+                //                 }
+                //                 break;
+                //         }
+                //     })
+                //     .start();
 
                 // Tiến trình game
                 this.checkGame();

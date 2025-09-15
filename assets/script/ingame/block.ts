@@ -2,6 +2,7 @@ import { _decorator, BoxCollider, BoxCollider2D, Component, EventTouch, Input, i
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BLOCK_GAP, BLOCK_SIZE, ENUM_GAME_STATUS, IngameLogic } from './IngameLogic';
 import { delay } from '../Utils';
+import { PoolManager } from '../Manager/PoolManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('block')
@@ -47,6 +48,7 @@ export class block extends Component {
     collider: BoxCollider2D = null
 
     sibilingCurrent = -1
+    subcolor = false
 
     init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors) {
         this.index = index
@@ -63,40 +65,38 @@ export class block extends Component {
         this.initListColor(colors)
     }
 
-
+    AddSubColor() {
+        this.icon = this.listColor.children[0]
+        this.colorIndex = this.colors[0]
+        this.subcolor = false
+        this.isSelected = false
+        console.log(this.colorIndex, this.isSelected)
+    }
 
     initListColor(colors: number[]) {
+        if (colors.length == 0) return
         colors.forEach((e, index) => {
-            let newIcon = instantiate(this.icon)
-            this.listColor.addChild(newIcon)
-            newIcon.setScale(1 - 0.3 * (index + 1), 1 - 0.3 * (index + 1))
-            newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${e}_${this.typeIndex}`)
-            const childSize = newIcon.getComponent(UITransform).contentSize;
-            const scaledW = childSize.width * newIcon.scale.x;
-            const scaledH = childSize.height * newIcon.scale.y;
-
+            this.subcolor = true
+            let newIcon = PoolManager.getInstance().getNode("blockInner", this.listColor)
+            newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_inner_${e}_${this.typeIndex}`)
             // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
-            let posX: number = 0
-            let posY: number = 0
 
-
-            switch (this.typeIndex) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                    posX = (this.node.getComponent(UITransform).width - scaledW) / 2;
-                    posY = (this.node.getComponent(UITransform).height - scaledH) / 2;
-                    break;
-            }
-
-
-            newIcon.setPosition(new Vec3(posX, posY, 0));
+            // switch (this.typeIndex) {
+            //     case 1:
+            //     case 2:
+            //     case 3:
+            //     case 4:
+            //     case 5:
+            //     case 20:
+            //     case 21:
+            //     case 22:
+            //     case 23:
+            //         posX = this.node.getComponent(UITransform).width / 2;
+            //         posY = this.node.getComponent(UITransform).height / 2;
+            //         break;
+            //     case 6:
+            //         break
+            // }
         })
     }
 
@@ -182,7 +182,7 @@ export class block extends Component {
 
 
         this.node.getComponent(UITransform).setContentSize(size)
-        this.icon.getComponent(UITransform).setContentSize(size)
+        // this.icon.getComponent(UITransform).setContentSize(size)
         this.collider.size = size
         this.collider.offset = offSet
         this.mask.getComponent(UITransform).setContentSize(size)
@@ -193,39 +193,40 @@ export class block extends Component {
     onTouchStart(event: EventTouch) {
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
+
         if (touchedBlocks.length === 0) return;
         const block = touchedBlocks[touchedBlocks.length - 1];
         this.sibilingCurrent = this.node.getSiblingIndex()
         // Skill logic
-        if (IngameLogic.getInstance().currentSkillIndex == 0) {
-            // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
-            block.colorIndex = IngameLogic.getInstance().currentColorIndex += 1
-            // this.changeColor()
-            IngameLogic.getInstance().currentSkillIndex = -1
-            // IngameLogic.getInstance().ins.toggleSkillTip(false)
-            return
-        } else if (IngameLogic.getInstance().currentSkillIndex == 1) {
-            // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
-            // block.node.zIndex = 888
-            // block.isExited = true
-            // IngameLogic.getInstance().updateBlockLimitData(block, false)
-            // let act = null
-            // if (block.xIndex >= IngameLogic.getInstance().colNum / 2) {
-            //     act = moveBy(0.1, 200, 0)
-            // } else {
-            //     act = moveBy(0.1, -200, 0)
-            // }
-            // tween(block.node).then(act).call(() => {
-            //     block.node.destroy()
-            // }).start()
-            // IngameLogic.getInstance().blockClearNum += 1
-            // IngameLogic.getInstance().currentSkillIndex = -1
-            // IngameLogic.getInstance().toggleSkillTip(false)
-            // return
-        }
+        // if (IngameLogic.getInstance().currentSkillIndex == 0) {
+        //     // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
+        //     block.colorIndex = IngameLogic.getInstance().currentColorIndex += 1
+        //     // this.changeColor()
+        //     IngameLogic.getInstance().currentSkillIndex = -1
+        //     // IngameLogic.getInstance().ins.toggleSkillTip(false)
+        //     return
+        // } else if (IngameLogic.getInstance().currentSkillIndex == 1) {
+        //     // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
+        //     // block.node.zIndex = 888
+        //     // block.isExited = true
+        //     // IngameLogic.getInstance().updateBlockLimitData(block, false)
+        //     // let act = null
+        //     // if (block.xIndex >= IngameLogic.getInstance().colNum / 2) {
+        //     //     act = moveBy(0.1, 200, 0)
+        //     // } else {
+        //     //     act = moveBy(0.1, -200, 0)
+        //     // }
+        //     // tween(block.node).then(act).call(() => {
+        //     //     block.node.destroy()
+        //     // }).start()
+        //     // IngameLogic.getInstance().blockClearNum += 1
+        //     // IngameLogic.getInstance().currentSkillIndex = -1
+        //     // IngameLogic.getInstance().toggleSkillTip(false)
+        //     // return
+        // }
 
 
-
+        console.log("den day ne", block.isSelected)
         // Nếu block hiện tại đã được chọn, trả về trực tiếp
         if (block.isSelected) return;
 

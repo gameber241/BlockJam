@@ -1,4 +1,5 @@
 export const LeveConfig = [
+    //#region lv1
     { // level 1
         "rowNum": 5,
         "colNum": 4,
@@ -74,6 +75,7 @@ export const LeveConfig = [
 
         ]
     },
+    //#region lv2
     { // level2
         "rowNum": 5,
         "colNum": 5,
@@ -150,7 +152,7 @@ export const LeveConfig = [
 
         ]
     },
-
+    //#region lv3
     { // level 3
         "rowNum": 6,
         "colNum": 5,
@@ -244,7 +246,7 @@ export const LeveConfig = [
         ]
     },
 
-
+    //#region lv4
     { // level 4
         "rowNum": 6,
         "colNum": 5,
@@ -345,7 +347,7 @@ export const LeveConfig = [
 
         ]
     },
-
+    //#region lv5
     { // level 5
         "rowNum": 6,
         "colNum": 5,
@@ -466,6 +468,7 @@ export const LeveConfig = [
             },
         ]
     },
+    //#region lv6
     { // level 6
         "rowNum": 6,
         "colNum": 6,
@@ -619,6 +622,7 @@ export const LeveConfig = [
             },
         ]
     },
+    //#region lv17   
     { // level 7
         "rowNum": 7,
         "colNum": 5,
@@ -820,6 +824,7 @@ export const LeveConfig = [
             },
         ]
     },
+    //#region lv8
     { // level 8
         "rowNum": 7,
         "colNum": 5,
@@ -835,7 +840,7 @@ export const LeveConfig = [
         "border": [ // 1 : top , 2 bot, 3 trai, 4 phai, 5 g TrTr, 6: g TrPh, 7 DPh, 8 DuTr
             { id: 1, x: 0, y: 6 },
             { id: 1, x: 4, y: 6 },
-
+            { id: 1, x: 3, y: 6 },
             { id: 2, x: 0, y: 0 },
             { id: 2, x: 4, y: 0 },
 
@@ -1043,6 +1048,7 @@ export const LeveConfig = [
 
         ]
     },
+    //#region lv9
     { // level 9
         "rowNum": 6,
         "colNum": 6,
@@ -1209,6 +1215,7 @@ export const LeveConfig = [
             },
         ]
     },
+    //#region  lv10
     { // level 10
         "rowNum": 7,
         "colNum": 3,
@@ -1353,6 +1360,7 @@ export const LeveConfig = [
             },
         ]
     },
+    //#region  lv11
     { // level 11
         "rowNum": 10,
         "colNum": 7,
@@ -2286,8 +2294,9 @@ export const LeveConfig = [
             },
         ]
     },
-    { // level 14
-        "rowNum": 6,
+    //#region  lv15
+    { // lv15
+        "rowNum": 9,
         "colNum": 6,
         "board": [
             [1, 1, 1, 1, 1, 1,],
@@ -2296,26 +2305,14 @@ export const LeveConfig = [
             [1, 1, 1, 1, 1, 1,],
             [1, 1, 1, 1, 1, 1,],
             [1, 1, 1, 1, 1, 1,],
+            [1, 1, 1, 1, 1, 1,],
+            [1, 1, 1, 1, 1, 1,],
+            [1, 1, 1, 1, 1, 1,],
+
         ],
         "border": [ // 1 : top , 2 bot, 3 trai, 4 phai, 5 g TrTr, 6: g TrPh, 7 DPh, 8 DuTr
-            { id: 1, x: 0, y: 5 },
-            { id: 1, x: 1, y: 5 },
-            { id: 1, x: 2, y: 5 },
-
-            { id: 3, x: 0, y: 0 },
-            { id: 3, x: 0, y: 2 },
-            { id: 3, x: 0, y: 3 },
-            { id: 3, x: 0, y: 4 },
-            { id: 3, x: 0, y: 5 },
-
-            { id: 4, x: 5, y: 0 },
-            { id: 4, x: 5, y: 1 },
-            { id: 4, x: 5, y: 2 },
-
-
-
-            { id: 5, x: 0, y: 5 },
-            { id: 6, x: 5, y: 5 },
+            { id: 5, x: 0, y: 8 },
+            { id: 6, x: 5, y: 8 },
             { id: 7, x: 5, y: 0 },
             { id: 8, x: 0, y: 0 },
 
@@ -2323,151 +2320,413 @@ export const LeveConfig = [
 
         "blocks": [  //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
             {
-                "typeIndex": 4,
-                "colorIndex": 4,
+                "typeIndex": 13,
+                "colorIndex": 10,
                 "iceNumber": 0,
-                "colorList": [],
+                "colorList": [8],
                 "dir": 0,
                 "x": 0,
                 "y": 0
             },
             {
-                "typeIndex": 3,
-                "colorIndex": 8,
-                "iceNumber": 0,
-                "colorList": [],
-                "dir": 0,
-                "x": 0,
-                "y": 1
-            },
-            {
-                "typeIndex": 2,
+                "typeIndex": 4,
                 "colorIndex": 6,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
+                "x": 1,
+                "y": 1
+            },
+            {
+                "typeIndex": 4,
+                "colorIndex": 5,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 1,
+                "y": 2
+            },
+            {
+                "typeIndex": 9,
+                "colorIndex": 8,
+                "iceNumber": 0,
+                "colorList": [6],
+                "dir": 0,
                 "x": 3,
                 "y": 0
             },
             {
-                "typeIndex": 8,
-                "colorIndex": 3,
+                "typeIndex": 20,
+                "colorIndex": 4,
                 "iceNumber": 0,
-                "colorList": [],
+                "colorList": [7],
                 "dir": 0,
                 "x": 3,
                 "y": 1
             },
             {
-                "typeIndex": 1,
-                "colorIndex": 9,
+                "typeIndex": 19,
+                "colorIndex": 4,
                 "iceNumber": 0,
-                "colorList": [],
-                "dir": 0,
-                "x": 5,
-                "y": 1
-            },
-            {
-                "typeIndex": 5,
-                "colorIndex": 3,
-                "iceNumber": 0,
-                "colorList": [],
-                "dir": 0,
-                "x": 5,
-                "y": 2
-            },
-            {
-                "typeIndex": 5,
-                "colorIndex": 9,
-                "iceNumber": 0,
-                "colorList": [],
-                "dir": 0,
-                "x": 5,
-                "y": 4
-            },
-            {
-                "typeIndex": 3,
-                "colorIndex": 8,
-                "iceNumber": 0,
-                "colorList": [],
-                "dir": 0,
-                "x": 4,
-                "y": 3
-            },
-            {
-                "typeIndex": 2,
-                "colorIndex": 10,
-                "iceNumber": 0,
-                "colorList": [],
+                "colorList": [7],
                 "dir": 0,
                 "x": 1,
                 "y": 3
             },
             {
-                "typeIndex": 21,
-                "colorIndex": 10,
+                "typeIndex": 5,
+                "colorIndex": 8,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
                 "x": 0,
+                "y": 3
+            },
+            {
+                "typeIndex": 20,
+                "colorIndex": 3,
+                "iceNumber": 0,
+                "colorList": [6],
+                "dir": 0,
+                "x": 0,
+                "y": 5
+            },
+            {
+                "typeIndex": 18,
+                "colorIndex": 7,
+                "iceNumber": 0,
+                "colorList": [4],
+                "dir": 0,
+                "x": 2,
                 "y": 4
             },
             {
-                "typeIndex": 21,
-                "colorIndex": 4,
+                "typeIndex": 5,
+                "colorIndex": 9,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 5,
+                "y": 4
+            },
+            {
+                "typeIndex": 5,
+                "colorIndex": 5,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 3,
+                "y": 6
+            },
+            {
+                "typeIndex": 4,
+                "colorIndex": 10,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
                 "x": 2,
-                "y": 4
+                "y": 8
+            },
+            {
+                "typeIndex": 15,
+                "colorIndex": 3,
+                "iceNumber": 0,
+                "colorList": [9],
+                "dir": 0,
+                "x": 4,
+                "y": 6
             },
 
         ], //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
         "exits": [   // 0 : phai, 1: trai, 2 xuong, 3 len
             {
                 "typeIndex": 0,
-                "colorIndex": 8,
+                "colorIndex": 4,
+                "x": 5,
+                "y": 0,
+                "size": 3
+            },
+
+            {
+                "typeIndex": 0,
+                "colorIndex": 7,
                 "x": 5,
                 "y": 3,
                 "size": 3
             },
 
-
-
+            {
+                "typeIndex": 0,
+                "colorIndex": 3,
+                "x": 5,
+                "y": 6,
+                "size": 3
+            },
             {
                 "typeIndex": 1,
-                "colorIndex": 6,
-                "x": 0,
-                "y": 1,
-                "size": 1
-            },
-
-            {
-                "typeIndex": 2,
-                "colorIndex": 3,
+                "colorIndex": 8,
                 "x": 0,
                 "y": 0,
-                "size": 2
+                "size": 3
             },
             {
-                "typeIndex": 2,
-                "colorIndex": 9,
-                "x": 2,
-                "y": 0,
-                "size": 2
-            },
-            {
-                "typeIndex": 2,
+                "typeIndex": 1,
                 "colorIndex": 4,
-                "x": 4,
+                "x": 0,
+                "y": 3,
+                "size": 3
+            },
+            {
+                "typeIndex": 1,
+                "colorIndex": 5,
+                "x": 0,
+                "y": 6,
+                "size": 3
+            },
+            {
+                "typeIndex": 2,
+                "colorIndex": 10,
+                "x": 0,
                 "y": 0,
-                "size": 2
+                "size": 3
+            },
+            {
+                "typeIndex": 2,
+                "colorIndex": 6,
+                "x": 3,
+                "y": 0,
+                "size": 3
             },
             {
                 "typeIndex": 3,
                 "colorIndex": 10,
+                "x": 0,
+                "y": 8,
+                "size": 3
+            },
+            {
+                "typeIndex": 3,
+                "colorIndex": 9,
                 "x": 3,
-                "y": 5,
+                "y": 8,
+                "size": 3
+            },
+        ]
+    },
+    //#region  lv16
+    { // lv16
+        "rowNum": 7,
+        "colNum": 5,
+        "board": [
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+
+
+        ],
+        "border": [ // 1 : top , 2 bot, 3 trai, 4 phai, 5 g TrTr, 6: g TrPh, 7 DPh, 8 DuTr
+            { id: 5, x: 0, y: 8 },
+            { id: 6, x: 5, y: 8 },
+            { id: 7, x: 5, y: 0 },
+            { id: 8, x: 0, y: 0 },
+
+        ],
+
+        "blocks": [  //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
+            {
+                "typeIndex": 13,
+                "colorIndex": 10,
+                "iceNumber": 0,
+                "colorList": [8],
+                "dir": 0,
+                "x": 0,
+                "y": 0
+            },
+            {
+                "typeIndex": 4,
+                "colorIndex": 6,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 1,
+                "y": 1
+            },
+            {
+                "typeIndex": 4,
+                "colorIndex": 5,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 1,
+                "y": 2
+            },
+            {
+                "typeIndex": 9,
+                "colorIndex": 8,
+                "iceNumber": 0,
+                "colorList": [6],
+                "dir": 0,
+                "x": 3,
+                "y": 0
+            },
+            {
+                "typeIndex": 20,
+                "colorIndex": 4,
+                "iceNumber": 0,
+                "colorList": [7],
+                "dir": 0,
+                "x": 3,
+                "y": 1
+            },
+            {
+                "typeIndex": 19,
+                "colorIndex": 4,
+                "iceNumber": 0,
+                "colorList": [7],
+                "dir": 0,
+                "x": 1,
+                "y": 3
+            },
+            {
+                "typeIndex": 5,
+                "colorIndex": 8,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 0,
+                "y": 3
+            },
+            {
+                "typeIndex": 20,
+                "colorIndex": 3,
+                "iceNumber": 0,
+                "colorList": [6],
+                "dir": 0,
+                "x": 0,
+                "y": 5
+            },
+            {
+                "typeIndex": 18,
+                "colorIndex": 7,
+                "iceNumber": 0,
+                "colorList": [4],
+                "dir": 0,
+                "x": 2,
+                "y": 4
+            },
+            {
+                "typeIndex": 5,
+                "colorIndex": 9,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 5,
+                "y": 4
+            },
+            {
+                "typeIndex": 5,
+                "colorIndex": 5,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 3,
+                "y": 6
+            },
+            {
+                "typeIndex": 4,
+                "colorIndex": 10,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 2,
+                "y": 8
+            },
+            {
+                "typeIndex": 15,
+                "colorIndex": 3,
+                "iceNumber": 0,
+                "colorList": [9],
+                "dir": 0,
+                "x": 4,
+                "y": 6
+            },
+
+        ], //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
+        "exits": [   // 0 : phai, 1: trai, 2 xuong, 3 len
+            {
+                "typeIndex": 0,
+                "colorIndex": 4,
+                "x": 5,
+                "y": 0,
+                "size": 3
+            },
+
+            {
+                "typeIndex": 0,
+                "colorIndex": 7,
+                "x": 5,
+                "y": 3,
+                "size": 3
+            },
+
+            {
+                "typeIndex": 0,
+                "colorIndex": 3,
+                "x": 5,
+                "y": 6,
+                "size": 3
+            },
+            {
+                "typeIndex": 1,
+                "colorIndex": 8,
+                "x": 0,
+                "y": 0,
+                "size": 3
+            },
+            {
+                "typeIndex": 1,
+                "colorIndex": 4,
+                "x": 0,
+                "y": 3,
+                "size": 3
+            },
+            {
+                "typeIndex": 1,
+                "colorIndex": 5,
+                "x": 0,
+                "y": 6,
+                "size": 3
+            },
+            {
+                "typeIndex": 2,
+                "colorIndex": 10,
+                "x": 0,
+                "y": 0,
+                "size": 3
+            },
+            {
+                "typeIndex": 2,
+                "colorIndex": 6,
+                "x": 3,
+                "y": 0,
+                "size": 3
+            },
+            {
+                "typeIndex": 3,
+                "colorIndex": 10,
+                "x": 0,
+                "y": 8,
+                "size": 3
+            },
+            {
+                "typeIndex": 3,
+                "colorIndex": 9,
+                "x": 3,
+                "y": 8,
                 "size": 3
             },
         ]
