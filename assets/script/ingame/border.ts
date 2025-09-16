@@ -40,7 +40,9 @@ export class border extends Component {
             case 13:
                 this.node.setPosition(pos.x, pos.y)
                 break
-
+            case 12:
+                this.node.setPosition(pos.x, pos.y)
+                break
             case 14:
                 this.node.setPosition(pos.x, pos.y)
                 break

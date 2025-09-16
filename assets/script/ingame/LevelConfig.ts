@@ -2518,118 +2518,168 @@ export const LeveConfig = [
         "rowNum": 7,
         "colNum": 5,
         "board": [
+            [1, 1, 0, 1, 1],
+            [1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1],
+            [0, 0, 1, 1, 0],
             [1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
+            [1, 1, 0, 1, 1],
 
 
         ],
         "border": [ // 1 : top , 2 bot, 3 trai, 4 phai, 5 g TrTr, 6: g TrPh, 7 DPh, 8 DuTr
-            { id: 5, x: 0, y: 8 },
-            { id: 6, x: 5, y: 8 },
-            { id: 7, x: 5, y: 0 },
+            { id: 1, x: 2, y: 6 },
+
+            { id: 2, x: 1, y: 0 },
+            { id: 2, x: 2, y: 0 },
+            { id: 2, x: 3, y: 0 },
+            { id: 2, x: 4, y: 0 },
+
+            { id: 3, x: 0, y: 0 },
+            { id: 3, x: 0, y: 1 },
+            { id: 3, x: 0, y: 2 },
+            { id: 3, x: 0, y: 5 },
+            { id: 3, x: 0, y: 6 },
+
+            { id: 4, x: 4, y: 0 },
+            { id: 4, x: 4, y: 3 },
+            { id: 4, x: 4, y: 4 },
+            { id: 4, x: 4, y: 5 },
+            { id: 4, x: 4, y: 6 },
+
+
+            { id: 5, x: 0, y: 6 },
+            { id: 6, x: 4, y: 6 },
+            { id: 7, x: 4, y: 0 },
             { id: 8, x: 0, y: 0 },
+
+            { id: 5, x: 0, y: 2 },
+            { id: 8, x: 0, y: 5 },
+
+            { id: 12, x: 0, y: 3 },
+            { id: 14, x: 0, y: 4 },
+
+            { id: 10, x: 2, y: 0 },
+            { id: 10, x: 1, y: 3 },
+            { id: 10, x: 4, y: 3 },
+            { id: 10, x: 2, y: 6 },
+
 
         ],
 
         "blocks": [  //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
             {
-                "typeIndex": 13,
-                "colorIndex": 10,
+                "typeIndex": 1,
+                "colorIndex": 4,
                 "iceNumber": 0,
-                "colorList": [8],
+                "colorList": [],
                 "dir": 0,
                 "x": 0,
                 "y": 0
             },
             {
-                "typeIndex": 4,
-                "colorIndex": 6,
+                "typeIndex": 1,
+                "colorIndex": 4,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
                 "x": 1,
-                "y": 1
+                "y": 0
             },
             {
-                "typeIndex": 4,
-                "colorIndex": 5,
+                "typeIndex": 1,
+                "colorIndex": 9,
                 "iceNumber": 0,
                 "colorList": [],
-                "dir": 0,
-                "x": 1,
-                "y": 2
-            },
-            {
-                "typeIndex": 9,
-                "colorIndex": 8,
-                "iceNumber": 0,
-                "colorList": [6],
                 "dir": 0,
                 "x": 3,
                 "y": 0
             },
             {
-                "typeIndex": 20,
-                "colorIndex": 4,
+                "typeIndex": 1,
+                "colorIndex": 9,
                 "iceNumber": 0,
-                "colorList": [7],
+                "colorList": [],
                 "dir": 0,
-                "x": 3,
-                "y": 1
-            },
-            {
-                "typeIndex": 19,
-                "colorIndex": 4,
-                "iceNumber": 0,
-                "colorList": [7],
-                "dir": 0,
-                "x": 1,
-                "y": 3
+                "x": 4,
+                "y": 0
             },
             {
                 "typeIndex": 5,
-                "colorIndex": 8,
+                "colorIndex": 4,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
                 "x": 0,
-                "y": 3
+                "y": 1
             },
             {
-                "typeIndex": 20,
-                "colorIndex": 3,
+                "typeIndex": 5,
+                "colorIndex": 9,
                 "iceNumber": 0,
-                "colorList": [6],
+                "colorList": [],
+                "dir": 0,
+                "x": 4,
+                "y": 1
+            },
+            {
+                "typeIndex": 2,
+                "colorIndex": 4,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 1,
+                "y": 1
+            },
+            {
+                "typeIndex": 1,
+                "colorIndex": 10,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 1,
+                "y": 4
+            },
+            {
+                "typeIndex": 5,
+                "colorIndex": 10,
+                "iceNumber": 0,
+                "colorList": [],
                 "dir": 0,
                 "x": 0,
                 "y": 5
             },
             {
-                "typeIndex": 18,
-                "colorIndex": 7,
-                "iceNumber": 0,
-                "colorList": [4],
-                "dir": 0,
-                "x": 2,
-                "y": 4
-            },
-            {
-                "typeIndex": 5,
-                "colorIndex": 9,
+                "typeIndex": 1,
+                "colorIndex": 10,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
-                "x": 5,
+                "x": 1,
+                "y": 6
+            },
+            {
+                "typeIndex": 6,
+                "colorIndex": 10,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 1,
                 "y": 4
             },
             {
                 "typeIndex": 5,
-                "colorIndex": 5,
+                "colorIndex": 3,
+                "iceNumber": 0,
+                "colorList": [],
+                "dir": 0,
+                "x": 3,
+                "y": 4
+            },
+            {
+                "typeIndex": 1,
+                "colorIndex": 3,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
@@ -2637,97 +2687,59 @@ export const LeveConfig = [
                 "y": 6
             },
             {
-                "typeIndex": 4,
-                "colorIndex": 10,
+                "typeIndex": 1,
+                "colorIndex": 7,
                 "iceNumber": 0,
                 "colorList": [],
                 "dir": 0,
-                "x": 2,
-                "y": 8
+                "x": 4,
+                "y": 4
             },
             {
-                "typeIndex": 15,
-                "colorIndex": 3,
+                "typeIndex": 5,
+                "colorIndex": 7,
                 "iceNumber": 0,
-                "colorList": [9],
+                "colorList": [],
                 "dir": 0,
                 "x": 4,
-                "y": 6
+                "y": 5
             },
-
         ], //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
         "exits": [   // 0 : phai, 1: trai, 2 xuong, 3 len
             {
                 "typeIndex": 0,
                 "colorIndex": 4,
-                "x": 5,
-                "y": 0,
-                "size": 3
+                "x": 4,
+                "y": 1,
+                "size": 2
             },
-
             {
-                "typeIndex": 0,
+                "typeIndex": 2,
                 "colorIndex": 7,
-                "x": 5,
-                "y": 3,
-                "size": 3
-            },
-
-            {
-                "typeIndex": 0,
-                "colorIndex": 3,
-                "x": 5,
-                "y": 6,
-                "size": 3
-            },
-            {
-                "typeIndex": 1,
-                "colorIndex": 8,
                 "x": 0,
                 "y": 0,
-                "size": 3
-            },
-            {
-                "typeIndex": 1,
-                "colorIndex": 4,
-                "x": 0,
-                "y": 3,
-                "size": 3
-            },
-            {
-                "typeIndex": 1,
-                "colorIndex": 5,
-                "x": 0,
-                "y": 6,
-                "size": 3
-            },
-            {
-                "typeIndex": 2,
-                "colorIndex": 10,
-                "x": 0,
-                "y": 0,
-                "size": 3
-            },
-            {
-                "typeIndex": 2,
-                "colorIndex": 6,
-                "x": 3,
-                "y": 0,
-                "size": 3
+                "size": 1
             },
             {
                 "typeIndex": 3,
-                "colorIndex": 10,
+                "colorIndex": 3,
                 "x": 0,
-                "y": 8,
-                "size": 3
+                "y": 6,
+                "size": 1
             },
             {
                 "typeIndex": 3,
                 "colorIndex": 9,
+                "x": 1,
+                "y": 6,
+                "size": 1
+            },
+            {
+                "typeIndex": 3,
+                "colorIndex": 10,
                 "x": 3,
-                "y": 8,
-                "size": 3
+                "y": 6,
+                "size": 2
             },
         ]
     },
