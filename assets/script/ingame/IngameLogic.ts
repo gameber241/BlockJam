@@ -343,8 +343,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 case 16:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex + 1] = 1
                     this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex] = 1
-                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 2] = 1
-                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 2] = 1
+                    this.blockLimitData[blockComp.yIndex + 1][blockComp.xIndex + 1] = 1
+                    this.blockLimitData[blockComp.yIndex + 2][blockComp.xIndex + 1] = 1
                     break
                 case 17:
                     this.blockLimitData[blockComp.yIndex][blockComp.xIndex] = 1
