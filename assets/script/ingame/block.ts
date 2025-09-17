@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider, BoxCollider2D, Component, EventTouch, Input, instantiate, Label, misc, Node, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider, BoxCollider2D, Component, director, EventTouch, Input, instantiate, Label, misc, Node, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BLOCK_GAP, BLOCK_SIZE, ENUM_GAME_STATUS, IngameLogic } from './IngameLogic';
 import { delay } from '../Utils';
@@ -31,8 +31,6 @@ export class block extends Component {
     @property(Node)
     dirNode: Node = null
 
-    @property(Node)
-    freezeNode: Node = null
 
     @property(Label)
     freezeLb: Label = null
@@ -49,6 +47,7 @@ export class block extends Component {
 
     sibilingCurrent = -1
     subcolor = false
+    freeNode = null
 
     init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors) {
         this.index = index
@@ -63,6 +62,58 @@ export class block extends Component {
         this.initPos = v3(this.node.position.clone());
         this.colors = colors
         this.initListColor(colors)
+        this.initIce(freezeNum)
+        director.on("MERGE", this.SubIce, this)
+    }
+
+    protected onDestroy(): void {
+        director.off("MERGE", this.SubIce, this)
+    }
+
+    SubIce() {
+        if (this.freezeNum == 0) return
+        this.freezeNum -= 1
+        this.freezeLb.string = this.freezeNum.toString()
+        if (this.freezeNum == 0) {
+            this.freezeLb.node.active = false
+            this.freeNode.destroy()
+            this.freeNode = null
+        }
+    }
+
+    initIce(iceNumber) {
+        if (iceNumber == 0) return
+        this.freezeLb.node.active = true
+        this.freezeLb.string = iceNumber
+        this.freezeLb.node.position = new Vec3(this.node.getComponent(UITransform).width / 2, this.node.getComponent(UITransform).height / 2)
+        let newIcon = instantiate(this.icon)
+        this.listColor.addChild(newIcon)
+        newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_11_${this.typeIndex}`)
+        this.freeNode = newIcon
+        let nodeTransform = this.node.getComponent(UITransform)
+        let dirTransform = this.freezeLb.node.getComponent(UITransform)
+        switch (this.typeIndex) {
+            case 1: case 2: case 3: case 4: case 5:
+            case 18: case 19: case 20: case 21: case 23: case 22:
+                this.freezeLb.node.setPosition((nodeTransform.width - dirTransform.width) / 2, (nodeTransform.height - dirTransform.height) / 2);
+                break;
+
+            case 7: case 9: case 13: case 14: case 17:
+                this.freezeLb.node.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE) / 2, this.freezeLb.node.position.y);
+                break;
+
+            case 6: case 8: case 12: case 15: case 16:
+                this.freezeLb.node.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE) / 2, this.freezeLb.node.position.y);
+                break;
+
+            case 11:
+                this.freezeLb.node.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE * 2) / 2, this.freezeLb.node.position.y);
+                break;
+
+            case 10:
+                this.freezeLb.node.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE * 2) / 2, this.dirNode.position.y);
+                break;
+        }
     }
 
     AddSubColor() {
@@ -71,6 +122,7 @@ export class block extends Component {
         this.subcolor = false
         this.isSelected = false
         console.log(this.colorIndex, this.isSelected)
+
     }
 
     initListColor(colors: number[]) {
@@ -191,6 +243,7 @@ export class block extends Component {
 
 
     onTouchStart(event: EventTouch) {
+        if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
 
@@ -255,7 +308,7 @@ export class block extends Component {
      * Xử lý sự kiện chạm di chuyển
      */
     private onTouchMove(event: EventTouch) {
-
+        if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
@@ -305,6 +358,7 @@ export class block extends Component {
      * Xử lý sự kiện chạm kết thúc
      */
     private onTouchEnd(event: EventTouch) {
+        if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
@@ -651,7 +705,7 @@ export class block extends Component {
 
                 switch (this.typeIndex) {
                     case 1: case 2: case 3: case 4: case 5:
-                    case 18: case 19: case 20: case 21:
+                    case 18: case 19: case 20: case 21: case 23: case 22:
                         this.dirNode.setPosition((nodeTransform.width - dirTransform.width) / 2, this.dirNode.position.y);
                         break;
 
@@ -678,7 +732,7 @@ export class block extends Component {
                 this.dirNode.getComponent(UITransform).width = this.node.getComponent(UITransform).width
                 switch (this.typeIndex) {
                     case 1: case 2: case 3: case 4: case 5:
-                    case 16: case 17: case 20: case 21:
+                    case 16: case 17: case 20: case 21: case 23: case 22:
                         this.dirNode.setPosition(this.dirNode.position.x, (nodeTransform.height - dirTransform.height) / 2);
                         break;
 

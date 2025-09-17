@@ -22,7 +22,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     hear: number = 0
 
-    level: number = 23
+    level: number = 27
 
     protected async start() {
         this.heartSystem = new HeartSystem()

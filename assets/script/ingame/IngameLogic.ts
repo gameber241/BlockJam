@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -452,6 +452,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     .by(0.2, { position: new Vec3(moveX2, moveY2) })
                     .call(() => {
                         if (block.subcolor == false) {
+                            director.emit("MERGE")
                             block.node.destroy();
                         }
                         else {
