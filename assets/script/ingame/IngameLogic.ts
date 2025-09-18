@@ -11,6 +11,14 @@ const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
 export const BLOCK_GAP = 0
+type FinishCallback = () => void;
+function pad(num: number, size: number): string {
+    let s = num.toString();
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
+// dùng thay vì padStart:
 
 export enum ENUM_GAME_STATUS {
     UNRUNING = 'UNRUNING',
@@ -25,6 +33,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     blockBg: Node = null
 
     @property(Label)
+    coinLb: Label = null
+
+    @property(Label)
     levelLabel: Label
 
     @property({ type: Node })
@@ -32,6 +43,17 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     @property(Node)
     levelComplete: Node = null
+
+    @property(Label)
+    timeLb: Label = null
+
+    @property(Node)
+    outoftime1: Node = null
+
+    @property(Node)
+    popupClose: Node = null
+
+    timeNumber: 0
 
     /** Bước hướng dẫn hiện tại */
     guideStep: number = 0
@@ -48,10 +70,24 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
 
     protected start() {
-        this.init()
+        this.Reset()
+    }
+
+    Reset() {
+        this.popupClose.active = false
+        this.outoftime1.active = false
+        this.blockBg.destroyAllChildren()
+        this.scheduleOnce(() => {
+            this.init()
+        })
+
+
         this.status = ENUM_GAME_STATUS.RUNING
         this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
+        this.startFromString('3', this.ShowOutOfTime.bind(this));
+        this.coinLb.string = BlockJamManager.getInstance().coin.toString()
     }
+
 
     init() {
         PhysicsSystem2D.instance.debugDrawFlags = EPhysics2DDrawFlags.Aabb | EPhysics2DDrawFlags.Pair;
@@ -604,9 +640,147 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         this.setBorderSpriteFrame(cornerNode, frameName);
     }
 
-    BtnContinue() {
+    ShowOutoffTime() {
+
+    }
+
+    BtnNextLevel() {
         this.node.destroy()
         BlockJamManager.getInstance().ShowLobby()
+    }
+
+
+
+    @property
+    public displayMode: 'mm:ss' | 's' = 'mm:ss'; // hiển thị mm:ss hoặc chỉ giây (ex: "90s")
+
+    private remainingSeconds: number = 0;
+    private running: boolean = false;
+    private onFinish?: FinishCallback;
+    private finishedCalled: boolean = false;
+
+    // Khởi động từ string (ví dụ "1:30" hoặc "90")
+    public startFromString(timeStr: string, finishCb?: FinishCallback) {
+        const parts = timeStr.split(':').map(p => p.trim());
+        let total = 0;
+        if (parts.length === 2) {
+            const m = parseInt(parts[0], 10) || 0;
+            const s = parseInt(parts[1], 10) || 0;
+            total = m * 60 + s;
+        } else {
+            // nếu chỉ truyền "90" hiểu là giây
+            total = parseInt(timeStr, 10) || 0;
+        }
+        this.startFromSeconds(total, finishCb);
+    }
+
+    // Khởi động từ giây
+    public startFromSeconds(seconds: number, finishCb?: FinishCallback) {
+        this.remainingSeconds = Math.max(0, Math.floor(seconds));
+        this.onFinish = finishCb;
+        this.finishedCalled = false;
+        this.running = true;
+        this.updateLabel(); // cập nhật ngay lập tức
+    }
+
+    public pause() {
+        this.running = false;
+    }
+
+    public resume() {
+        if (this.remainingSeconds > 0) this.running = true;
+    }
+
+    public stop() {
+        this.running = false;
+        this.remainingSeconds = 0;
+        this.updateLabel();
+    }
+
+    public isRunning() {
+        return this.running;
+    }
+
+    // Booster: cộng thêm thời gian
+    public addTime(seconds: number) {
+        this.remainingSeconds = Math.max(0, this.remainingSeconds + seconds);
+        this.updateLabel();
+    }
+
+    // --- internal update ---
+    update(dt: number) {
+        if (!this.running) return;
+        if (this.remainingSeconds <= 0) {
+            this.running = false;
+            if (!this.finishedCalled) {
+                this.finishedCalled = true;
+                if (this.onFinish) this.onFinish();
+            }
+            return;
+        }
+
+        // trừ dt
+        this.remainingSeconds = Math.max(0, this.remainingSeconds - dt);
+
+        this.updateLabel();
+
+        if (this.remainingSeconds <= 0 && !this.finishedCalled) {
+            this.finishedCalled = true;
+            this.running = false;
+            if (this.onFinish) this.onFinish();
+        }
+    }
+
+    // Cập nhật text hiển thị theo chế độ
+    private updateLabel() {
+        if (!this.timeLb) return;
+
+        if (this.displayMode === 's') {
+            // hiển thị dưới dạng "90" (giây còn lại)
+            const sec = Math.ceil(this.remainingSeconds);
+            this.timeLb.string = `${sec}`;
+        } else {
+            // mm:ss
+            const total = Math.ceil(this.remainingSeconds);
+            const m = Math.floor(total / 60);
+            const s = total % 60;
+
+            const mm = this.pad(m, 2);
+            const ss = this.pad(s, 2);
+
+            this.timeLb.string = `${mm}:${ss}`;
+        }
+    }
+
+    private pad(num: number, size: number): string {
+        let s = num.toString();
+        while (s.length < size) {
+            s = "0" + s;
+        }
+        return s;
+    }
+
+    btnContinue() {
+        this.outoftime1.active = false
+        this.addTime(20)
+        this.running = true
+        this.finishedCalled = false
+
+    }
+
+    ShowOutOfTime() {
+        console.log("den day", this)
+        this.outoftime1.active = true
+    }
+
+    BtnCloseOutOfTime() {
+        this.popupClose.active = true
+        this.outoftime1.active = false
+    }
+
+    BtnClosePopupClose() {
+        this.node.destroy()
+        BlockJamManager.getInstance().BackToMenu()
     }
 }
 

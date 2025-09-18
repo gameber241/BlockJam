@@ -88,10 +88,12 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         this.LobbyUI.children[1].active = true
         this.LobbyUI.children[0].active = false
         let gameplay = PoolManager.getInstance().getNode("Gameplay", this.LobbyUI.children[1])
-
-
     }
 
+    BackToMenu() {
+        this.ShowLobby()
+
+    }
 
 
 }
