@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, Color, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -53,6 +53,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     popupClose: Node = null
 
+    @property(Label)
+    coinContinue: Label = null
+
     timeNumber: 0
 
     /** Bước hướng dẫn hiện tại */
@@ -74,6 +77,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     Reset() {
+        this.levelComplete.active = false
         this.popupClose.active = false
         this.outoftime1.active = false
         this.blockBg.destroyAllChildren()
@@ -84,7 +88,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
         this.status = ENUM_GAME_STATUS.RUNING
         this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
-        this.startFromString('3', this.ShowOutOfTime.bind(this));
+        this.startFromString('1:30', this.ShowOutOfTime.bind(this));
         this.coinLb.string = BlockJamManager.getInstance().coin.toString()
     }
 
@@ -572,10 +576,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     checkGame() {
         if (this.blockClearNum >= this.blockTotalNum) {
             this.scheduleOnce(() => {
-                BlockJamManager.getInstance().coin += 25
-                BlockJamManager.getInstance().level += 1
-                BlockJamManager.getInstance().save()
+                BlockJamManager.getInstance().heartSystem.addHeart(1)
+                BlockJamManager.getInstance().updateScore(200)
+                BlockJamManager.getInstance().UpdateLevel()
+                // BlockJamManager.getInstance().save()
                 this.levelComplete.active = true
+                this.pause()
             }, 0.5)
             // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
             this.status = ENUM_GAME_STATUS.UNRUNING
@@ -761,16 +767,22 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     btnContinue() {
-        this.outoftime1.active = false
-        this.addTime(20)
-        this.running = true
-        this.finishedCalled = false
-
+        if (BlockJamManager.getInstance().coin > 1000) {
+            this.outoftime1.active = false
+            this.addTime(20)
+            this.running = true
+            this.finishedCalled = false
+            BlockJamManager.getInstance().updateScore(-1000)
+            this.coinLb.string = BlockJamManager.getInstance().coin.toString()
+        }
     }
 
     ShowOutOfTime() {
-        console.log("den day", this)
         this.outoftime1.active = true
+        if (BlockJamManager.getInstance().coin > 1000) {
+            this.coinContinue.color = Color.WHITE
+        }
+        else this.coinContinue.color = Color.RED
     }
 
     BtnCloseOutOfTime() {

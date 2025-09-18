@@ -29,6 +29,7 @@ export class HeartSystem {
             this.lastUpdate = Date.now();
             this.saveData();
             this.checkInterval(); // bật interval nếu cần
+            director.emit("UpDateHeart")
             return true;
         }
         return false;
@@ -39,6 +40,8 @@ export class HeartSystem {
         this.currentHearts = Math.min(this.maxHearts, this.currentHearts + amount);
         this.saveData();
         this.checkInterval(); // có thể tắt interval nếu full tim
+        director.emit("UpDateHeart")
+
     }
 
     public getTimeToNextHeart(): number {

@@ -22,7 +22,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     hear: number = 0
 
-    level: number = 27
+    level: number = 1
 
     protected async start() {
         this.heartSystem = new HeartSystem()
@@ -42,7 +42,10 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     }
 
-
+    UpdateLevel() {
+        this.level += 1
+        this.save()
+    }
 
     save() {
         sys.localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -57,18 +60,24 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
      * Khôi phục dữ liệu game từ localStorage
      */
     restore() {
-        // const _data = sys.localStorage.getItem(STORAGE_KEY) as any
-        // if (_data) {
-        //     const data = JSON.parse(_data)
-        //     if (data) {
-        //         this.level = typeof data.level == 'number' ? data.level : 1
-        //         this.coin = typeof data.score == 'number' ? data.score : 0
-        //     }
-        // }
-        // else {
-        //     this.level = 1
-        //     this.coin = 0
-        // }
+        const _data = sys.localStorage.getItem(STORAGE_KEY) as any
+        console.log(_data)
+        if (_data) {
+            const data = JSON.parse(_data)
+            if (data) {
+                this.level = typeof data.level == 'number' ? data.level : 1
+                this.coin = typeof data.coin == 'number' ? data.coin : 0
+            }
+        }
+        else {
+            this.level = 1
+            this.coin = 0
+        }
+    }
+
+    updateScore(scorePlush) {
+        this.coin += scorePlush
+        this.save()
     }
 
     ShowMenuLayer() {
@@ -85,9 +94,13 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
 
     PlayGame() {
-        this.LobbyUI.children[1].active = true
-        this.LobbyUI.children[0].active = false
-        let gameplay = PoolManager.getInstance().getNode("Gameplay", this.LobbyUI.children[1])
+        if (this.heartSystem.getHearts() > 0) {
+            this.heartSystem.useHeart()
+            this.LobbyUI.children[1].active = true
+            this.LobbyUI.children[0].active = false
+            let gameplay = PoolManager.getInstance().getNode("Gameplay", this.LobbyUI.children[1])
+        }
+
     }
 
     BackToMenu() {

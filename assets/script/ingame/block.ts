@@ -45,6 +45,9 @@ export class block extends Component {
     @property(BoxCollider2D)
     collider: BoxCollider2D = null
 
+    @property(Node)
+    listIcon: Node = null
+
     sibilingCurrent = -1
     subcolor = false
     freeNode = null
@@ -64,6 +67,7 @@ export class block extends Component {
         this.initListColor(colors)
         this.initIce(freezeNum)
         director.on("MERGE", this.SubIce, this)
+        this.iniIconBlock()
     }
 
     protected onDestroy(): void {
@@ -80,6 +84,22 @@ export class block extends Component {
             this.freeNode = null
         }
     }
+
+    iniIconBlock() {
+        let shape = this.getBlockShape()
+        console.log(shape)
+        for (let i = 0; i < shape.length; i++) {
+            for (let j = 0; j < shape[i].length; j++) {
+                if (shape[i][j] == 0) continue
+                let icon = PoolManager.getInstance().getNode("iconBlock")
+                this.listIcon.addChild(icon)
+                icon.setPosition(new Vec3(j * 100, i * 100))
+                icon.setScale(0.7, 0.7, 0.7)
+                icon.setPosition(icon.position.x + 100 * 0.3 / 2, icon.position.y + 100 * 0.3 / 2)
+            }
+        }
+    }
+
 
     initIce(iceNumber) {
         if (iceNumber == 0) return
@@ -677,7 +697,7 @@ export class block extends Component {
 
 
     hideDir() {
-
+        this.dirNode.active = false
     }
 
     protected update(dt: number): void {
@@ -694,7 +714,8 @@ export class block extends Component {
              */
             const nodeTransform = this.node.getComponent(UITransform)!;
             const dirTransform = this.dirNode.getComponent(UITransform)!;
-
+            const sprite = this.dirNode.getComponent(Sprite)!;
+            sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`PA_Up_Down_1_${this.dir}`);
             if (this.dir === 1) {
                 this.dirNode.active = true
                 this.dirNode.getComponent(UITransform).height = this.node.getComponent(UITransform).height
@@ -755,8 +776,7 @@ export class block extends Component {
             }
 
             // Set sprite frame
-            const sprite = this.dirNode.getComponent(Sprite)!;
-            sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`PA_Up_Down_1_${this.dir}`);
+
         }
     }
 }
