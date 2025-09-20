@@ -581,6 +581,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 BlockJamManager.getInstance().UpdateLevel()
                 // BlockJamManager.getInstance().save()
                 this.levelComplete.active = true
+                BlockJamManager.getInstance().heartSystem.addHeart(1)
                 this.pause()
             }, 0.5)
             // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
@@ -794,6 +795,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         this.node.destroy()
         BlockJamManager.getInstance().BackToMenu()
     }
+
+    BtnReset() {
+        BlockJamManager.getInstance().ShowWinSubHeart(this.Reset.bind(this))
+    }
+
+    
 }
 
 

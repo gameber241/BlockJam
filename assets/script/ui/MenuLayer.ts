@@ -1,6 +1,7 @@
-import { _decorator, Component, director, Label, Node, ScrollView } from 'cc';
+import { _decorator, Component, director, Label, Node, ScrollView, Sprite } from 'cc';
 import { BlockJamManager } from '../Manager/BlockJamManager';
 import { PoolManager } from '../Manager/PoolManager';
+import { ResourcesManager } from '../Manager/ResourcesManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuLayer')
@@ -33,12 +34,24 @@ export class MenuLayer extends Component {
     @property(Label)
     titleLevelInf: Label = null
 
+    @property(Sprite)
+    frame: Sprite = null
+
+    @property(Sprite)
+    avatar: Sprite = null
+
+
     protected onEnable(): void {
         this.UpdateHeartUI()
         this.UpdateCoin()
         director.on("UpDateHeart", this.UpdateHeartUI, this)
         this.rendorLevelPreview()
         this.levelInf.active = false
+    }
+
+    UpdateInf() {
+        this.frame.spriteFrame = ResourcesManager.getInstance().getSprite("frame" + (BlockJamManager.getInstance().frame + 1))
+        this.avatar.spriteFrame = ResourcesManager.getInstance().getSprite("person" + (BlockJamManager.getInstance().avatar + 1))
     }
 
     protected onDisable(): void {
@@ -112,7 +125,20 @@ export class MenuLayer extends Component {
 
 
     BtnPlayGame() {
+        if (BlockJamManager.getInstance().heartSystem.currentHearts == 0) {
+            BlockJamManager.getInstance().ShowREfill()
+            
+            return
+        }
         BlockJamManager.getInstance().PlayGame()
+    }
+
+    btnProfile() {
+        BlockJamManager.getInstance().ShowProfile()
+    }
+
+    btnShowRefillHeart() {
+        BlockJamManager.getInstance().ShowREfill()
     }
 }
 

@@ -3,8 +3,8 @@ import { director, sys } from "cc";
 export class HeartSystem {
     public maxHearts: number = 7;
     private minHearts: number = 0;
-    private regenTime: number = 10; // 10 phút = 600 giây
-    public currentHearts: number = 1
+    private regenTime: number = 600; // 10 phút = 600 giây
+    public currentHearts: number = 0
     private lastUpdate: number = Date.now();
 
     private storageKey: string = "HEART_SYSTEM";
