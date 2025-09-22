@@ -87,7 +87,8 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
     }
 
     ShowProfile() {
-        let profile = PoolManager.getInstance().getNode("Profile", this.LobbyUI[2])
+        let profile = PoolManager.getInstance().getNode("Profile", this.LobbyUI.children[2])
+        console.log(profile)
     }
 
     save() {
@@ -153,6 +154,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     ShowREfill() {
         let popup = PoolManager.getInstance().getNode("PopupRefillHeart", this.LobbyUI.children[2])
+        console.log(popup)
     }
 
     ShowWinSubHeart(callback) {

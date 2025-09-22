@@ -1,11 +1,16 @@
 import { _decorator, Component, Node, Vec3 } from 'cc';
-import { BLOCK_SIZE } from './IngameLogic';
+import { BLOCK_SIZE } from '../ingame/IngameLogic';
 const { ccclass, property } = _decorator;
 
-@ccclass('border')
-export class border extends Component {
-    
-    init(id, pos: Vec3) {
+@ccclass('WallTool')
+export class WallTool extends Component {
+    col: number = 0
+    row: number = 0
+    id
+    init(id, pos: Vec3, col, row) {
+        this.id = id
+        this.col = col
+        this.row = row
         switch (id) {
             case 1:  //tren
                 this.node.setPosition(pos.x, pos.y + BLOCK_SIZE)
