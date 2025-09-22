@@ -68,6 +68,8 @@ export class Tools extends BaseSingleton<Tools> {
     wallSelect = null
     exitSelect = null
 
+    isKey
+
     idWall: number = 1
     idExit: number = 1
     idColorExit: number = 1

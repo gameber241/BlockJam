@@ -88,6 +88,9 @@ export class block extends Component {
             this.key.active = true
             this.initKey()
         }
+        else {
+            this.key.active = false
+        }
     }
 
     initKey() {
