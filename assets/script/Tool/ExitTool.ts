@@ -48,6 +48,17 @@ export class ExitTool extends Component {
         this.node.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${color}_${this.id}`)
 
     }
+
+
+    GenerateData() {
+        return {
+            "typeIndex": this.id,
+            "colorIndex": this.color,
+            "x": this.col,
+            "y": this.row,
+            "size": this.size
+        }
+    }
 }
 
 

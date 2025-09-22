@@ -56,6 +56,9 @@ export class WallTool extends Component {
                 break
         }
     }
+    GenerateData() {
+        return { id: this.id, x: this.col, y: this.row }
+    }
 }
 
 

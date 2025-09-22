@@ -71,6 +71,7 @@ export class Tools extends BaseSingleton<Tools> {
     idWall: number = 1
     idExit: number = 1
     idColorExit: number = 1
+    board = []
     init() {
         this.blockBg.destroyAllChildren()
         this.blocks.destroyAllChildren()
@@ -79,6 +80,12 @@ export class Tools extends BaseSingleton<Tools> {
         let sizeBg = new Size(this.colNumber * 100, this.rowNumber * 100)
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
         this.initBlockBg()
+        for (let i = 0; i < this.rowNumber; i++) {
+            this.board.push([])
+            for (let j = 0; j < this.colNumber; j++) {
+                this.board[i].push(1)
+            }
+        }
     }
 
     initBlockBg() {
@@ -111,15 +118,15 @@ export class Tools extends BaseSingleton<Tools> {
     }
 
     CreateBlock() {
-        this.blocks.setSiblingIndex(99)
-        this.blockBg.children.forEach(e => {
-            e.getComponent(UIOpacity).opacity = 100
-            e.getComponent(BlockBgTool).isClick = false
-            e.getComponent(BlockBgTool).isClickWall = false
-            e.getComponent(BlockBgTool).isExit = false
+        // this.blocks.setSiblingIndex(99)
+        // this.blockBg.children.forEach(e => {
+        //     e.getComponent(UIOpacity).opacity = 100
+        //     e.getComponent(BlockBgTool).isClick = false
+        //     e.getComponent(BlockBgTool).isClickWall = false
+        //     e.getComponent(BlockBgTool).isExit = false
 
 
-        })
+        // })
         const blockTool = PoolManager.getInstance().getNode('blockTool', this.blocks)
         const x = this.colSelect * (BLOCK_SIZE + BLOCK_GAP)
         const y = this.rowSelect * (BLOCK_SIZE + BLOCK_GAP)
@@ -156,14 +163,14 @@ export class Tools extends BaseSingleton<Tools> {
     }
 
     CreateWall() {
-        this.blocks.setSiblingIndex(99)
-        this.blockBg.children.forEach(e => {
-            e.getComponent(UIOpacity).opacity = 100
-            e.getComponent(BlockBgTool).isClick = false
-            e.getComponent(BlockBgTool).isClickWall = false
-            e.getComponent(BlockBgTool).isExit = false
+        // this.blocks.setSiblingIndex(99)
+        // this.blockBg.children.forEach(e => {
+        //     e.getComponent(UIOpacity).opacity = 100
+        //     e.getComponent(BlockBgTool).isClick = false
+        //     e.getComponent(BlockBgTool).isClickWall = false
+        //     e.getComponent(BlockBgTool).isExit = false
 
-        })
+        // })
         const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
         const borderNode = PoolManager.getInstance().getNode('wallTool', this.blocks)
         this.setBorderSpriteFrame(borderNode, "wall_" + this.idWall)
@@ -191,14 +198,14 @@ export class Tools extends BaseSingleton<Tools> {
     }
 
     CreateExit() {
-        this.blocks.setSiblingIndex(99)
-        this.blockBg.children.forEach(e => {
-            e.getComponent(UIOpacity).opacity = 100
-            e.getComponent(BlockBgTool).isClick = false
-            e.getComponent(BlockBgTool).isClickWall = false
-            e.getComponent(BlockBgTool).isExit = false
+        // this.blocks.setSiblingIndex(99)
+        // this.blockBg.children.forEach(e => {
+        //     e.getComponent(UIOpacity).opacity = 100
+        //     e.getComponent(BlockBgTool).isClick = false
+        //     e.getComponent(BlockBgTool).isClickWall = false
+        //     e.getComponent(BlockBgTool).isExit = false
 
-        })
+        // })
         const exit = PoolManager.getInstance().getNode('exitTool', this.blocks)
         const x = this.colSelect * (BLOCK_SIZE + BLOCK_GAP)
         const y = this.rowSelect * (BLOCK_SIZE + BLOCK_GAP)
@@ -227,6 +234,62 @@ export class Tools extends BaseSingleton<Tools> {
             this.exitSelect.destroy()
             this.exitSelect = null
         }
+    }
+
+
+
+    BtnSave() {
+        let data = {
+            "rowNum": this.rowNumber,
+            "colNum": this.colNumber,
+            "board": this.board,
+            "border": [],
+            "blocks": [],  //1: nau, 2: xanh duong dam, 3: xanh la dam, 4 xanh duong nhat, 5 xanh la nhat, 6 cam , 7: hong, 8: tim, 9: do , 10: vang
+            "exits": []
+        }
+
+
+        this.blocks.children.forEach(e => {
+            if (e.getComponent(BlockTool)) {
+                data.blocks.push(e.getComponent(BlockTool).GenerateData())
+            }
+            if (e.getComponent(WallTool)) {
+                data.border.push(e.getComponent(WallTool).GenerateData())
+            }
+            if (e.getComponent(ExitTool)) {
+                data.exits.push(e.getComponent(ExitTool).GenerateData())
+            }
+
+        })
+
+
+        console.log(data)
+    }
+
+    SuccessChoose() {
+        this.blocks.setSiblingIndex(99)
+        this.blockBg.children.forEach(e => {
+            e.getComponent(UIOpacity).opacity = 100
+            e.getComponent(BlockBgTool).isClick = false
+            e.getComponent(BlockBgTool).isClickWall = false
+            e.getComponent(BlockBgTool).isExit = false
+            this.isChooseEmpltyWall = false
+        })
+    }
+
+    isChooseEmpltyWall = false
+    BtnEmptyWall() {
+        this.isChooseEmpltyWall = true
+        this.blockBg.setSiblingIndex(99)
+        this.blockBg.children.forEach(e => {
+            e.getComponent(UIOpacity).opacity = 200
+            e.getComponent(BlockBgTool).isClickWall = false
+            e.getComponent(BlockBgTool).isClick = false
+            e.getComponent(BlockBgTool).isExit = false
+
+
+
+        })
     }
 
 }

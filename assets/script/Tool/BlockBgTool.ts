@@ -1,5 +1,6 @@
-import { _decorator, Component, Input, Node } from 'cc';
+import { _decorator, Color, Component, Input, Node, Sprite, UIOpacity } from 'cc';
 import { Tools } from './Tools';
+import { COLORblOCK } from './SelectColorBlock';
 const { ccclass, property } = _decorator;
 
 @ccclass('BlockBgTool')
@@ -19,26 +20,40 @@ export class BlockBgTool extends Component {
         this.row = row
     }
     onClick() {
-        if (this.isClick == true) {
-            Tools.getInstance().colSelect = this.col
-            Tools.getInstance().rowSelect = this.row
-            Tools.getInstance().CreateBlock()
-        }
-        else {
-            if (this.isClickWall == true) {
-                Tools.getInstance().colSelect = this.col
-                Tools.getInstance().rowSelect = this.row
-                Tools.getInstance().CreateWall()
+        if (Tools.getInstance().isChooseEmpltyWall == true) {
+            if (Tools.getInstance().board[this.row][this.col] == 0) {
+                Tools.getInstance().board[this.row][this.col] = 1
+                this.node.getComponent(Sprite).color = Color.WHITE
             }
             else {
-                if (this.isExit == true) {
-                    Tools.getInstance().colSelect = this.col
-                    Tools.getInstance().rowSelect = this.row
-                    Tools.getInstance().CreateExit()
-                }
-
+                Tools.getInstance().board[this.row][this.col] = 0
+                this.node.getComponent(Sprite).color = Color.BLUE
             }
         }
+        else {
+            if (this.isClick == true) {
+                Tools.getInstance().colSelect = this.col
+                Tools.getInstance().rowSelect = this.row
+                Tools.getInstance().CreateBlock()
+            }
+            else {
+                if (this.isClickWall == true) {
+                    Tools.getInstance().colSelect = this.col
+                    Tools.getInstance().rowSelect = this.row
+                    Tools.getInstance().CreateWall()
+                }
+                else {
+                    if (this.isExit == true) {
+                        Tools.getInstance().colSelect = this.col
+                        Tools.getInstance().rowSelect = this.row
+                        Tools.getInstance().CreateExit()
+                    }
+
+                }
+            }
+        }
+
+
 
 
     }

@@ -30,6 +30,8 @@ export class BlockTool extends Component {
     director = 0
     idColorSub
     ice = 0
+
+
     init(col, row, idBlock, idColor, director, idColorSub, ice) {
         console.log(col, row, idBlock, idColor, director)
         this.director = director
@@ -246,6 +248,18 @@ export class BlockTool extends Component {
             case 10:
                 this.freezeLb.node.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE * 2) / 2, this.dirNode.position.y);
                 break;
+        }
+    }
+
+    GenerateData() {
+        return {
+            "typeIndex": this.idBlock,
+            "colorIndex": this.idColor,
+            "iceNumber": 0,
+            "colorList": this.idColorSub == 0 ? [] : [this.idColorSub],
+            "dir": this.director,
+            "x": this.col,
+            "y": this.row,
         }
     }
 }
