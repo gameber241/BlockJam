@@ -48,11 +48,20 @@ export class block extends Component {
     @property(Node)
     listIcon: Node = null
 
+    @property(Sprite)
+    lock: Sprite = null
+
+    @property(Node)
+    key: Node = null
+
     sibilingCurrent = -1
     subcolor = false
     freeNode = null
-
-    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors) {
+    islock = false
+    isWire = false
+    isStar = false
+    isKey = false
+    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, isLock, isKey, isStar, isWire) {
         this.index = index
         this.typeIndex = typeIndex
         this.colorIndex = colorIndex
@@ -68,6 +77,50 @@ export class block extends Component {
         this.initIce(freezeNum)
         director.on("MERGE", this.SubIce, this)
         this.iniIconBlock()
+        this.islock = isLock
+        this.isKey = isKey
+        this.isStar = isStar
+        this.isWire = isWire
+        if (isLock == true) {
+            this.initLock()
+        }
+        if (isKey == true) {
+            this.key.active = true
+            this.initKey()
+        }
+    }
+
+    initKey() {
+        let nodeTransform = this.node.getComponent(UITransform)
+        let dirTransform = this.key.getComponent(UITransform)
+        switch (this.typeIndex) {
+            case 1: case 2: case 3: case 4: case 5:
+            case 18: case 19: case 20: case 21: case 23: case 22:
+                this.key.setPosition((nodeTransform.width - dirTransform.width) / 2, (nodeTransform.height - dirTransform.height) / 2);
+                break;
+
+            case 7: case 9: case 13: case 14: case 17:
+                this.key.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE) / 2, this.key.position.y);
+                break;
+
+            case 6: case 8: case 12: case 15: case 16:
+                this.key.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE) / 2, this.key.position.y);
+                break;
+
+            case 11:
+                this.key.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE * 2) / 2, this.key.position.y);
+                break;
+
+            case 10:
+                this.key.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE * 2) / 2, this.dirNode.position.y);
+                break;
+        }
+    }
+
+
+    initLock() {
+        console.log("lock_" + this.colorIndex + "_" + this.typeIndex)
+        this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.typeIndex)
     }
 
     protected onDestroy(): void {
@@ -92,6 +145,8 @@ export class block extends Component {
             for (let j = 0; j < shape[i].length; j++) {
                 if (shape[i][j] == 0) continue
                 let icon = PoolManager.getInstance().getNode("iconBlock")
+                icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("fish_" + this.colorIndex)
+                console.log("fish_" + this.typeIndex)
                 this.listIcon.addChild(icon)
                 icon.setPosition(new Vec3(j * 100, i * 100))
                 icon.setScale(0.7, 0.7, 0.7)
@@ -263,6 +318,8 @@ export class block extends Component {
 
 
     onTouchStart(event: EventTouch) {
+        if (this.islock == true) return
+
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
@@ -329,6 +386,7 @@ export class block extends Component {
      */
     private onTouchMove(event: EventTouch) {
         if (this.freeNode != null) return
+        if (this.islock == true) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
@@ -378,6 +436,8 @@ export class block extends Component {
      * Xử lý sự kiện chạm kết thúc
      */
     private onTouchEnd(event: EventTouch) {
+        if (this.islock == true) return
+
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
@@ -781,7 +841,7 @@ export class block extends Component {
     }
 
 
-        
+
 }
 
 

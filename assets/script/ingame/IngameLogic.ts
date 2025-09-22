@@ -127,7 +127,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             } else {
                 dir = data.dir
             }
-            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir, data.colorList)
+            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir, data.colorList, data.isLock, data.isKey, data.isStar, data.isWire)
         }
 
 
@@ -488,6 +488,15 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                         break;
                 }
                 console.log(block.icon)
+                if (block.subcolor == false) {
+                    tween(block.listIcon)
+                        .by(0.2, { position: new Vec3(moveX2, moveY2) })
+                        .call(() => {
+                            
+                        })
+                        .start();
+
+                }
                 tween(block.icon)
                     .by(0.2, { position: new Vec3(moveX2, moveY2) })
                     .call(() => {
@@ -800,7 +809,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         BlockJamManager.getInstance().ShowWinSubHeart(this.Reset.bind(this))
     }
 
-    
+
 }
 
 
