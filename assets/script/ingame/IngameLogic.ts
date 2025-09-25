@@ -83,13 +83,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         this.blockBg.destroyAllChildren()
         this.scheduleOnce(() => {
             this.init()
-        })
+            this.status = ENUM_GAME_STATUS.RUNING
+            this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
+            this.startFromString('1:30', this.ShowOutOfTime.bind(this));
+            this.coinLb.string = BlockJamManager.getInstance().coin.toString()
+        }, 0.1)
 
 
-        this.status = ENUM_GAME_STATUS.RUNING
-        this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
-        this.startFromString('1:30', this.ShowOutOfTime.bind(this));
-        this.coinLb.string = BlockJamManager.getInstance().coin.toString()
     }
 
 
@@ -163,7 +163,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             const blockComp = blockNode.getComponent(exit)
             // Lấy số từ chuỗi
 
-            blockComp.init(i, data.typeIndex, data.colorIndex, data.size, data.x, data.y)
+            blockComp.init(i, data.typeIndex, data.colorIndex, data.size, data.x, data.y, data.isStar)
         }
     }
 
@@ -493,7 +493,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     tween(block.listIcon)
                         .by(0.2, { position: new Vec3(moveX2, moveY2) })
                         .call(() => {
-                            
+
                         })
                         .start();
 

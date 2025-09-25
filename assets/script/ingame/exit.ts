@@ -6,6 +6,8 @@ const { ccclass, property } = _decorator;
 
 @ccclass('exit')
 export class exit extends Component {
+    @property(Node)
+    star: Node = null
 
     index: number = -1
     typeIndex: number = -1
@@ -30,8 +32,9 @@ export class exit extends Component {
         this.tranform = this.node.getComponent(UITransform)
 
     }
+    isStar: boolean = false
 
-    init(index: number, typeIndex: number, colorIndex: number, size: number, xIndex: number, yIndex: number) {
+    init(index: number, typeIndex: number, colorIndex: number, size: number, xIndex: number, yIndex: number, isStar) {
         this.index = index
         this.typeIndex = typeIndex
         this.colorIndex = colorIndex
@@ -39,6 +42,8 @@ export class exit extends Component {
         this.yIndex = yIndex
         this.size = size
         this.initSprite()
+        this.isStar = isStar
+        this.star.active = isStar
     }
 
     initSprite() {
@@ -87,6 +92,9 @@ export class exit extends Component {
         collider.offset = new Vec2(sizeCollider.width / 2, sizeCollider.height / 2)
         this.sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${this.colorIndex}_${this.typeIndex}`)
         collider.on(Contact2DType.STAY_CONTACT, this.onCollisionStay, this);
+        this.star.getComponent(UITransform).setContentSize(sizeNode)
+        this.star.parent.getComponent(UITransform).setContentSize(sizeNode)
+
     }
 
     private lastCheckTime: number = 0;
@@ -135,6 +143,11 @@ export class exit extends Component {
         if (this.isBlockExited(block)) {
             return false;
         }
+
+        if (block.isStar !== this.isStar) {
+            return false
+        }
+
 
         return true;
     }

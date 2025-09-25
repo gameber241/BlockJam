@@ -5,6 +5,7 @@ import { MenuLayer } from '../ui/MenuLayer';
 import { PoolManager } from './PoolManager';
 import { HeartSystem } from '../ui/HeartSystem';
 import { WinSubHeart } from '../ingame/WinSubHeart';
+import { PopupRefillYoutLife } from './PopupRefillYoutLife';
 const { ccclass, property } = _decorator;
 const STORAGE_KEY = 'CC2_BLOCK_JAM'
 @ccclass('BlockJamManager')
@@ -152,9 +153,10 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     }
 
-    ShowREfill() {
+    ShowREfill(callbacnk) {
         let popup = PoolManager.getInstance().getNode("PopupRefillHeart", this.LobbyUI.children[2])
-        console.log(popup)
+        popup.getComponent(PopupRefillYoutLife).init(callbacnk)
+        console.log(callbacnk)
     }
 
     ShowWinSubHeart(callback) {

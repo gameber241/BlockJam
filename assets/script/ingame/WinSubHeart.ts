@@ -19,7 +19,11 @@ export class WinSubHeart extends Component {
 
     btnRetry() {
         if (BlockJamManager.getInstance().heartSystem.currentHearts == 0) {
-            BlockJamManager.getInstance().ShowREfill()
+            BlockJamManager.getInstance().ShowREfill(() => {
+                this.callback()
+                this.BtnClose()
+                BlockJamManager.getInstance().heartSystem.useHeart()
+            })
             return
         }
         this.callback()

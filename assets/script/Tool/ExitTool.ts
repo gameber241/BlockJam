@@ -5,6 +5,8 @@ const { ccclass, property } = _decorator;
 
 @ccclass('ExitTool')
 export class ExitTool extends Component {
+    @property(Node)
+    star: Node = null
     id; col; row; size; color; isStar
     init(id, col, row, size, color, isStar) {
         this.isStar = isStar
@@ -16,6 +18,13 @@ export class ExitTool extends Component {
         let pos = new Vec3()
         this.color = color
 
+        if (isStar == false) {
+            this.star.active = false
+
+        }
+        else {
+            this.star.active = true
+        }
         switch (id) {
             case 0: // phai
                 sizeNode = new Size(BLOCK_SIZE / 2, BLOCK_SIZE * this.size)
@@ -39,6 +48,8 @@ export class ExitTool extends Component {
         }
         this.node.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${color}_${this.id}`)
         this.node.getComponent(UITransform).setContentSize(sizeNode)
+        this.star.getComponent(UITransform).setContentSize(sizeNode)
+        this.star.parent.getComponent(UITransform).setContentSize(sizeNode)
         this.node.setPosition(pos)
     }
 

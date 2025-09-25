@@ -22,6 +22,9 @@ export class BlockTool extends Component {
     @property(Label)
     freezeLb: Label
 
+    @property(Node)
+    star: Node
+
 
     col: number = 0
     row: number = 0
@@ -53,7 +56,19 @@ export class BlockTool extends Component {
         this.numberLock = numberLock
         this.corlorWire = colorWire
         this.isStar = isStar
+        if (isStar == true) {
+            this.initStar()
+        }
+        else {
+            this.star.active = false
+        }
 
+
+    }
+
+    initStar() {
+        this.star.active = true
+        this.star.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_star_3_${this.idBlock}`)
     }
     initListColor(colors: number[]) {
         if (colors.length == 0) return
@@ -264,7 +279,7 @@ export class BlockTool extends Component {
         return {
             "typeIndex": this.idBlock,
             "colorIndex": this.idColor,
-            "iceNumber": 0,
+            "iceNumber": this.ice,
             "colorList": this.idColorSub == 0 ? [] : [this.idColorSub],
             "dir": this.director,
             "x": this.col,
@@ -272,7 +287,8 @@ export class BlockTool extends Component {
             "isKey": this.isKey,
             "isDrag": this.isDrag,
             "lockNumber": this.numberLock,
-            "colorWire": this.corlorWire
+            "colorWire": this.corlorWire,
+            "isStar": this.isStar
         }
     }
 }

@@ -126,8 +126,8 @@ export class MenuLayer extends Component {
 
     BtnPlayGame() {
         if (BlockJamManager.getInstance().heartSystem.currentHearts == 0) {
-            BlockJamManager.getInstance().ShowREfill()
-            
+            BlockJamManager.getInstance().ShowREfill(BlockJamManager.getInstance().PlayGame.bind(this))
+
             return
         }
         BlockJamManager.getInstance().PlayGame()
@@ -138,7 +138,7 @@ export class MenuLayer extends Component {
     }
 
     btnShowRefillHeart() {
-        BlockJamManager.getInstance().ShowREfill()
+        BlockJamManager.getInstance().ShowREfill(BlockJamManager.getInstance().PlayGame.bind(this))
     }
 }
 

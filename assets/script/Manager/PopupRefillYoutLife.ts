@@ -19,6 +19,11 @@ export class PopupRefillYoutLife extends Component {
         director.off("UpDateHeart", this.UpdateHeartUI, this)
     }
 
+    callback = null
+    init(callback) {
+        this.callback = callback
+    }
+
     UpdateHeartUI() {
         if (BlockJamManager.getInstance().heartSystem.currentHearts >= BlockJamManager.getInstance().heartSystem.maxHearts) {
             this.time.string = "FULL"
@@ -34,6 +39,10 @@ export class PopupRefillYoutLife extends Component {
             if (BlockJamManager.getInstance().coin > 900) {
                 BlockJamManager.getInstance().updateScore(-900)
                 BlockJamManager.getInstance().heartSystem.addHeart(1)
+                if (this.callback) {
+                    this.callback()
+                    this.callback = null
+                }
                 this.node.destroy()
             }
         }

@@ -54,6 +54,9 @@ export class block extends Component {
     @property(Node)
     key: Node = null
 
+    @property(Node)
+    star: Node = null
+
     sibilingCurrent = -1
     subcolor = false
     freeNode = null
@@ -76,10 +79,11 @@ export class block extends Component {
         this.initListColor(colors)
         this.initIce(freezeNum)
         director.on("MERGE", this.SubIce, this)
-        this.iniIconBlock()
+        if (freezeNum == 0)
+            this.iniIconBlock()
 
         this.isKey = isKey
-        this.isStar = isStar
+        this.isStar = (isStar == null || isStar == undefined) ? false : isStar
         this.isWire = isWire
         if (lockNumber > 0) {
             this.initLock()
@@ -94,8 +98,20 @@ export class block extends Component {
         else {
             this.key.active = false
         }
+
+        if (isStar == true) {
+            this.initStar()
+        }
+        else {
+            this.star.active = false
+        }
     }
 
+
+    initStar() {
+        this.star.active = true
+        this.star.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_star_3_${this.typeIndex}`)
+    }
     initKey() {
         let nodeTransform = this.node.getComponent(UITransform)
         let dirTransform = this.key.getComponent(UITransform)
