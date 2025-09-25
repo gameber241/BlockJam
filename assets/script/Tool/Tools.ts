@@ -1,4 +1,4 @@
-import { _decorator, Component, EditBox, Input, Node, Size, Sprite, UIOpacity, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, Button, Component, EditBox, Input, Node, Size, Sprite, UIOpacity, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
 import { BLOCK_GAP, BLOCK_SIZE } from '../ingame/IngameLogic';
@@ -44,6 +44,9 @@ export class Tools extends BaseSingleton<Tools> {
     @property(EditBox)
     ice: EditBox = null
 
+    @property(EditBox)
+    lockNumber: EditBox = null
+
     @property(SelectIdBlock)
     selectIdBlock: SelectIdBlock = null
 
@@ -63,18 +66,20 @@ export class Tools extends BaseSingleton<Tools> {
     rowSelect: number = 0
     idDirector: number = 0
     idColorSub: number = 1
-
+    isStar = false
     blocSelect = null
     wallSelect = null
     exitSelect = null
 
-    isKey
-
     idWall: number = 1
     idExit: number = 1
     idColorExit: number = 1
+    isDrag: boolean = false
+    isKey: boolean = false
+    isStarExit: boolean = false
     board = []
     init() {
+        this.board = []
         this.blockBg.destroyAllChildren()
         this.blocks.destroyAllChildren()
         this.rowNumber = Number(this.row.string)
@@ -88,6 +93,7 @@ export class Tools extends BaseSingleton<Tools> {
                 this.board[i].push(1)
             }
         }
+        console.log(this.board)
     }
 
     initBlockBg() {
@@ -134,7 +140,7 @@ export class Tools extends BaseSingleton<Tools> {
         const y = this.rowSelect * (BLOCK_SIZE + BLOCK_GAP)
         const pos = this.getRealPos(v2(x, y))
         blockTool.setPosition(pos)
-        blockTool.getComponent(BlockTool).init(this.colNumber, this.rowNumber, this.idBlock, this.idColor, this.idDirector, this.idColorSub, Number(this.ice.string))
+        blockTool.getComponent(BlockTool).init(this.colSelect, this.rowSelect, this.idBlock, this.idColor, this.idDirector, this.idColorSub, Number(this.ice.string), this.isKey, this.isDrag, Number(this.lockNumber.string), [], this.isStar)
     }
 
     getRealPos(pos: Vec2) {
@@ -215,7 +221,7 @@ export class Tools extends BaseSingleton<Tools> {
         exit.setPosition(pos)
 
         // exit.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${this.idColorExit}_${this.idExit}`)
-        exit.getComponent(ExitTool).init(this.idExit, this.colSelect, this.rowSelect, Number(this.sizeExit.string), this.idColorExit)
+        exit.getComponent(ExitTool).init(this.idExit, this.colSelect, this.rowSelect, Number(this.sizeExit.string), this.idColorExit, this.isStarExit)
         exit.on(Input.EventType.TOUCH_END, () => {
             this.exitSelect = exit
         }, this)
@@ -264,7 +270,6 @@ export class Tools extends BaseSingleton<Tools> {
 
         })
 
-
         console.log(data)
     }
 
@@ -294,6 +299,51 @@ export class Tools extends BaseSingleton<Tools> {
         })
     }
 
+
+    BtnIsKey(target, args) {
+        console.log(target)
+        if (this.isKey == false) {
+            this.isKey = true
+            target.target.getComponent(UIOpacity).opacity = 100
+        }
+        else {
+            this.isKey = false
+            target.target.getComponent(UIOpacity).opacity = 255
+        }
+    }
+
+    btnIsDrag(target, args) {
+        if (this.isDrag == false) {
+            this.isDrag = true
+            target.target.getComponent(UIOpacity).opacity = 100
+        }
+        else {
+            this.isDrag = false
+            target.target.getComponent(UIOpacity).opacity = 255
+        }
+    }
+
+    BtnIsStarBlock(target, args) {
+        if (this.isStar == false) {
+            this.isStar = true
+            target.target.getComponent(UIOpacity).opacity = 100
+        }
+        else {
+            this.isStar = false
+            target.target.getComponent(UIOpacity).opacity = 255
+        }
+    }
+
+    BtnIsStarExit(target, args) {
+        if (this.isStarExit == false) {
+            this.isStarExit = true
+            target.target.getComponent(UIOpacity).opacity = 100
+        }
+        else {
+            this.isStarExit = false
+            target.target.getComponent(UIOpacity).opacity = 255
+        }
+    }
 }
 
 

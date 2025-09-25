@@ -28,11 +28,14 @@ export class BlockTool extends Component {
     idBlock = 0
     idColor = 0
     director = 0
-    idColorSub
+    idColorSub = 0
     ice = 0
-
-
-    init(col, row, idBlock, idColor, director, idColorSub, ice) {
+    isKey = false
+    isDrag = false
+    numberLock = 0
+    corlorWire = []
+    isStar = false
+    init(col, row, idBlock, idColor, director, idColorSub, ice, isKey, isDrag, numberLock, colorWire, isStar) {
         console.log(col, row, idBlock, idColor, director)
         this.director = director
         this.idBlock = idBlock
@@ -45,6 +48,12 @@ export class BlockTool extends Component {
         this.initListColor(idColorSub == 0 ? [] : [idColorSub])
         this.ice = ice
         this.initIce(this.ice)
+        this.isKey = isKey
+        this.isDrag = isDrag
+        this.numberLock = numberLock
+        this.corlorWire = colorWire
+        this.isStar = isStar
+
     }
     initListColor(colors: number[]) {
         if (colors.length == 0) return
@@ -260,6 +269,10 @@ export class BlockTool extends Component {
             "dir": this.director,
             "x": this.col,
             "y": this.row,
+            "isKey": this.isKey,
+            "isDrag": this.isDrag,
+            "lockNumber": this.numberLock,
+            "colorWire": this.corlorWire
         }
     }
 }

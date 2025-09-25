@@ -54,7 +54,6 @@ export class SelectColorBlock extends Component {
                 } else {
                     this.node.children.forEach(e => e.active = false);
                     this.idSelect = value;
-                    console.log("Selected:", this.idSelect);
                     item.active = true;
                     Tools.getInstance().idColor = this.idSelect
                 }

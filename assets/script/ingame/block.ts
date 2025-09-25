@@ -61,7 +61,7 @@ export class block extends Component {
     isWire = false
     isStar = false
     isKey = false
-    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, isLock, isKey, isStar, isWire) {
+    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire) {
         this.index = index
         this.typeIndex = typeIndex
         this.colorIndex = colorIndex
@@ -77,12 +77,15 @@ export class block extends Component {
         this.initIce(freezeNum)
         director.on("MERGE", this.SubIce, this)
         this.iniIconBlock()
-        this.islock = isLock
+
         this.isKey = isKey
         this.isStar = isStar
         this.isWire = isWire
-        if (isLock == true) {
+        if (lockNumber > 0) {
             this.initLock()
+        }
+        else {
+            this.lock.node.active = false
         }
         if (isKey == true) {
             this.key.active = true

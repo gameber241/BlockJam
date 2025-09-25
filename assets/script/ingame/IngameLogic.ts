@@ -127,18 +127,20 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             } else {
                 dir = data.dir
             }
-            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir, data.colorList, data.isLock, data.isKey, data.isStar, data.isWire)
+            blockComp.init(i, data.typeIndex, data.colorIndex, data.x, data.y, data.iceNumber, dir, data.colorList, data.lockNumber, data.isKey, data.isStar, data.isWire)
         }
 
 
     }
 
     initBlockBg(boards) {
-        let board = [...boards].reverse()
+        // console.log(boards)
+        // let board = [...boards].reverse()
+        // console.log(board)
         const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
         for (let i = 0; i < this.rowNum; i++) {
             for (let j = 0; j < this.colNum; j++) {
-                if (board[i][j] == 0) continue
+                if (boards[i][j] == 0) continue
                 const blockBgNode = PoolManager.getInstance().getNode('blockBg', this.blockBg)
                 blockBgNode.getComponent(UITransform).width = blockBgNode.getComponent(UITransform).height = BLOCK_SIZE
                 // blockBgNode.getChildByName('test_label').getComponent(Label).string = `x${j}:y${i}`
@@ -279,7 +281,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
     initBlockLimit() {
         let levelConfig = LeveConfig[BlockJamManager.getInstance().level - 1]
-        let board = [...levelConfig.board].reverse()
         this.blockLimitData = []
         for (let i = 0; i < this.rowNum; i++) {
             this.blockLimitData[i] = []
@@ -288,7 +289,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             for (let j = 0; j < this.colNum; j++) {
 
                 this.blockLimitData[i][j] = 0
-                if (board[i][j] == 0) {
+                if (levelConfig.board[i][j] == 0) {
                     this.blockLimitData[i][j] = 1
                 }
             }

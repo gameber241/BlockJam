@@ -18,7 +18,6 @@ export class SelectIdBlock extends Component {
         for (let i = 0; i < 23; i++) {
             let item = instantiate((this.itemIdBlock))
             this.node.addChild(item)
-            console.log(ResourcesManager.getInstance().getSprite(`block_1_${i + 1}`), `block_1_${i + 1}`)
             item.children[0].getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_1_${i + 1}`)
             item.on(Input.EventType.TOUCH_END, () => {
 
@@ -33,7 +32,6 @@ export class SelectIdBlock extends Component {
                         e.active = false
                     })
                     this.idSelect = i + 1
-                    console.log(this.idSelect)
                     item.active = true
                     Tools.getInstance().idBlock = this.idSelect
                 }

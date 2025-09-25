@@ -5,17 +5,17 @@ const { ccclass, property } = _decorator;
 
 @ccclass('ExitTool')
 export class ExitTool extends Component {
-    id; col; row; size; color
-    init(id, col, row, size, color) {
+    id; col; row; size; color; isStar
+    init(id, col, row, size, color, isStar) {
+        this.isStar = isStar
         this.size = size
         this.id = id
         this.col = col
         this.row = row
         let sizeNode = new Size()
         let pos = new Vec3()
-        let sizeColliderNode = new Size()
-        let posCollider = new Vec3()
-        let sizeCollider = new Size()
+        this.color = color
+
         switch (id) {
             case 0: // phai
                 sizeNode = new Size(BLOCK_SIZE / 2, BLOCK_SIZE * this.size)
@@ -35,18 +35,11 @@ export class ExitTool extends Component {
             case 2: // down
                 sizeNode = new Size(BLOCK_SIZE * this.size, BLOCK_SIZE / 2)
                 pos = v3(this.node.position.x, this.node.position.y - BLOCK_SIZE / 2)
-                sizeColliderNode = new Size(sizeNode.width - 20, BLOCK_SIZE)
-                posCollider = v3(10, 0)
-                sizeCollider = new Size(sizeNode.width - 20, BLOCK_SIZE)
                 break;
         }
-
+        this.node.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${color}_${this.id}`)
         this.node.getComponent(UITransform).setContentSize(sizeNode)
         this.node.setPosition(pos)
-
-
-        this.node.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${color}_${this.id}`)
-
     }
 
 
@@ -56,7 +49,8 @@ export class ExitTool extends Component {
             "colorIndex": this.color,
             "x": this.col,
             "y": this.row,
-            "size": this.size
+            "size": this.size,
+            "isStar": this.isStar
         }
     }
 }
