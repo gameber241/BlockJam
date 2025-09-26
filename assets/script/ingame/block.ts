@@ -57,13 +57,16 @@ export class block extends Component {
     @property(Node)
     star: Node = null
 
+    @property(Node)
+    lockLb: Node = null
+
     sibilingCurrent = -1
     subcolor = false
     freeNode = null
-    islock = false
     isWire = false
     isStar = false
     isKey = false
+    lockNumber
     init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire) {
         this.index = index
         this.typeIndex = typeIndex
@@ -143,6 +146,79 @@ export class block extends Component {
     initLock() {
         console.log("lock_" + this.colorIndex + "_" + this.typeIndex)
         this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.typeIndex)
+        this.lockLb.getComponent(Label).string = this.lockNumber
+        switch (this.typeIndex) {
+            case 1:
+                this.lockLb.setPosition(new Vec3(48, 51, 0))
+                break
+            case 2:
+                this.lockLb.setPosition(new Vec3(152, 46, 0))
+                break
+            case 3:
+                this.lockLb.setPosition(new Vec3(48, 152, 0))
+                break
+            case 4:
+                this.lockLb.setPosition(new Vec3(99, 46, 0))
+                break
+            case 5:
+                this.lockLb.setPosition(new Vec3(48, 103, 0))
+                break
+            case 6:
+                this.lockLb.setPosition(new Vec3(138, 124, 0))
+                break
+            case 7:
+                this.lockLb.setPosition(new Vec3(71, 101, 0))
+                break
+            case 8:
+                this.lockLb.setPosition(new Vec3(101, 49, 0))
+                break
+            case 9:
+                this.lockLb.setPosition(new Vec3(100, 55, 0))
+                break
+            case 10:
+                this.lockLb.setPosition(new Vec3(252, 110, 0))
+                break
+            case 11:
+                this.lockLb.setPosition(new Vec3(84, 138, 0))
+                break
+            case 12:
+                this.lockLb.setPosition(new Vec3(149, 158, 0))
+                break
+            case 13:
+                this.lockLb.setPosition(new Vec3(100, 148, 0))
+                break
+            case 14:
+                this.lockLb.setPosition(new Vec3(80, 164, 0))
+                break
+            case 15:
+                this.lockLb.setPosition(new Vec3(15, 29, 0))
+                break
+            case 16:
+                this.lockLb.setPosition(new Vec3(146, 160, 0))
+                break
+            case 17:
+                this.lockLb.setPosition(new Vec3(51, 145, 0))
+                break
+            case 18:
+                this.lockLb.setPosition(new Vec3(143, 146, 0))
+                break
+            case 19:
+                this.lockLb.setPosition(new Vec3(163, 44, 0))
+                break
+            case 20:
+                this.lockLb.setPosition(new Vec3(150, 150, 0))
+                break
+            case 21:
+                this.lockLb.setPosition(new Vec3(96, 100, 0))
+                break
+            case 22:
+                this.lockLb.setPosition(new Vec3(50, 200, 0))
+                break
+            case 23:
+                this.lockLb.setPosition(new Vec3(203, 48, 0))
+                break
+
+        }
     }
 
     protected onDestroy(): void {
@@ -340,7 +416,6 @@ export class block extends Component {
 
 
     onTouchStart(event: EventTouch) {
-        if (this.islock == true) return
 
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
@@ -408,7 +483,6 @@ export class block extends Component {
      */
     private onTouchMove(event: EventTouch) {
         if (this.freeNode != null) return
-        if (this.islock == true) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
@@ -458,7 +532,6 @@ export class block extends Component {
      * Xử lý sự kiện chạm kết thúc
      */
     private onTouchEnd(event: EventTouch) {
-        if (this.islock == true) return
 
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
