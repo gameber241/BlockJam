@@ -66,7 +66,7 @@ export class block extends Component {
     isWire = false
     isStar = false
     isKey = false
-    lockNumber
+    lockNumber = 0
     init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire) {
         this.index = index
         this.typeIndex = typeIndex
@@ -82,12 +82,15 @@ export class block extends Component {
         this.initListColor(colors)
         this.initIce(freezeNum)
         director.on("MERGE", this.SubIce, this)
+        director.on("KEY", this.SubKey, this)
+
         if (freezeNum == 0)
             this.iniIconBlock()
 
         this.isKey = isKey
         this.isStar = (isStar == null || isStar == undefined) ? false : isStar
         this.isWire = isWire
+        this.lockNumber = lockNumber
         if (lockNumber > 0) {
             this.initLock()
         }
@@ -110,7 +113,15 @@ export class block extends Component {
         }
     }
 
+    SubKey() {
+        if (this.lockNumber == 0) return
+        this.lockNumber--;
+        this.lockLb.getComponent(Label).string = this.lockNumber.toString()
+        if (this.lockNumber == 0) {
+            this.lock.node.active = false
+        }
 
+    }
     initStar() {
         this.star.active = true
         this.star.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_star_3_${this.typeIndex}`)
@@ -146,7 +157,7 @@ export class block extends Component {
     initLock() {
         console.log("lock_" + this.colorIndex + "_" + this.typeIndex)
         this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.typeIndex)
-        this.lockLb.getComponent(Label).string = this.lockNumber
+        this.lockLb.getComponent(Label).string = this.lockNumber.toString()
         switch (this.typeIndex) {
             case 1:
                 this.lockLb.setPosition(new Vec3(48, 51, 0))
@@ -188,7 +199,7 @@ export class block extends Component {
                 this.lockLb.setPosition(new Vec3(100, 148, 0))
                 break
             case 14:
-                this.lockLb.setPosition(new Vec3(80, 164, 0))
+                this.lockLb.setPosition(new Vec3(46, 164, 0))
                 break
             case 15:
                 this.lockLb.setPosition(new Vec3(15, 29, 0))
@@ -418,6 +429,7 @@ export class block extends Component {
     onTouchStart(event: EventTouch) {
 
         if (this.freeNode != null) return
+        if (this.lockNumber > 0) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
 
@@ -486,6 +498,7 @@ export class block extends Component {
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
+        if (this.lockNumber > 0) return
 
         // Tính toán vị trí mới
         const touchPos = IngameLogic.getInstance().currentSelectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
@@ -537,6 +550,8 @@ export class block extends Component {
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
+        if (this.lockNumber > 0) return
+
         const block = IngameLogic.getInstance().currentSelectBlock;
 
         // Thử đặt block

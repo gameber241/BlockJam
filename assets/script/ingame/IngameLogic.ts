@@ -101,6 +101,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
 
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
+        if (this.colNum > 10) {
+            this.blockBg.setScale(0.8, 0.8, 0.8)
+        }
+        else {
+            this.blockBg.setScale(1, 1, 1)
+        }
         this.initBlockBg(levelConfig.board)
         this.createBlockBorders(levelConfig.border)
         this.initBlock(levelConfig.blocks)
@@ -488,8 +494,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                         moveX2 = -uiTrans.width;
                         break;
                 }
-                console.log(block.icon)
                 if (block.subcolor == false) {
+                    block.star.active = false
+                    block.lock.node.active = false
                     tween(block.listIcon)
                         .by(0.2, { position: new Vec3(moveX2, moveY2) })
                         .call(() => {
@@ -501,13 +508,18 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 tween(block.icon)
                     .by(0.2, { position: new Vec3(moveX2, moveY2) })
                     .call(() => {
+
                         if (block.subcolor == false) {
                             director.emit("MERGE")
+                            if (block.isKey == true) {
+                                director.emit("KEY")
+                            }
                             block.node.destroy();
                         }
                         else {
                             block.AddSubColor()
                         }
+
                     })
                     .start();
                 // tween(block.node)

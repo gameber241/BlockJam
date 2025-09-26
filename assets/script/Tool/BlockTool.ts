@@ -25,6 +25,15 @@ export class BlockTool extends Component {
     @property(Node)
     star: Node
 
+    @property(Node)
+    key: Node = null
+
+    @property(Sprite)
+    lock: Sprite = null
+
+
+    @property(Node)
+    lockLb: Node = null
 
     col: number = 0
     row: number = 0
@@ -62,8 +71,126 @@ export class BlockTool extends Component {
         else {
             this.star.active = false
         }
+        if (numberLock > 0) {
+            this.initLock()
+        }
+        else {
+            this.lock.node.active = false
+        }
+        if (isKey == true) {
+            this.key.active = true
+            this.initKey()
+        }
+        else {
+            this.key.active = false
+        }
 
 
+    }
+
+    initKey() {
+        let nodeTransform = this.node.getComponent(UITransform)
+        let dirTransform = this.key.getComponent(UITransform)
+        switch (this.idBlock) {
+            case 1: case 2: case 3: case 4: case 5:
+            case 18: case 19: case 20: case 21: case 23: case 22:
+                this.key.setPosition((nodeTransform.width - dirTransform.width) / 2, (nodeTransform.height - dirTransform.height) / 2);
+                break;
+
+            case 7: case 9: case 13: case 14: case 17:
+                this.key.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE) / 2, this.key.position.y);
+                break;
+
+            case 6: case 8: case 12: case 15: case 16:
+                this.key.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE) / 2, this.key.position.y);
+                break;
+
+            case 11:
+                this.key.setPosition((nodeTransform.width - dirTransform.width - BLOCK_SIZE * 2) / 2, this.key.position.y);
+                break;
+
+            case 10:
+                this.key.setPosition((nodeTransform.width - dirTransform.width + BLOCK_SIZE * 2) / 2, this.dirNode.position.y);
+                break;
+        }
+    }
+
+
+    initLock() {
+        this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.idBlock)
+        this.lockLb.getComponent(Label).string = this.numberLock.toString()
+        switch (this.idBlock) {
+            case 1:
+                this.lockLb.setPosition(new Vec3(48, 51, 0))
+                break
+            case 2:
+                this.lockLb.setPosition(new Vec3(152, 46, 0))
+                break
+            case 3:
+                this.lockLb.setPosition(new Vec3(48, 152, 0))
+                break
+            case 4:
+                this.lockLb.setPosition(new Vec3(99, 46, 0))
+                break
+            case 5:
+                this.lockLb.setPosition(new Vec3(48, 103, 0))
+                break
+            case 6:
+                this.lockLb.setPosition(new Vec3(138, 124, 0))
+                break
+            case 7:
+                this.lockLb.setPosition(new Vec3(71, 101, 0))
+                break
+            case 8:
+                this.lockLb.setPosition(new Vec3(101, 49, 0))
+                break
+            case 9:
+                this.lockLb.setPosition(new Vec3(100, 55, 0))
+                break
+            case 10:
+                this.lockLb.setPosition(new Vec3(252, 110, 0))
+                break
+            case 11:
+                this.lockLb.setPosition(new Vec3(84, 138, 0))
+                break
+            case 12:
+                this.lockLb.setPosition(new Vec3(149, 158, 0))
+                break
+            case 13:
+                this.lockLb.setPosition(new Vec3(49, 149, 0))
+                break
+            case 14:
+                this.lockLb.setPosition(new Vec3(44, 166, 0))
+                break
+            case 15:
+                this.lockLb.setPosition(new Vec3(15, 29, 0))
+                break
+            case 16:
+                this.lockLb.setPosition(new Vec3(146, 160, 0))
+                break
+            case 17:
+                this.lockLb.setPosition(new Vec3(51, 145, 0))
+                break
+            case 18:
+                this.lockLb.setPosition(new Vec3(143, 146, 0))
+                break
+            case 19:
+                this.lockLb.setPosition(new Vec3(163, 44, 0))
+                break
+            case 20:
+                this.lockLb.setPosition(new Vec3(150, 150, 0))
+                break
+            case 21:
+                this.lockLb.setPosition(new Vec3(96, 100, 0))
+                break
+            case 22:
+                this.lockLb.setPosition(new Vec3(50, 200, 0))
+                break
+            case 23:
+                this.lockLb.setPosition(new Vec3(203, 48, 0))
+                break
+
+        }
     }
 
     initStar() {

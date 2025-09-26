@@ -69,6 +69,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
             this.avatar = 0
             this.frame = 0
             this.nameUser = "Player0123"
+            this.saveAccount()
             this.ShowProfile()
         }
 
