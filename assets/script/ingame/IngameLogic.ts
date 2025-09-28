@@ -561,7 +561,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 for (let i = 0; i < ex.size; i++) {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     console.log(eff)
-                                    eff.setPosition(0, i * 100);
+                                    eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, -90))
                                     // eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
@@ -575,7 +575,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     console.log(eff)
 
-                                    eff.setPosition(0, i * 100);
+                                    eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
@@ -587,7 +587,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             case 2:
                                 for (let i = 0; i < ex.size; i++) {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
-                                    eff.setPosition(i * 100 - 50, 0);
+                                    eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
@@ -599,7 +599,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     console.log(eff)
 
-                                    eff.setPosition(i * 100 - 50, 0);
+                                    eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
