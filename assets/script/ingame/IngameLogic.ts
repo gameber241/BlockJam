@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, RigidBody2D, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, ParticleSystem, PhysicsSystem2D, Prefab, RigidBody2D, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -7,6 +7,7 @@ import { BaseSingleton } from '../Base/BaseSingleton';
 import { exit } from './exit';
 import { border } from './border';
 import { BlockJamManager } from '../Manager/BlockJamManager';
+import { COLORblOCK } from '../Tool/SelectColorBlock';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -70,7 +71,18 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     currentSelectBlock: block = null
     blockLimitData: number[][] = []
     status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.UNRUNING
-
+    COLOR_MAP: Record<COLORblOCK, Color> = {
+        [COLORblOCK.NAU]: new Color(139, 69, 19),      // Nâu (SaddleBrown)
+        [COLORblOCK.XANH_DUONG_DAM]: new Color(0, 0, 139), // Xanh dương đậm (DarkBlue)
+        [COLORblOCK.XANH_LA_DAM]: new Color(0, 100, 0),    // Xanh lá đậm (DarkGreen)
+        [COLORblOCK.XANH_DUONG_NHAT]: new Color(135, 206, 250), // Xanh dương nhạt (LightSkyBlue)
+        [COLORblOCK.XANH_LA_NHAT]: new Color(144, 238, 144),    // Xanh lá nhạt (LightGreen)
+        [COLORblOCK.CAM]: new Color(255, 165, 0),       // Cam (Orange)
+        [COLORblOCK.HONG]: new Color(255, 182, 193),    // Hồng (LightPink)
+        [COLORblOCK.TIM]: new Color(128, 0, 128),       // Tím (Purple)
+        [COLORblOCK.DO]: new Color(255, 0, 0),          // Đỏ (Red)
+        [COLORblOCK.VANG]: new Color(255, 255, 0),      // Vàng (Yellow)
+    };
 
     protected start() {
         this.Reset()
@@ -506,82 +518,113 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                         moveX2 = -uiTrans.width;
                         break;
                 }
-                if (block.subcolor == false) {
-                    block.star.active = false
-                    block.lock.node.active = false
-                    tween(block.listIcon)
-                        .by(0.2, { position: new Vec3(moveX2, moveY2) })
-                        .call(() => {
-
-                        })
-                        .start();
-
-                }
-                tween(block.icon)
-                    .by(0.2, { position: new Vec3(moveX2, moveY2) })
+                block.isCanMove = false
+                const currentGridPos = block.getCurrentGridPosition();
+                const x = currentGridPos.x * (BLOCK_SIZE + BLOCK_GAP)
+                const y = currentGridPos.y * (BLOCK_SIZE + BLOCK_GAP)
+                tween(block.node).to(0.1, { position: this.getRealPos(v2(x, y)) })
                     .call(() => {
-
                         if (block.subcolor == false) {
-                            director.emit("MERGE")
-                            if (block.isKey == true) {
-                                director.emit("KEY")
-                            }
-                            block.node.destroy();
-                        }
-                        else {
-                            block.AddSubColor()
-                        }
+                            block.star.active = false
+                            block.lock.node.active = false
+                            tween(block.listIcon)
+                                .by(0.5, { position: new Vec3(moveX2, moveY2) })
+                                .call(() => {
 
+                                })
+                                .start();
+
+                        }
+                        tween(block.icon)
+                            .by(0.5, { position: new Vec3(moveX2, moveY2) })
+                            .call(() => {
+
+                                if (block.subcolor == false) {
+                                    director.emit("MERGE")
+                                    if (block.isKey == true) {
+                                        director.emit("KEY")
+                                    }
+                                    block.node.destroy();
+                                }
+                                else {
+                                    block.AddSubColor()
+                                    block.isCanMove = true
+                                }
+
+                            })
+                            .start();
+
+                        switch (ex.typeIndex) {
+                            case 0:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    console.log(eff)
+                                    eff.setPosition(-20, i * 100);
+                                    eff.setScale(30, 30, 30)
+                                    eff.setRotationFromEuler(new Vec3(90, 0, -90))
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).play()
+                                    console.log(this.COLOR_MAP[ex.colorIndex])
+                                    console.log(ex.colorIndex)
+
+
+                                }
+                                break;
+                            case 1:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    console.log(eff)
+
+                                    eff.setPosition(0, i * 100);
+                                    eff.setScale(30, 30, 30)
+                                    eff.setRotationFromEuler(new Vec3(90, 0, 90))
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).play()
+                                    console.log(this.COLOR_MAP[ex.colorIndex])
+                                    console.log(ex.colorIndex)
+
+
+                                }
+                                break;
+                            case 2:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    eff.setPosition(i * 100 - 50, 0);
+                                    eff.setScale(30, 30, 30)
+                                    eff.setRotationFromEuler(new Vec3(90, 0, 180))
+                                    console.log(this.COLOR_MAP[ex.colorIndex])
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).play()
+                                    console.log(ex.colorIndex)
+
+                                }
+                                break;
+                            case 3:
+                                for (let i = 0; i < ex.size; i++) {
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    console.log(eff)
+
+                                    eff.setPosition(i * 100 - 50, 0);
+                                    eff.setScale(30, 30, 30)
+                                    eff.setRotationFromEuler(new Vec3(90, 0, 0))
+                                    console.log(ex.colorIndex)
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).play()
+                                    console.log(this.COLOR_MAP[ex.colorIndex])
+
+                                }
+                                break;
+                        }
                     })
-                    .start();
+                    .start()
+
                 // tween(block.node)
                 //     .by(0.2, { position: new Vec3(moveX, moveY) })
                 //     .call(() => {
 
 
                 //         // --- Hiệu ứng ---
-                //         switch (ex.typeIndex) {
-                //             case 1:
-                //                 for (let i = 0; i < ex.size; i++) {
-                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                //                     // eff.setPosition(i * 100 + 50, 0);
-                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                //                     // effParticle.gravity = new Vec2(0, 200);
-                //                     // effParticle.resetSystem();
-                //                 }
-                //                 break;
-                //             case 2:
-                //                 for (let i = 0; i < ex.size; i++) {
-                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                //                     // eff.setPosition(30, i * 100 + 50);
-                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                //                     // effParticle.gravity = new Vec2(0, 0);
-                //                     // effParticle.resetSystem();
-                //                 }
-                //                 break;
-                //             case 3:
-                //                 for (let i = 0; i < ex.size; i++) {
-                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                //                     // eff.setPosition(i * 100 + 50, 50);
-                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                //                     // effParticle.gravity = new Vec2(0, -200);
-                //                     // effParticle.resetSystem();
-                //                 }
-                //                 break;
-                //             case 4:
-                //                 for (let i = 0; i < ex.size; i++) {
-                //                     const eff = PoolManager.getInstance().getNode('eff_exit', ex.node);
-                //                     eff.setPosition(0, i * 100 + 50);
-                //                     // const effParticle = eff.getComponent(ParticleSystem2D)!;
-                //                     // effParticle.endColor = Color.fromHEX(BLOCK_COLOR[ex.colorIndex - 1]);
-                //                     // effParticle.gravity = new Vec2(0, 0);
-                //                     // effParticle.resetSystem();
-                //                 }
-                //                 break;
-                //         }
+
                 //     })
                 //     .start();
 

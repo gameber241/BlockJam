@@ -118,6 +118,8 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         else {
             this.level = 1
             this.coin = 0
+
+            this.save()
         }
     }
 

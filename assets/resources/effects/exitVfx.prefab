@@ -21,10 +21,16 @@
     "_components": [
       {
         "__id__": 2
+      },
+      {
+        "__id__": 55
+      },
+      {
+        "__id__": 57
       }
     ],
     "_prefab": {
-      "__id__": 55
+      "__id__": 59
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -41,12 +47,12 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
-      "z": 1
+      "x": 30,
+      "y": 30,
+      "z": 30
     },
     "_mobility": 0,
-    "_layer": 1073741824,
+    "_layer": 33554432,
     "_euler": {
       "__type__": "cc.Vec3",
       "x": 90,
@@ -67,7 +73,10 @@
       "__id__": 3
     },
     "_materials": [
-      null,
+      {
+        "__uuid__": "6a196155-0f71-49ea-8627-da60c561f522",
+        "__expectedType__": "cc.Material"
+      },
       null
     ],
     "_visFlags": 0,
@@ -113,7 +122,7 @@
     "duration": 3,
     "loop": false,
     "simulationSpeed": 3,
-    "playOnAwake": true,
+    "playOnAwake": false,
     "gravityModifier": {
       "__id__": 14
     },
@@ -178,9 +187,9 @@
     "_mode": 0,
     "color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 32,
-      "b": 32,
+      "r": 144,
+      "g": 238,
+      "b": 144,
       "a": 255
     }
   },
@@ -670,13 +679,57 @@
       "__expectedType__": "cc.Mesh"
     },
     "_cpuMaterial": {
-      "__uuid__": "78e0584a-4343-4727-8f37-e14e65c2a2db",
+      "__uuid__": "6a196155-0f71-49ea-8627-da60c561f522",
       "__expectedType__": "cc.Material"
     },
     "_gpuMaterial": null,
     "_mainTexture": null,
     "_useGPU": false,
     "_alignSpace": 2
+  },
+  {
+    "__type__": "cc.UIMeshRenderer",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 56
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "41MAt3ASNP0ppUxSvrBQ/4"
+  },
+  {
+    "__type__": "cc.UITransform",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 58
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 100,
+      "height": 100
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "2f5JNJbwRJ24Xahro19ApH"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -687,6 +740,7 @@
       "__id__": 0
     },
     "fileId": "579WYJuLlCoqv30yra0cVB",
+    "instance": null,
     "targetOverrides": null
   }
 ]

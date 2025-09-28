@@ -494,12 +494,14 @@ export class block extends Component {
     /**
      * Xử lý sự kiện chạm di chuyển
      */
+    isCanMove = true
     private onTouchMove(event: EventTouch) {
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
         if (this.lockNumber > 0) return
+        if (IngameLogic.getInstance().currentSelectBlock.isCanMove == false) return
 
         // Tính toán vị trí mới
         const touchPos = IngameLogic.getInstance().currentSelectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
@@ -552,8 +554,8 @@ export class block extends Component {
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
         if (this.lockNumber > 0) return
-
         const block = IngameLogic.getInstance().currentSelectBlock;
+        if (block.isCanMove == false) return
 
         // Thử đặt block
         const canPlace = block.tryPlaceBlock();
@@ -712,9 +714,6 @@ export class block extends Component {
     }
 
     public getCurrentGridPosition(): { x: number, y: number } {
-        if (this.node == null) {
-            return { x: 0, y: 0 }
-        }
         const blockBg = IngameLogic.getInstance().blockBg;
         const uiTransform = blockBg.getComponent(UITransform);
 

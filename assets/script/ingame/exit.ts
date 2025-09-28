@@ -9,6 +9,8 @@ export class exit extends Component {
     @property(Node)
     star: Node = null
 
+
+
     index: number = -1
     typeIndex: number = -1
 
@@ -59,6 +61,7 @@ export class exit extends Component {
                 sizeColliderNode = new Size(BLOCK_SIZE, sizeNode.height - 40)
                 posCollider = v3(this.colliderNode.position.x - BLOCK_SIZE / 2, 20)
                 sizeCollider = new Size(BLOCK_SIZE, sizeNode.height - 40)
+
                 break;
             case 1: // trai
                 sizeNode = new Size(BLOCK_SIZE / 2, BLOCK_SIZE * this.size)
