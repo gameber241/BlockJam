@@ -833,12 +833,14 @@ export class block extends Component {
         // Thời gian di chuyển (giới hạn từ 0.1s đến 0.5s)
         const moveTime = misc.clampf(distance / 500, 0.1, 0.5);
         // Tween node tới vị trí mới
-        tween(this.node)
-            .to(moveTime, { position: targetPos3D }, { easing: 'quartOut' })
-            .start();
+        // tween(this.node)
+        //     .to(moveTime, { position: targetPos3D }, { easing: 'quartOut' })
+        //     .start();
 
-        // Chờ tween chạy xong
-        await delay(moveTime);
+        // // Chờ tween chạy xong
+        // await delay(moveTime);
+
+        this.node.setPosition(targetPos3D)
     }
     public getBlockSize(): { width: number, height: number } {
         switch (this.typeIndex) {
