@@ -234,6 +234,7 @@ export class block extends Component {
 
     protected onDestroy(): void {
         director.off("MERGE", this.SubIce, this)
+        director.off("KEY", this.SubKey, this)
     }
 
     SubIce() {
@@ -421,7 +422,7 @@ export class block extends Component {
         // this.icon.getComponent(UITransform).setContentSize(size)
         this.collider.size = size
         this.collider.offset = offSet
-        this.mask.getComponent(UITransform).setContentSize(size)
+        this.mask.getComponent(UITransform).setContentSize(new Size(size.width + 20, size.height + 20))
         this.icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
     }
 
@@ -711,6 +712,9 @@ export class block extends Component {
     }
 
     public getCurrentGridPosition(): { x: number, y: number } {
+        if (this.node == null) {
+            return { x: 0, y: 0 }
+        }
         const blockBg = IngameLogic.getInstance().blockBg;
         const uiTransform = blockBg.getComponent(UITransform);
 

@@ -140,6 +140,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
 
     PlayGame() {
+        console.log(this.heartSystem)
         if (this.heartSystem.getHearts() > 0) {
             this.heartSystem.useHeart()
             this.LobbyUI.children[1].active = true

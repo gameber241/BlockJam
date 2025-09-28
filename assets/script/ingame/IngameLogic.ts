@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, PhysicsSystem2D, Prefab, RigidBody2D, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -77,11 +77,23 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     Reset() {
+        console.log(this)
         this.levelComplete.active = false
         this.popupClose.active = false
         this.outoftime1.active = false
-        this.blockBg.destroyAllChildren()
+        this.currentSelectBlock = null
+        this.blockBg.children.forEach(e => {
+            if (e.getComponent(RigidBody2D)) {
+                e.getComponent(RigidBody2D).enabled = false
+            }
+
+            if (e.getComponent(BoxCollider2D)) {
+                e.getComponent(BoxCollider2D).enabled = false
+            }
+        })
+
         this.scheduleOnce(() => {
+            this.blockBg.destroyAllChildren()
             this.init()
             this.status = ENUM_GAME_STATUS.RUNING
             this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()

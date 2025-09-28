@@ -56,30 +56,30 @@ export class exit extends Component {
             case 0: // phai
                 sizeNode = new Size(BLOCK_SIZE / 2, BLOCK_SIZE * this.size)
                 pos = v3(this.node.position.x + BLOCK_SIZE, this.node.position.y)
-                sizeColliderNode = new Size(BLOCK_SIZE, sizeNode.height - 20)
-                posCollider = v3(this.colliderNode.position.x - BLOCK_SIZE / 2, 10)
-                sizeCollider = new Size(BLOCK_SIZE, sizeNode.height - 20)
+                sizeColliderNode = new Size(BLOCK_SIZE, sizeNode.height - 40)
+                posCollider = v3(this.colliderNode.position.x - BLOCK_SIZE / 2, 20)
+                sizeCollider = new Size(BLOCK_SIZE, sizeNode.height - 40)
                 break;
             case 1: // trai
                 sizeNode = new Size(BLOCK_SIZE / 2, BLOCK_SIZE * this.size)
                 pos = v3(this.node.position.x - BLOCK_SIZE / 2, this.node.position.y)
-                sizeColliderNode = new Size(BLOCK_SIZE, sizeNode.height - 20)
-                posCollider = v3(0, 10)
-                sizeCollider = new Size(BLOCK_SIZE, sizeNode.height - 20)
+                sizeColliderNode = new Size(BLOCK_SIZE, sizeNode.height - 40)
+                posCollider = v3(0, 20)
+                sizeCollider = new Size(BLOCK_SIZE, sizeNode.height - 40)
                 break;
             case 3: // up
                 sizeNode = new Size(BLOCK_SIZE * this.size, BLOCK_SIZE / 2)
                 pos = v3(this.node.position.x, this.node.position.y + BLOCK_SIZE)
-                sizeColliderNode = new Size(sizeNode.width - 20, BLOCK_SIZE)
-                posCollider = v3(10, this.colliderNode.position.y - BLOCK_SIZE / 2)
-                sizeCollider = new Size(sizeNode.width - 20, BLOCK_SIZE)
+                sizeColliderNode = new Size(sizeNode.width - 40, BLOCK_SIZE)
+                posCollider = v3(20, this.colliderNode.position.y - BLOCK_SIZE / 2)
+                sizeCollider = new Size(sizeNode.width - 40, BLOCK_SIZE)
                 break;
             case 2: // down
                 sizeNode = new Size(BLOCK_SIZE * this.size, BLOCK_SIZE / 2)
                 pos = v3(this.node.position.x, this.node.position.y - BLOCK_SIZE / 2)
-                sizeColliderNode = new Size(sizeNode.width - 20, BLOCK_SIZE)
-                posCollider = v3(10, 0)
-                sizeCollider = new Size(sizeNode.width - 20, BLOCK_SIZE)
+                sizeColliderNode = new Size(sizeNode.width - 40, BLOCK_SIZE)
+                posCollider = v3(20, 0)
+                sizeCollider = new Size(sizeNode.width - 40, BLOCK_SIZE)
                 break;
         }
 
