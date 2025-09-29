@@ -1511,7 +1511,7 @@
     "tag": 0,
     "_group": 1,
     "_density": 1,
-    "_sensor": true,
+    "_sensor": false,
     "_friction": 0,
     "_restitution": 0,
     "_offset": {
@@ -1545,7 +1545,7 @@
     "bullet": true,
     "awakeOnLoad": false,
     "_group": 1,
-    "_type": 2,
+    "_type": 1,
     "_allowSleep": false,
     "_gravityScale": 0,
     "_linearDamping": 0,
@@ -1556,7 +1556,7 @@
       "y": 0
     },
     "_angularVelocity": 0,
-    "_fixedRotation": true,
+    "_fixedRotation": false,
     "_id": ""
   },
   {

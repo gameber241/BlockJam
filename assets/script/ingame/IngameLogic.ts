@@ -120,7 +120,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
 
     init() {
-        PhysicsSystem2D.instance.debugDrawFlags = EPhysics2DDrawFlags.Aabb | EPhysics2DDrawFlags.Pair;
+        // PhysicsSystem2D.instance.debugDrawFlags = EPhysics2DDrawFlags.Aabb | EPhysics2DDrawFlags.Pair;
         let levelConfig = LeveConfig[BlockJamManager.getInstance().level - 1]
         this.rowNum = levelConfig.rowNum
         this.colNum = levelConfig.colNum
@@ -870,7 +870,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         BlockJamManager.getInstance().ShowWinSubHeart(this.Reset.bind(this))
     }
 
-
+    public isOccupied(x: number, y: number): boolean {
+        if (x < 0 || x >= this.colNum || y < 0 || y >= this.rowNum) {
+            return true; // ngoài biên coi như bị chặn
+        }
+        return this.blockLimitData[y][x] === 1;
+    }
 }
 
 

@@ -502,7 +502,7 @@ export class block extends Component {
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
         if (this.lockNumber > 0) return
         if (IngameLogic.getInstance().currentSelectBlock.isCanMove == false) return
-
+        const dir = this.get8Direction(event);
         // Tính toán vị trí mới
         const touchPos = IngameLogic.getInstance().currentSelectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
         let newPos: Vec3 = touchPos.subtract(
@@ -712,31 +712,39 @@ export class block extends Component {
             default: return 60; // Khác
         }
     }
-
     public getCurrentGridPosition(): { x: number, y: number } {
         const blockBg = IngameLogic.getInstance().blockBg;
         const uiTransform = blockBg.getComponent(UITransform);
+        if (!uiTransform) return { x: 0, y: 0 };
 
-        if (!uiTransform) {
-            return { x: 0, y: 0 };
-        }
-
-        // Tính vị trí bắt đầu (góc trái dưới của bảng)
         const startPos = v3(
             -uiTransform.contentSize.width / 2 + BLOCK_GAP,
             -uiTransform.contentSize.height / 2 + BLOCK_GAP,
             0
         );
 
-        // Lấy vị trí tương đối của node so với startPos
         const relativePos = this.node.position.clone().subtract(startPos);
 
-        // Tính vị trí lưới gần nhất
-        const gridX = Math.round(relativePos.x / (BLOCK_SIZE + BLOCK_GAP));
-        const gridY = Math.round(relativePos.y / (BLOCK_SIZE + BLOCK_GAP));
+        const cellSize = BLOCK_SIZE + BLOCK_GAP;
+        console.log(startPos, this.node.position)
+        // Hàm làm tròn an toàn, kể cả khi relativePos < 0
+        function roundGrid(value: number): number {
+            const base = Math.floor(value / cellSize);
+            const frac = value / cellSize - base;
+
+            if (frac > 0.9) return base + 1;
+            return base;
+        }
+
+        const gridX = roundGrid(relativePos.x);
+        const gridY = roundGrid(relativePos.y);
 
         return { x: gridX, y: gridY };
     }
+
+
+
+
     private calculateShapeAwareBounds(currentPos: { x: number, y: number }) {
         const shape = this.getBlockShape();
         const bounds = {
@@ -956,7 +964,33 @@ export class block extends Component {
     }
 
 
+    get8Direction(event: EventTouch): string {
+        const delta = event.getDelta();
+        const dx = delta.x;
+        const dy = delta.y;
 
+        if (dx === 0 && dy === 0) return "none";
+
+        const absDx = Math.abs(dx);
+        const absDy = Math.abs(dy);
+
+        // Chọn hướng theo độ lớn delta
+        if (absDx > absDy * 2) {
+            // chủ yếu theo X
+            return dx > 0 ? "right" : "left";
+        } else if (absDy > absDx * 2) {
+            // chủ yếu theo Y
+            return dy > 0 ? "up" : "down";
+        } else {
+            // hướng chéo
+            if (dx > 0 && dy > 0) return "up-right";
+            if (dx < 0 && dy > 0) return "up-left";
+            if (dx < 0 && dy < 0) return "down-left";
+            if (dx > 0 && dy < 0) return "down-right";
+        }
+
+        return "none"; // fallback
+    }
 }
 
 
