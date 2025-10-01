@@ -438,32 +438,29 @@ export class block extends Component {
         const block = touchedBlocks[touchedBlocks.length - 1];
         this.sibilingCurrent = this.node.getSiblingIndex()
         // Skill logic
-        // if (IngameLogic.getInstance().currentSkillIndex == 0) {
-        //     // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
-        //     block.colorIndex = IngameLogic.getInstance().currentColorIndex += 1
-        //     // this.changeColor()
-        //     IngameLogic.getInstance().currentSkillIndex = -1
-        //     // IngameLogic.getInstance().ins.toggleSkillTip(false)
-        //     return
-        // } else if (IngameLogic.getInstance().currentSkillIndex == 1) {
-        //     // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
-        //     // block.node.zIndex = 888
-        //     // block.isExited = true
-        //     // IngameLogic.getInstance().updateBlockLimitData(block, false)
-        //     // let act = null
-        //     // if (block.xIndex >= IngameLogic.getInstance().colNum / 2) {
-        //     //     act = moveBy(0.1, 200, 0)
-        //     // } else {
-        //     //     act = moveBy(0.1, -200, 0)
-        //     // }
-        //     // tween(block.node).then(act).call(() => {
-        //     //     block.node.destroy()
-        //     // }).start()
-        //     // IngameLogic.getInstance().blockClearNum += 1
-        //     // IngameLogic.getInstance().currentSkillIndex = -1
-        //     // IngameLogic.getInstance().toggleSkillTip(false)
-        //     // return
-        // }
+        if (IngameLogic.getInstance().typebooster == 1) {
+            // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
+            
+            return
+        } else if (IngameLogic.getInstance().currentSkillIndex == 1) {
+            // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
+            // block.node.zIndex = 888
+            // block.isExited = true
+            // IngameLogic.getInstance().updateBlockLimitData(block, false)
+            // let act = null
+            // if (block.xIndex >= IngameLogic.getInstance().colNum / 2) {
+            //     act = moveBy(0.1, 200, 0)
+            // } else {
+            //     act = moveBy(0.1, -200, 0)
+            // }
+            // tween(block.node).then(act).call(() => {
+            //     block.node.destroy()
+            // }).start()
+            // IngameLogic.getInstance().blockClearNum += 1
+            // IngameLogic.getInstance().currentSkillIndex = -1
+            // IngameLogic.getInstance().toggleSkillTip(false)
+            // return
+        }
 
 
         console.log("den day ne", block.isSelected)

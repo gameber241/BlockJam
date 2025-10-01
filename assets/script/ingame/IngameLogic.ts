@@ -564,7 +564,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, -90))
-                                    // eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
 
@@ -572,13 +572,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 break;
                             case 1:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
                                     console.log(eff)
 
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
-                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
 
@@ -586,11 +586,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 break;
                             case 2:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
                                     eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
-                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
                                 }
                                 break;
@@ -602,7 +602,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
-                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[ex.colorIndex]
+                                    eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
                                 }
@@ -652,6 +652,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 // BlockJamManager.getInstance().save()
                 this.levelComplete.active = true
                 BlockJamManager.getInstance().heartSystem.addHeart(1)
+                this.unschedule(this.resume)
                 this.pause()
             }, 0.5)
             // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
@@ -876,6 +877,25 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         }
         return this.blockLimitData[y][x] === 1;
     }
+
+    PauseGame() {
+
+    }
+
+    FreezeBooster() {
+        this.pause()
+        this.scheduleOnce(this.resume, 10)
+    }
+
+
+
+    isBooster = false
+    typebooster = -1
+    Magnet() {
+        this.isBooster = true
+        this.typebooster = 1
+    }
+
 }
 
 
