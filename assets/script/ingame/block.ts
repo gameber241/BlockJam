@@ -67,7 +67,9 @@ export class block extends Component {
     isStar = false
     isKey = false
     lockNumber = 0
-    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire) {
+    colorWire = -1
+    colorsWire = []
+    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire, colorWire = -1, colorsWire = []) {
         this.index = index
         this.typeIndex = typeIndex
         this.colorIndex = colorIndex
@@ -433,40 +435,35 @@ export class block extends Component {
         if (this.lockNumber > 0) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
-
+        console.log(this.getClickedShapeCell(event))
         if (touchedBlocks.length === 0) return;
         const block = touchedBlocks[touchedBlocks.length - 1];
         this.sibilingCurrent = this.node.getSiblingIndex()
         // Skill logic
         if (IngameLogic.getInstance().typebooster == 1) {
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
-            
+            IngameLogic.getInstance().MagnetBlock(block.colorIndex)
             return
-        } else if (IngameLogic.getInstance().currentSkillIndex == 1) {
-            // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
-            // block.node.zIndex = 888
-            // block.isExited = true
-            // IngameLogic.getInstance().updateBlockLimitData(block, false)
-            // let act = null
-            // if (block.xIndex >= IngameLogic.getInstance().colNum / 2) {
-            //     act = moveBy(0.1, 200, 0)
-            // } else {
-            //     act = moveBy(0.1, -200, 0)
-            // }
-            // tween(block.node).then(act).call(() => {
-            //     block.node.destroy()
-            // }).start()
-            // IngameLogic.getInstance().blockClearNum += 1
-            // IngameLogic.getInstance().currentSkillIndex = -1
-            // IngameLogic.getInstance().toggleSkillTip(false)
-            // return
+        } else if (IngameLogic.getInstance().typebooster == 2) {
+            IngameLogic.getInstance().HammerBlock(block)
+            return
+        }
+        else {
+            if (IngameLogic.getInstance().typebooster == 3) {
+                const hit = this.getClickedShapeCell(event);
+                if (hit) {
+                    this.breakCell(hit);
+                    IngameLogic.getInstance().typebooster = -1;
+                    IngameLogic.getInstance().isUseTool = false;
+                    event.propagationStopped = true;
+                    return;
+                }
+                return
+            }
         }
 
-
-        console.log("den day ne", block.isSelected)
         // Nếu block hiện tại đã được chọn, trả về trực tiếp
         if (block.isSelected) return;
-
         // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_CHOOSE)
         // Đặt trạng thái được chọn
         IngameLogic.getInstance().currentSelectBlock = block;
@@ -475,17 +472,11 @@ export class block extends Component {
         block.node.setSiblingIndex(9999)
 
         IngameLogic.getInstance().updateBlockLimitData(IngameLogic.getInstance().currentSelectBlock, false);
-
         // Lưu độ lệch chạm
         const touchPos = block.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
         block.touchOffset = touchPos.subtract(v3(block.node.position.x, block.node.position.y));
-
         // Lưu lại vị trí gốc của block
         block.originalPos = v3(block.node.position.x, block.node.position.y).clone();
-
-        // Ngăn không cho sự kiện lan truyền
-        // event.propagationStopped = true;
-
     }
 
     /**
@@ -500,6 +491,7 @@ export class block extends Component {
         if (this.lockNumber > 0) return
         if (IngameLogic.getInstance().currentSelectBlock.isCanMove == false) return
         const dir = this.get8Direction(event);
+
         // Tính toán vị trí mới
         const touchPos = IngameLogic.getInstance().currentSelectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
         let newPos: Vec3 = touchPos.subtract(
@@ -723,8 +715,6 @@ export class block extends Component {
         const relativePos = this.node.position.clone().subtract(startPos);
 
         const cellSize = BLOCK_SIZE + BLOCK_GAP;
-        console.log(startPos, this.node.position)
-        // Hàm làm tròn an toàn, kể cả khi relativePos < 0
         function roundGrid(value: number): number {
             const base = Math.floor(value / cellSize);
             const frac = value / cellSize - base;
@@ -988,6 +978,254 @@ export class block extends Component {
 
         return "none"; // fallback
     }
+
+    private getCells(): Vec2[] {
+        const shape = this.getBlockShape();
+        const cells: Vec2[] = [];
+        for (let y = 0; y < shape.length; y++) {
+            for (let x = 0; x < shape[y].length; x++) {
+                if (shape[y][x] === 1) cells.push(new Vec2(x, y));
+            }
+        }
+        return cells;
+    }
+
+    // ⭐ ADD: canonical key
+    private toKey(cells: Vec2[]): string {
+        const minX = Math.min(...cells.map(c => c.x));
+        const minY = Math.min(...cells.map(c => c.y));
+        const norm = cells.map(c => ({ x: c.x - minX, y: c.y - minY }))
+            .sort((a, b) => a.y - b.y || a.x - b.x);
+        return norm.map(c => `${c.x},${c.y}`).join("|");
+    }
+
+    // ⭐ ADD: tách nhóm liên thông
+    private splitConnectedCells(cells: Vec2[]): Vec2[][] {
+        const set = new Set(cells.map(c => `${c.x},${c.y}`));
+        const visited = new Set<string>();
+        const results: Vec2[][] = [];
+        const dirs = [new Vec2(1, 0), new Vec2(-1, 0), new Vec2(0, 1), new Vec2(0, -1)];
+
+        for (const c of cells) {
+            const key = `${c.x},${c.y}`;
+            if (visited.has(key)) continue;
+
+            const comp: Vec2[] = [];
+            const q: Vec2[] = [c];
+            visited.add(key);
+
+            while (q.length > 0) {
+                const cur = q.shift()!;
+                comp.push(cur);
+                for (const d of dirs) {
+                    const nx = cur.x + d.x;
+                    const ny = cur.y + d.y;
+                    const k = `${nx},${ny}`;
+                    if (set.has(k) && !visited.has(k)) {
+                        visited.add(k);
+                        q.push(new Vec2(nx, ny));
+                    }
+                }
+            }
+            results.push(comp);
+        }
+        return results;
+    }
+
+    // ⭐ ADD: mapping lại shape mới
+    private identifyShape(cells: Vec2[]): number {
+        const key = this.toKey(cells);
+        const dict = IngameLogic.getInstance().shapeDict;
+        return dict.has(key) ? dict.get(key)! : -1;
+    }
+
+    // ⭐ ADD: update shape
+    private updateShape(cells: Vec2[], newType: number) {
+        IngameLogic.getInstance().updateBlockLimitData(this, false);
+
+        this.typeIndex = newType;
+        this.initSprite();
+        this.listIcon.removeAllChildren();
+        this.iniIconBlock();
+
+        IngameLogic.getInstance().updateBlockLimitData(this, true);
+    }
+
+    // ⭐ ADD: remove block chuẩn
+    private removeBlock() {
+        IngameLogic.getInstance().updateBlockLimitData(this, false);
+        this.node.destroy();
+        IngameLogic.getInstance().blockClearNum++;
+        IngameLogic.getInstance().checkGame();
+    }
+
+    // ⭐ ADD: spawn nhiều block khi chia
+    private spawnFragments(groups: Vec2[][]) {
+        const originX = this.xIndex;
+        const originY = this.yIndex;
+
+        for (const g of groups) {
+            const newType = this.identifyShape(g);
+            if (newType === -1) continue;
+
+            // Tính min của nhóm để chuẩn hóa tọa độ block mới
+            const minX = Math.min(...g.map(c => c.x));
+            const minY = Math.min(...g.map(c => c.y));
+
+            // Block mới sẽ đặt đúng vị trí cell ban đầu trên grid
+            const newGridX = originX + minX;
+            const newGridY = originY + minY;
+
+            // tạo node block mới
+            const newBlockNode = PoolManager.getInstance().getNode('block', IngameLogic.getInstance().blockBg);
+            const newBlock = newBlockNode.getComponent(block);
+
+            newBlock.init(
+                IngameLogic.getInstance().blockTotalNum++,
+                newType,
+                this.colorIndex,
+                newGridX,
+                newGridY,
+                0,
+                0,
+                [],
+                0,
+                false,
+                false,
+                false
+            );
+
+            // Vị trí hiển thị ngoài UI
+            const uiPos = IngameLogic.getInstance().getRealPos(
+                new Vec2(
+                    newGridX * (BLOCK_SIZE + BLOCK_GAP),
+                    newGridY * (BLOCK_SIZE + BLOCK_GAP)
+                )
+            );
+            newBlockNode.setPosition(uiPos);
+
+            // đánh dấu chiếm diện grid
+            IngameLogic.getInstance().updateBlockLimitData(newBlock, true);
+        }
+    }
+
+    // ⭐ ADD: break cell
+    public breakCell(hit: Vec2) {
+        // hit.y đã là chỉ số "từ TRÊN xuống" rồi (do getHitCell đã chuyển đổi)
+        const cells = this.getCells(); // getCells() cũng tạo (x,y) theo hàng trên xuống
+
+        // Tìm đúng cell để xóa
+        const idx = cells.findIndex(c => c.x === hit.x && c.y === hit.y);
+        if (idx === -1) return;
+
+        // Xóa ô bị phá
+        cells.splice(idx, 1);
+
+        // Không còn ô nào → xóa block
+        if (cells.length === 0) {
+            this.removeBlock();
+            return;
+        }
+
+        // Tách các nhóm liên thông
+        const groups = this.splitConnectedCells(cells);
+
+        // Nếu chia thành nhiều mảnh → spawn mảnh mới rồi xóa block cũ
+        if (groups.length > 1) {
+            this.spawnFragments(groups);
+            this.removeBlock();
+            return;
+        }
+
+        // Còn đúng 1 mảnh → nhận diện shape mới
+        const newType = this.identifyShape(groups[0]);
+        if (newType === -1) {
+            // Không khớp shape hợp lệ → xóa block (tùy gameplay bạn có thể đổi fallback)
+            this.removeBlock();
+            return;
+        }
+
+        // Cập nhật block hiện tại thành shape mới
+        this.updateShape(groups[0], newType);
+
+    }
+
+
+    // ⭐ ADD: xác định cell bị nhấn
+    private getHitCell(event: EventTouch): Vec2 | null {
+        const ui = this.node.getComponent(UITransform)!;
+        const shape = this.getBlockShape();
+        const totalRows = shape.length;
+        const totalCols = shape[0].length;
+
+        // Anchor = (0,0): gốc ở góc trái DƯỚI
+        const local = ui.convertToNodeSpaceAR(
+            new Vec3(event.getUILocation().x, event.getUILocation().y)
+        );
+
+        // Chuyển local XY → chỉ số cột/hàng tính từ DƯỚI lên
+        const colFromLeft = Math.floor(local.x / BLOCK_SIZE);
+        const rowFromBottom = Math.floor(local.y / BLOCK_SIZE);
+
+        // Ngoài vùng block
+        if (colFromLeft < 0 || rowFromBottom < 0) return null;
+        if (colFromLeft >= totalCols || rowFromBottom >= totalRows) return null;
+
+        // ĐỔI trục Y: getBlockShape() định nghĩa hàng 0 ở TRÊN CÙNG
+        const rowFromTop = totalRows - 1 - rowFromBottom;
+
+        // Ô này có tồn tại trong shape không
+        if (shape[rowFromTop][colFromLeft] !== 1) return null;
+
+        // Trả về (col, row) theo CHUẨN của shape (tức là row tính TỪ TRÊN XUỐNG)
+        return new Vec2(colFromLeft, rowFromTop);
+    }
+
+
+    // ✅ GẮN logic phá vào Touch Start (chỉ THÊM, không sửa logic cũ)
+    // onTouchStart(event: EventTouch) {
+    //     const hit = this.getHitCell(event);
+    //     if (hit) {
+    //         this.breakCell(hit);
+    //         event.propagationStopped = true;
+    //         return;
+    //     }
+
+    //     // phần code cũ xử lý kéo block giữ nguyên...
+    // }
+
+    /**
+     * Trả về đúng cell theo shape (row tính từ TRÊN xuống)
+     */
+    public getClickedShapeCell(event: EventTouch): Vec2 | null {
+        const ui = this.node.getComponent(UITransform)!;
+        const shape = this.getBlockShape();
+        console.log(shape)
+
+        const totalRows = shape.length;
+        const totalCols = shape[0].length;
+        console.log()
+        // tọa độ click relative trong block (anchor = 0,0 = bottom-left)
+        const local = ui.convertToNodeSpaceAR(
+            new Vec3(event.getUILocation().x, event.getUILocation().y)
+        );
+
+        const col = Math.floor(local.x / BLOCK_SIZE);
+        const rowBottom = Math.floor(local.y / BLOCK_SIZE);
+        console.log(col, rowBottom, local)
+        // ngoài vùng block
+        if (col < 0 || col >= totalCols) return null;
+        if (rowBottom < 0 || rowBottom >= totalRows) return null;
+
+
+
+        // check có ô không
+        if (shape[rowBottom][col] !== 1) return null;
+
+        return new Vec2(col, rowBottom);
+    }
+
+
 }
 
 

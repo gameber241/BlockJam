@@ -1,0 +1,13 @@
+import { _decorator, Component, Node } from 'cc';
+import { BaseBooster } from './BaseBooster';
+import { IngameLogic } from '../ingame/IngameLogic';
+const { ccclass, property } = _decorator;
+
+@ccclass('Booster_Rocket')
+export class Booster_Rocket extends BaseBooster {
+    onclick(): void {
+        super.onclick();
+        IngameLogic.getInstance().Rocket()
+    }
+}
+

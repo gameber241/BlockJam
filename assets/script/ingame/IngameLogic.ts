@@ -8,6 +8,7 @@ import { exit } from './exit';
 import { border } from './border';
 import { BlockJamManager } from '../Manager/BlockJamManager';
 import { COLORblOCK } from '../Tool/SelectColorBlock';
+import { BlockTool } from '../Tool/BlockTool';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -71,6 +72,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     currentSelectBlock: block = null
     blockLimitData: number[][] = []
     status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.UNRUNING
+
+    isUseTool = false
+
     COLOR_MAP: Record<COLORblOCK, Color> = {
         [COLORblOCK.NAU]: new Color(139, 69, 19),      // Nâu (SaddleBrown)
         [COLORblOCK.XANH_DUONG_DAM]: new Color(0, 0, 139), // Xanh dương đậm (DarkBlue)
@@ -89,8 +93,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     Reset() {
+        this.isUseTool = false
         console.log(this)
         this.blockTotalNum = 0
+        this.typebooster = -1
         this.blockClearNum = 0
         this.levelComplete.active = false
         this.popupClose.active = false
@@ -133,11 +139,14 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         else {
             this.blockBg.setScale(1, 1, 1)
         }
+
         this.initBlockBg(levelConfig.board)
         this.createBlockBorders(levelConfig.border)
         this.initBlock(levelConfig.blocks)
         this.initBlockLimit()
         this.initExit(levelConfig.exits)
+        this.buildShapeDict();
+
 
     }
 
@@ -464,8 +473,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     break
             }
         }
-
-        console.log([...this.blockLimitData].reverse())
     }
     checkExitCondition(block: block): boolean {
         const exits = this.node.getComponentsInChildren(exit);
@@ -486,7 +493,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     block.isExited = true;
 
                     block.setActive(false);
-                    this.blockClearNum += 1;
+
                 }
                 else {
                     this.updateBlockLimitData(block, true);
@@ -542,11 +549,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             .call(() => {
 
                                 if (block.subcolor == false) {
+                                    this.blockClearNum += 1;
                                     director.emit("MERGE")
                                     if (block.isKey == true) {
                                         director.emit("KEY")
                                     }
                                     block.node.destroy();
+                                    this.checkGame();
                                 }
                                 else {
                                     block.AddSubColor()
@@ -611,18 +620,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     })
                     .start()
 
-                // tween(block.node)
-                //     .by(0.2, { position: new Vec3(moveX, moveY) })
-                //     .call(() => {
 
-
-                //         // --- Hiệu ứng ---
-
-                //     })
-                //     .start();
-
-                // Tiến trình game
-                this.checkGame();
                 return true;
             }
         }
@@ -641,26 +639,27 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         //     this.guide.children[1].active = false
         // }
     }
-
-
-    checkGame() {
-        if (this.blockClearNum >= this.blockTotalNum) {
+    checkWin() {
+        const blocks = this.blockBg.getComponentsInChildren(block);
+        console.log(blocks, " den day")
+        if (blocks.length === 0) {
             this.scheduleOnce(() => {
-                BlockJamManager.getInstance().heartSystem.addHeart(1)
-                BlockJamManager.getInstance().updateScore(200)
-                BlockJamManager.getInstance().UpdateLevel()
-                // BlockJamManager.getInstance().save()
-                this.levelComplete.active = true
-                BlockJamManager.getInstance().heartSystem.addHeart(1)
-                this.unschedule(this.resume)
-                this.pause()
-            }, 0.5)
-            // StaticInstance.gameManager.onGameOver(ENUM_UI_TYPE.WIN)
-            this.status = ENUM_GAME_STATUS.UNRUNING
+                BlockJamManager.getInstance().heartSystem.addHeart(1);
+                BlockJamManager.getInstance().updateScore(200);
+                BlockJamManager.getInstance().UpdateLevel();
+                this.levelComplete.active = true;
+                this.pause();
+            }, 0.5);
 
+            this.status = ENUM_GAME_STATUS.UNRUNING;
         }
     }
+    public checkGame() {
+        this.unschedule(this.checkWin)
+        // đếm số block còn lại trong grid
+        this.scheduleOnce(this.checkWin, 0.2);
 
+    }
     private createBlockBorders(borders) {
         const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
 
@@ -767,6 +766,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     public resume() {
         if (this.remainingSeconds > 0) this.running = true;
+        if (this.isBooster == true) {
+            this.isBooster = false
+        }
     }
 
     public stop() {
@@ -885,17 +887,112 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     FreezeBooster() {
         this.pause()
         this.scheduleOnce(this.resume, 10)
+
     }
+
+
 
 
 
     isBooster = false
     typebooster = -1
     Magnet() {
-        this.isBooster = true
         this.typebooster = 1
     }
 
+    Hammer() {
+        this.typebooster = 2
+
+    }
+
+
+    MagnetBlock(colorId) {
+        let listBlock = this.blockBg.getComponentsInChildren(block)
+        listBlock.forEach(e => {
+            if (e.freezeNum > 0) return
+            if (e.subcolor == true) return
+            if (e.lockNumber > 0) return
+            if (e.isKey == true) return
+            if (e.isStar == true) return
+            if (e.isWire == true) return
+            if (e.colorWire != -1) return
+            if (e.colorsWire.length > 0) return
+            if (e.colorIndex == colorId) {
+                if (e == IngameLogic.getInstance().currentSelectBlock) {
+                    this.currentSelectBlock = null
+                }
+                e.node.destroy();
+                this.blockClearNum += 1;
+                this.checkGame()
+            }
+
+
+
+        })
+
+        this.typebooster = -1
+        this.isBooster = false
+    }
+
+
+    HammerBlock(block) {
+        if (block.freezeNum > 0) return
+        if (block.subcolor == true) return
+        if (block.lockNumber > 0) return
+        if (block.isKey == true) return
+        if (block.isStar == true) return
+        if (block.isWire == true) return
+        if (block.colorWire != -1) return
+        if (block.colorsWire.length > 0) return
+        if (block == IngameLogic.getInstance().currentSelectBlock) {
+            this.currentSelectBlock = null
+        }
+        block.node.destroy();
+        this.blockClearNum += 1;
+        this.checkGame()
+    }
+
+    shapeDict: Map<string, number> = new Map();
+    public buildShapeDict() {
+        this.shapeDict.clear();
+
+        for (let t = 1; t <= 23; t++) {
+
+            // tạo 1 block tạm để lấy đúng shape logic theo typeIndex
+            const blockNode = PoolManager.getInstance().getNode('block', null);
+            const bc = blockNode.getComponent(block);
+            bc.typeIndex = t;
+
+            const shape = bc.getBlockShape();
+            blockNode.destroy();
+
+            if (!shape) continue;
+
+            const cells: Vec2[] = [];
+            for (let y = 0; y < shape.length; y++) {
+                for (let x = 0; x < shape[y].length; x++) {
+                    if (shape[y][x] === 1) cells.push(new Vec2(x, y));
+                }
+            }
+
+            const minX = Math.min(...cells.map(c => c.x));
+            const minY = Math.min(...cells.map(c => c.y));
+            const norm = cells.map(c => new Vec2(c.x - minX, c.y - minY))
+                .sort((a, b) => a.y - b.y || a.x - b.x);
+
+            const key = norm.map(c => `${c.x},${c.y}`).join("|");
+
+            this.shapeDict.set(key, t);
+        }
+
+        console.log("✅ ShapeDict built:", this.shapeDict);
+    }
+
+
+
+    Rocket() {
+        this.typebooster = 3
+    }
 }
 
 
