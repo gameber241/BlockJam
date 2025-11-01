@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "b2f19f27-4011-4ea5-a56f-99591f3705e1",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "b2f19f27-4011-4ea5-a56f-99591f3705e1@6c48a",
+      "displayName": "MagnifyingGlass",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "imageUuidOrDatabaseUri": "b2f19f27-4011-4ea5-a56f-99591f3705e1",
+        "isUuid": true,
+        "visible": false,
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "b2f19f27-4011-4ea5-a56f-99591f3705e1@f9941",
+      "displayName": "MagnifyingGlass",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 31,
+        "trimY": 21,
+        "width": 388,
+        "height": 538,
+        "rawWidth": 450,
+        "rawHeight": 580,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -194,
+            -269,
+            0,
+            194,
+            -269,
+            0,
+            -194,
+            269,
+            0,
+            194,
+            269,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            31,
+            559,
+            419,
+            559,
+            31,
+            21,
+            419,
+            21
+          ],
+          "nuv": [
+            0.06888888888888889,
+            0.03620689655172414,
+            0.9311111111111111,
+            0.03620689655172414,
+            0.06888888888888889,
+            0.9637931034482758,
+            0.9311111111111111,
+            0.9637931034482758
+          ],
+          "minPos": [
+            -194,
+            -269,
+            0
+          ],
+          "maxPos": [
+            194,
+            269,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "b2f19f27-4011-4ea5-a56f-99591f3705e1@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.11",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
+    "hasAlpha": true,
+    "redirect": "b2f19f27-4011-4ea5-a56f-99591f3705e1@f9941"
+  }
+}

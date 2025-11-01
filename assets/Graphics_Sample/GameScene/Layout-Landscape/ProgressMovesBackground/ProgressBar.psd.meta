@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "f4318b61-67b3-434f-aa44-0dc3b14651eb",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "f4318b61-67b3-434f-aa44-0dc3b14651eb@6c48a",
+      "displayName": "ProgressBar",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "imageUuidOrDatabaseUri": "f4318b61-67b3-434f-aa44-0dc3b14651eb",
+        "isUuid": true,
+        "visible": false,
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "f4318b61-67b3-434f-aa44-0dc3b14651eb@f9941",
+      "displayName": "ProgressBar",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0.5,
+        "offsetY": -0.5,
+        "trimX": 6,
+        "trimY": 6,
+        "width": 449,
+        "height": 339,
+        "rawWidth": 460,
+        "rawHeight": 350,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -224.5,
+            -169.5,
+            0,
+            224.5,
+            -169.5,
+            0,
+            -224.5,
+            169.5,
+            0,
+            224.5,
+            169.5,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            6,
+            344,
+            455,
+            344,
+            6,
+            5,
+            455,
+            5
+          ],
+          "nuv": [
+            0.013043478260869565,
+            0.014285714285714285,
+            0.9891304347826086,
+            0.014285714285714285,
+            0.013043478260869565,
+            0.9828571428571429,
+            0.9891304347826086,
+            0.9828571428571429
+          ],
+          "minPos": [
+            -224.5,
+            -169.5,
+            0
+          ],
+          "maxPos": [
+            224.5,
+            169.5,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "f4318b61-67b3-434f-aa44-0dc3b14651eb@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.11",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
+    "hasAlpha": true,
+    "redirect": "f4318b61-67b3-434f-aa44-0dc3b14651eb@f9941"
+  }
+}
