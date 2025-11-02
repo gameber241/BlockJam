@@ -2,10 +2,12 @@ import { _decorator, Component, director, Label, Node, ScrollView, Sprite } from
 import { BlockJamManager } from '../Manager/BlockJamManager';
 import { PoolManager } from '../Manager/PoolManager';
 import { ResourcesManager } from '../Manager/ResourcesManager';
+import { BuyBooster } from '../Booster/BuyBooster';
+import { BaseSingleton } from '../Base/BaseSingleton';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuLayer')
-export class MenuLayer extends Component {
+export class MenuLayer extends BaseSingleton<MenuLayer> {
     @property(Node)
     levelPreivews: Node = null
 
@@ -40,7 +42,10 @@ export class MenuLayer extends Component {
     @property(Sprite)
     avatar: Sprite = null
 
+    @property(BuyBooster)
+    buyBooster: BuyBooster = null
 
+    idBoosters = []
     protected onEnable(): void {
         this.UpdateHeartUI()
         this.UpdateCoin()

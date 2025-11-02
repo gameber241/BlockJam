@@ -1,19 +1,24 @@
 import { _decorator, Color, Component, director, Label, Node } from 'cc';
 import { BlockJamManager } from '../Manager/BlockJamManager';
 import { DataManager } from '../DataManager';
+import { BaseSingleton } from '../Base/BaseSingleton';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuyBooster')
-export class BuyBooster extends Component {
+export class BuyBooster extends BaseSingleton<BuyBooster> {
     @property(Node)
     buyBoosters: Node = null
 
     @property(Label)
     buyLb: Label = null
     typeBooster
+    protected start(): void {
+
+    }
     Show(typeBooster) {
         this.typeBooster = typeBooster
         this.node.active = true
+        console.log(this)
         this.buyBoosters.children.forEach(e => e.active = false)
         this.buyBoosters.children[typeBooster].active = true
 

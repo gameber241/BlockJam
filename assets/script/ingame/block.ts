@@ -484,7 +484,8 @@ export class block extends Component {
     onBoosterFinish(event: EventTouch) {
         IngameLogic.getInstance().typebooster = -1;
         IngameLogic.getInstance().isUseTool = false;
-        event.propagationStopped = true;
+        if (event)
+            event.propagationStopped = true;
     }
 
     /**
@@ -1083,7 +1084,7 @@ export class block extends Component {
         // Tính toán lại vị trí grid dựa trên cells còn lại
         const minX = Math.min(...cells.map(c => c.x));
         const minY = Math.min(...cells.map(c => c.y));
-        
+
         // Cập nhật vị trí grid mới
         this.xIndex = this.xIndex + minX;
         this.yIndex = this.yIndex + minY;

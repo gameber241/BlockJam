@@ -1,6 +1,7 @@
 import { _decorator, CCInteger, Component, director, Input, Label, Node, sys } from 'cc';
 import { IngameLogic } from '../ingame/IngameLogic';
 import { DataManager } from '../DataManager';
+import { BuyBooster } from './BuyBooster';
 const { ccclass, property } = _decorator;
 
 @ccclass('BaseBooster')
@@ -13,12 +14,12 @@ export class BaseBooster extends Component {
 
 
     quantityNB = 0
-    protected start(): void {
+    protected onEnable(): void {
         this.btnAdd = this.node.getChildByName("add")
-        this.quantity == this.node.getChildByName("quantity")
-        // this.node.on(Input.EventType.TOUCH_END, this.onclick, this)
+        this.quantity = this.node.getChildByName("quantity")
+
         this.updateQuantity()
-        director.on("UPDATE_BOOSTER", this.updateQuantity)
+        director.on("UPDATE_BOOSTER", this.updateQuantity, this)
 
 
 
@@ -27,7 +28,7 @@ export class BaseBooster extends Component {
 
     onclick() {
         if (this.quantityNB <= 0) {
-            IngameLogic.getInstance().buyBooster.Show(this.typeBooster)
+            BuyBooster.getInstance().Show(this.typeBooster)
             return
         }
         if (IngameLogic.getInstance().isUseTool == true) return
@@ -49,8 +50,13 @@ export class BaseBooster extends Component {
 
     }
 
-    protected onDestroy(): void {
+    protected onDisable(): void {
         director.off("UPDATE_BOOSTER", this.updateQuantity)
+
+
+    }
+
+    protected onDestroy(): void {
 
     }
 
