@@ -1,0 +1,41 @@
+
+rocket.png
+size: 2048, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+cloud1
+  rotate: false
+  xy: 2, 416
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+cloud2
+  rotate: false
+  xy: 516, 416
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+fxx
+  rotate: false
+  xy: 2, 125
+  size: 287, 289
+  orig: 287, 289
+  offset: 0, 0
+  index: -1
+lua
+  rotate: false
+  xy: 2, 2
+  size: 78, 121
+  orig: 78, 121
+  offset: 0, 0
+  index: -1
+tenlua
+  rotate: false
+  xy: 1030, 689
+  size: 162, 239
+  orig: 162, 239
+  offset: 0, 0
+  index: -1
