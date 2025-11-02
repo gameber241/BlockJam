@@ -1,0 +1,111 @@
+
+skeleton.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+confetti_rocket1
+  rotate: true
+  xy: 234, 90
+  size: 135, 130
+  orig: 512, 512
+  offset: 164, 175
+  index: -1
+confetti_rocket10
+  rotate: true
+  xy: 695, 25
+  size: 237, 302
+  orig: 512, 512
+  offset: 101, 102
+  index: -1
+confetti_rocket11
+  rotate: true
+  xy: 366, 2
+  size: 257, 327
+  orig: 512, 512
+  offset: 90, 91
+  index: -1
+confetti_rocket12
+  rotate: false
+  xy: 1024, 666
+  size: 276, 351
+  orig: 512, 512
+  offset: 80, 80
+  index: -1
+confetti_rocket13
+  rotate: false
+  xy: 976, 307
+  size: 301, 351
+  orig: 512, 512
+  offset: 66, 98
+  index: -1
+confetti_rocket14
+  rotate: false
+  xy: 346, 640
+  size: 321, 377
+  orig: 512, 512
+  offset: 55, 85
+  index: -1
+confetti_rocket15
+  rotate: false
+  xy: 2, 614
+  size: 342, 403
+  orig: 512, 512
+  offset: 45, 72
+  index: -1
+confetti_rocket2
+  rotate: true
+  xy: 2, 36
+  size: 189, 230
+  orig: 512, 512
+  offset: 136, 131
+  index: -1
+confetti_rocket3
+  rotate: false
+  xy: 1279, 337
+  size: 272, 327
+  orig: 512, 512
+  offset: 86, 85
+  index: -1
+confetti_rocket4
+  rotate: false
+  xy: 2, 227
+  size: 344, 385
+  orig: 512, 512
+  offset: 31, 62
+  index: -1
+confetti_rocket5
+  rotate: false
+  xy: 669, 660
+  size: 353, 357
+  orig: 512, 512
+  offset: 9, 84
+  index: -1
+confetti_rocket6
+  rotate: true
+  xy: 664, 264
+  size: 374, 310
+  orig: 512, 512
+  offset: 0, 84
+  index: -1
+confetti_rocket7
+  rotate: true
+  xy: 348, 261
+  size: 377, 314
+  orig: 512, 512
+  offset: 11, 68
+  index: -1
+confetti_rocket8
+  rotate: true
+  xy: 999, 3
+  size: 302, 310
+  orig: 512, 512
+  offset: 95, 68
+  index: -1
+confetti_rocket9
+  rotate: true
+  xy: 1311, 55
+  size: 280, 271
+  orig: 512, 512
+  offset: 116, 116
+  index: -1
