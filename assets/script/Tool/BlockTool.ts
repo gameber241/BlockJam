@@ -48,7 +48,6 @@ export class BlockTool extends Component {
     corlorWire = []
     isStar = false
     init(col, row, idBlock, idColor, director, idColorSub, ice, isKey, isDrag, numberLock, colorWire, isStar) {
-        console.log(col, row, idBlock, idColor, director)
         this.director = director
         this.idBlock = idBlock
         this.col = col

@@ -63,7 +63,6 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     GetAccount() {
         const _data = sys.localStorage.getItem("ACCOUNT") as any
-        console.log(_data)
         if (_data) {
             const data = JSON.parse(_data)
             if (data) {
@@ -97,7 +96,6 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
     ShowProfile() {
         let profile = PoolManager.getInstance().getNode("Profile", this.LobbyUI.children[2])
-        console.log(profile)
     }
 
     save() {
@@ -114,7 +112,6 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
      */
     restore() {
         const _data = sys.localStorage.getItem(STORAGE_KEY) as any
-        console.log(_data)
         if (_data) {
             const data = JSON.parse(_data)
             if (data) {
@@ -149,7 +146,6 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
 
 
     PlayGame() {
-        console.log(this.heartSystem)
         if (this.heartSystem.getHearts() > 0) {
             this.heartSystem.useHeart()
             this.LobbyUI.children[1].active = true
@@ -167,7 +163,6 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
     ShowREfill(callbacnk) {
         let popup = PoolManager.getInstance().getNode("PopupRefillHeart", this.LobbyUI.children[2])
         popup.getComponent(PopupRefillYoutLife).init(callbacnk)
-        console.log(callbacnk)
     }
 
     ShowWinSubHeart(callback) {

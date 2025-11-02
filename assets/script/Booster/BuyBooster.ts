@@ -18,7 +18,6 @@ export class BuyBooster extends BaseSingleton<BuyBooster> {
     Show(typeBooster) {
         this.typeBooster = typeBooster
         this.node.active = true
-        console.log(this)
         this.buyBoosters.children.forEach(e => e.active = false)
         this.buyBoosters.children[typeBooster].active = true
 

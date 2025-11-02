@@ -158,7 +158,6 @@ export class block extends Component {
 
 
     initLock() {
-        console.log("lock_" + this.colorIndex + "_" + this.typeIndex)
         this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.typeIndex)
         this.lockLb.getComponent(Label).string = this.lockNumber.toString()
         switch (this.typeIndex) {
@@ -253,13 +252,11 @@ export class block extends Component {
 
     iniIconBlock() {
         let shape = this.getBlockShape()
-        console.log(shape)
         for (let i = 0; i < shape.length; i++) {
             for (let j = 0; j < shape[i].length; j++) {
                 if (shape[i][j] == 0) continue
                 let icon = PoolManager.getInstance().getNode("iconBlock")
                 icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("fish_" + this.colorIndex)
-                console.log("fish_" + this.typeIndex)
                 this.listIcon.addChild(icon)
                 icon.setPosition(new Vec3(j * 100, i * 100))
                 icon.setScale(0.7, 0.7, 0.7)
@@ -309,12 +306,15 @@ export class block extends Component {
         this.colorIndex = this.colors[0]
         this.subcolor = false
         this.isSelected = false
-        console.log(this.colorIndex, this.isSelected)
+        this.colors = []
 
     }
 
     initListColor(colors: number[]) {
+
         if (colors.length == 0) return
+        this.listColor.destroyAllChildren()
+        console.log("den day", colors, this.typeIndex)
         colors.forEach((e, index) => {
             this.subcolor = true
             let newIcon = PoolManager.getInstance().getNode("blockInner", this.listColor)
@@ -436,7 +436,6 @@ export class block extends Component {
         if (this.lockNumber > 0) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
-        console.log(this.getClickedShapeCell(event))
         if (touchedBlocks.length === 0) return;
         const block = touchedBlocks[touchedBlocks.length - 1];
         this.sibilingCurrent = this.node.getSiblingIndex()
@@ -453,6 +452,13 @@ export class block extends Component {
         }
         else { // rocket
             if (IngameLogic.getInstance().typebooster == 3) {
+                if (block.freezeNum > 0) return
+                if (block.lockNumber > 0) return
+                if (block.isKey == true) return
+                if (block.isStar == true) return
+                if (block.isWire == true) return
+                if (block.colorWire != -1) return
+                if (block.colorsWire.length > 0) return
                 const hit = this.getClickedShapeCell(event);
                 if (hit) {
                     this.breakCell(hit);
@@ -804,7 +810,7 @@ export class block extends Component {
                                 return step - 1;
                             }
 
-                            
+
                         }
                     }
                 }
@@ -1095,6 +1101,21 @@ export class block extends Component {
         this.listIcon.removeAllChildren();
         this.iniIconBlock();
 
+        this.init(
+            IngameLogic.getInstance().blockTotalNum++,
+            newType,
+            this.colorIndex,
+            this.xIndex,
+            this.yIndex,
+            this.freezeNum,
+            this.dir,
+            this.colors,
+            this.lockNumber,
+            this.isKey,
+            this.isStar,
+            this.isWire
+        );
+
         // Tính vị trí mới trên UI
         const targetPos2D = v2(
             this.xIndex * (BLOCK_SIZE + BLOCK_GAP),
@@ -1110,6 +1131,8 @@ export class block extends Component {
     private removeBlock() {
         IngameLogic.getInstance().updateBlockLimitData(this, false);
         this.node.destroy();
+        director.emit("MERGE")
+
         IngameLogic.getInstance().blockClearNum++;
         IngameLogic.getInstance().checkGame();
     }
@@ -1142,13 +1165,13 @@ export class block extends Component {
                 this.colorIndex,
                 newGridX,
                 newGridY,
-                0,
-                0,
-                [],
-                0,
-                false,
-                false,
-                false
+                this.freezeNum,
+                this.dir,
+                this.colors,
+                this.lockNumber,
+                this.isKey,
+                this.isStar,
+                this.isWire
             );
 
             // Tính vị trí thực tế trên UI dựa trên grid position
@@ -1256,11 +1279,9 @@ export class block extends Component {
     public getClickedShapeCell(event: EventTouch): Vec2 | null {
         const ui = this.node.getComponent(UITransform)!;
         const shape = this.getBlockShape();
-        console.log(shape)
 
         const totalRows = shape.length;
         const totalCols = shape[0].length;
-        console.log()
         // tọa độ click relative trong block (anchor = 0,0 = bottom-left)
         const local = ui.convertToNodeSpaceAR(
             new Vec3(event.getUILocation().x, event.getUILocation().y)
@@ -1268,7 +1289,6 @@ export class block extends Component {
 
         const col = Math.floor(local.x / BLOCK_SIZE);
         const rowBottom = Math.floor(local.y / BLOCK_SIZE);
-        console.log(col, rowBottom, local)
         // ngoài vùng block
         if (col < 0 || col >= totalCols) return null;
         if (rowBottom < 0 || rowBottom >= totalRows) return null;

@@ -44,7 +44,6 @@ export class SelectColorExit extends Component {
                 } else {
                     this.node.children.forEach(e => e.active = false);
                     this.idSelect = value;
-                    console.log("Selected:", this.idSelect);
                     item.active = true;
                     Tools.getInstance().idColorExit = this.idSelect
                 }

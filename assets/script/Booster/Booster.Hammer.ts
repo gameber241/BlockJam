@@ -5,9 +5,13 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Booster_Hammer')
 export class Booster_Hammer extends BaseBooster {
-    onclick(): void {
-        super.onclick();
-        IngameLogic.getInstance().Hammer()
+
+
+    onclick(): boolean {
+        if (super.onclick() == false) return false;
+        IngameLogic.getInstance().Hammer();
+        return true;
     }
+
 }
 
