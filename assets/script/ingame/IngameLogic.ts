@@ -75,6 +75,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     currentColorIndex = -1
     currentSelectBlock: block = null
     blockLimitData: number[][] = []
+    wallData: number[][] = []
     status: ENUM_GAME_STATUS = ENUM_GAME_STATUS.UNRUNING
 
     isUseTool = false
@@ -318,6 +319,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                         this.blockLimitData[checkY][checkX] === 1) {
                         return false;
                     }
+
+                    // Kiểm tra tường (walls) - luôn block không cho đặt
+                    if (this.isWallAt(checkX, checkY)) {
+                        return false;
+                    }
                 }
             }
         }
@@ -327,15 +333,32 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     initBlockLimit() {
         let levelConfig = LeveConfig[BlockJamManager.getInstance().level - 1]
         this.blockLimitData = []
+        this.wallData = []
+        
+        // Khởi tạo arrays
         for (let i = 0; i < this.rowNum; i++) {
             this.blockLimitData[i] = []
+            this.wallData[i] = []
         }
+        
+        // Khởi tạo blockLimitData và wallData
         for (let i = 0; i < this.rowNum; i++) {
             for (let j = 0; j < this.colNum; j++) {
-
                 this.blockLimitData[i][j] = 0
+                this.wallData[i][j] = 0
+                
                 if (levelConfig.board[i][j] == 0) {
                     this.blockLimitData[i][j] = 1
+                }
+            }
+        }
+        
+        // Khởi tạo wall data từ borders
+        if (levelConfig.border) {
+            for (let i = 0; i < levelConfig.border.length; i++) {
+                const wall = levelConfig.border[i]
+                if (wall.x >= 0 && wall.x < this.colNum && wall.y >= 0 && wall.y < this.rowNum) {
+                    this.wallData[wall.y][wall.x] = 1
                 }
             }
         }
@@ -1083,7 +1106,22 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         console.log("✅ ShapeDict built:", this.shapeDict);
     }
 
+    /**
+     * Getter để truy cập wall data
+     */
+    public getWallData(): number[][] {
+        return this.wallData;
+    }
 
+    /**
+     * Kiểm tra có tường tại vị trí cụ thể
+     */
+    public isWallAt(x: number, y: number): boolean {
+        if (y < 0 || y >= this.rowNum || x < 0 || x >= this.colNum) {
+            return true; // Coi như có tường nếu ngoài biên
+        }
+        return this.wallData[y] && this.wallData[y][x] === 1;
+    }
 
     Rocket() {
         this.typebooster = 3

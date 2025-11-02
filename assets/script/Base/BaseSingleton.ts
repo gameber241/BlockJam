@@ -28,6 +28,7 @@ export class BaseSingleton<T> extends Component {
         return instance;
     }
 
+
     protected onLoad() {
         const type = this.constructor as Function;
 

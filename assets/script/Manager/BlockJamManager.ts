@@ -7,6 +7,7 @@ import { HeartSystem } from '../ui/HeartSystem';
 import { WinSubHeart } from '../ingame/WinSubHeart';
 import { PopupRefillYoutLife } from './PopupRefillYoutLife';
 import { IAPManager } from './IAPManager';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 const STORAGE_KEY = 'CC2_BLOCK_JAM'
 @ccclass('BlockJamManager')
@@ -37,8 +38,9 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         this.LobbyUI.active = false
         await ResourcesManager.getInstance().loadAllResources()
         
-        // Initialize IAP Manager
+        // Initialize Managers
         IAPManager.getInstance();
+        AudioManager.getInstance();
         
         this.restore()
         this.ShowLobby()

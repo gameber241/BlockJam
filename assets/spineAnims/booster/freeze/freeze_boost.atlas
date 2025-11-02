@@ -1,0 +1,20 @@
+
+freeze_boost.png
+size: 2048, 2048
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+FX2
+  rotate: false
+  xy: 2, 2
+  size: 1080, 1920
+  orig: 1080, 1920
+  offset: 0, 0
+  index: -1
+efx
+  rotate: false
+  xy: 1084, 993
+  size: 929, 929
+  orig: 929, 929
+  offset: 0, 0
+  index: -1

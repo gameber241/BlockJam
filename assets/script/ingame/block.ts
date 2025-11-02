@@ -3,6 +3,7 @@ import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BLOCK_GAP, BLOCK_SIZE, ENUM_GAME_STATUS, IngameLogic } from './IngameLogic';
 import { delay } from '../Utils';
 import { PoolManager } from '../Manager/PoolManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('block')
@@ -450,7 +451,7 @@ export class block extends Component {
             this.onBoosterFinish(event);
             return
         }
-        else {
+        else { // rocket
             if (IngameLogic.getInstance().typebooster == 3) {
                 const hit = this.getClickedShapeCell(event);
                 if (hit) {
@@ -464,6 +465,7 @@ export class block extends Component {
 
         // Nếu block hiện tại đã được chọn, trả về trực tiếp
         if (block.isSelected) return;
+        AudioManager.getInstance().playOneShot('pop');
         // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_CHOOSE)
         // Đặt trạng thái được chọn
         IngameLogic.getInstance().currentSelectBlock = block;
@@ -776,7 +778,7 @@ export class block extends Component {
         // Tạm thời xóa chiếm dụng của block hiện tại
         // IngameLogic.getInstance().updateBlockLimitData(this, false);
 
-        // Kiểm tra cản trở 4 hướng
+        // Kiểm tra cản trở 4 hướng (bao gồm cả blocks và walls)
         const checkDirection = (dx: number, dy: number) => {
             for (let step = 1; step <= Math.max(IngameLogic.getInstance().colNum, IngameLogic.getInstance().rowNum); step++) {
                 const testX = currentPos.x + dx * step;
@@ -795,9 +797,14 @@ export class block extends Component {
                                 return step - 1;
                             }
 
-                            // Kiểm tra chiếm dụng
+                            // Kiểm tra chiếm dụng blocks
                             if (IngameLogic.getInstance().blockLimitData[checkY] &&
                                 IngameLogic.getInstance().blockLimitData[checkY][checkX] === 1) {
+                                return step - 1;
+                            }
+
+                            // Kiểm tra tường (walls)
+                            if (IngameLogic.getInstance().isWallAt(checkX, checkY)) {
                                 return step - 1;
                             }
                         }
@@ -1161,6 +1168,7 @@ export class block extends Component {
 
     // ⭐ ADD: break cell
     public breakCell(hit: Vec2) {
+        AudioManager.getInstance().playOneShot('rocketHit');
         // hit.y đã là chỉ số "từ TRÊN xuống" rồi (do getHitCell đã chuyển đổi)
         const cells = this.getCells(); // getCells() cũng tạo (x,y) theo hàng trên xuống
 
