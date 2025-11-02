@@ -803,10 +803,7 @@ export class block extends Component {
                                 return step - 1;
                             }
 
-                            // Kiểm tra tường (walls)
-                            if (IngameLogic.getInstance().isWallAt(checkX, checkY)) {
-                                return step - 1;
-                            }
+                            
                         }
                     }
                 }
