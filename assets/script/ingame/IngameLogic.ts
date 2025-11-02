@@ -9,6 +9,7 @@ import { border } from './border';
 import { BlockJamManager } from '../Manager/BlockJamManager';
 import { COLORblOCK } from '../Tool/SelectColorBlock';
 import { BlockTool } from '../Tool/BlockTool';
+import { BuyBooster } from '../Booster/BuyBooster';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -57,6 +58,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     @property(Label)
     coinContinue: Label = null
+
+    @property(BuyBooster)
+    buyBooster: BuyBooster = null
 
     timeNumber: 0
 
