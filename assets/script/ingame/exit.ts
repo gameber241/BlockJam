@@ -159,8 +159,8 @@ export class exit extends Component {
      * Kiểm tra block có thẳng hàng với exit không
      */
     private isBlockAligned(block: block): boolean {
-        if(!block) return false;
-        
+        if(!block || !block.node) return false;
+
         const blockSize = block.getBlockSize();
         const currentGridPos = block.getCurrentGridPosition();
         switch (this.typeIndex) {
