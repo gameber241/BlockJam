@@ -444,10 +444,14 @@ export class block extends Component {
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
             IngameLogic.getInstance().MagnetBlock(block.colorIndex);
             this.onBoosterFinish(event);
+            event.propagationStopped = true;
+
             return
         } else if (IngameLogic.getInstance().typebooster == 2) {
             IngameLogic.getInstance().HammerBlock(block);
             this.onBoosterFinish(event);
+            event.propagationStopped = true;
+
             return
         }
         else { // rocket
@@ -463,8 +467,12 @@ export class block extends Component {
                 if (hit) {
                     this.breakCell(hit);
                     this.onBoosterFinish(event);
+                    event.propagationStopped = true;
+
                     return;
                 }
+                event.propagationStopped = true;
+
                 return
             }
         }
@@ -1181,7 +1189,7 @@ export class block extends Component {
             );
             const uiPos = IngameLogic.getInstance().getRealPos(targetPos2D);
             newBlockNode.setPosition(uiPos);
-
+            console.log(newGridX, newGridY)
             // đánh dấu chiếm diện grid
             IngameLogic.getInstance().updateBlockLimitData(newBlock, true);
         }
@@ -1211,8 +1219,9 @@ export class block extends Component {
 
         // Nếu chia thành nhiều mảnh → spawn mảnh mới rồi xóa block cũ
         if (groups.length > 1) {
-            this.spawnFragments(groups);
             this.removeBlock();
+            this.spawnFragments(groups);
+
             return;
         }
 
