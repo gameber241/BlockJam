@@ -5,9 +5,11 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Booster_Magnet')
 export class Booster_Magnet extends BaseBooster {
-    onclick(): void {
-        super.onclick();
-        IngameLogic.getInstance().Magnet()
+
+    onclick(): boolean {
+        if (super.onclick() == false) return false;
+        IngameLogic.getInstance().Magnet();
+        return true;
     }
 
 }

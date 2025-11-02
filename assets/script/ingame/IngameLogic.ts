@@ -97,7 +97,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     Reset() {
         this.isUseTool = false
-        console.log(this)
         this.blockTotalNum = 0
         this.typebooster = -1
         this.blockClearNum = 0
@@ -157,7 +156,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
 
     UseTools() {
-        console.log(MenuLayer.getInstance().idBoosters)
         MenuLayer.getInstance().idBoosters.forEach(e => {
 
             if (e == 0) {
@@ -178,7 +176,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         for (let i = 0; i < blocks.length; i++) {
             let e = blocks[i]
             if (e.freezeNum > 0) continue
-            if (e.subcolor == true) continue
             if (e.lockNumber > 0) continue
             if (e.isKey == true) continue
             if (e.isStar == true) continue
@@ -239,9 +236,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     initBlockBg(boards) {
-        // console.log(boards)
-        // let board = [...boards].reverse()
-        // console.log(board)
+
         const startPos = v2(-this.blockBg.getComponent(UITransform).width / 2, -this.blockBg.getComponent(UITransform).height / 2)
         for (let i = 0; i < this.rowNum; i++) {
             for (let j = 0; j < this.colNum; j++) {
@@ -346,6 +341,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 }
             }
         }
+
+        console.log("BlockLimitData:", JSON.stringify(this.blockLimitData, null, 2));
     }
 
 
@@ -537,6 +534,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     break
             }
         }
+
+        console.log(this.blockLimitData)
     }
     checkExitCondition(block: block): boolean {
         const exits = this.node.getComponentsInChildren(exit);
@@ -633,7 +632,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             case 0:
                                 for (let i = 0; i < ex.size; i++) {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
-                                    console.log(eff)
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, -90))
@@ -646,8 +644,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             case 1:
                                 for (let i = 0; i < ex.size; i++) {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
-                                    console.log(eff)
-
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
@@ -670,8 +666,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             case 3:
                                 for (let i = 0; i < ex.size; i++) {
                                     const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
-                                    console.log(eff)
-
                                     eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
@@ -705,7 +699,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
     checkWin() {
         const blocks = this.blockBg.getComponentsInChildren(block);
-        console.log(blocks, " den day")
         if (blocks.length === 0) {
             this.scheduleOnce(() => {
                 BlockJamManager.getInstance().heartSystem.addHeart(1);
@@ -1057,7 +1050,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         // Tìm tất cả block có màu phù hợp
         listBlock.forEach(e => {
             if (e.freezeNum > 0) return
-            if (e.subcolor == true) return
             if (e.lockNumber > 0) return
             if (e.isKey == true) return
             if (e.isStar == true) return
@@ -1080,7 +1072,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         targetBlocks.forEach((targetBlock, index) => {
             this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
                 // Callback khi hoàn thành tất cả hiệu ứng
-                console.log('Magnet effect completed!')
             })
         })
 
@@ -1092,7 +1083,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     HammerBlock(block) {
         if (block.freezeNum > 0) return
-        if (block.subcolor == true) return
         if (block.lockNumber > 0) return
         if (block.isKey == true) return
         if (block.isStar == true) return
@@ -1139,8 +1129,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
             this.shapeDict.set(key, t);
         }
-
-        console.log("✅ ShapeDict built:", this.shapeDict);
     }
 
 

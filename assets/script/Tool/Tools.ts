@@ -93,7 +93,6 @@ export class Tools extends BaseSingleton<Tools> {
                 this.board[i].push(1)
             }
         }
-        console.log(this.board)
     }
 
     initBlockBg() {
@@ -301,7 +300,6 @@ export class Tools extends BaseSingleton<Tools> {
 
 
     BtnIsKey(target, args) {
-        console.log(target)
         if (this.isKey == false) {
             this.isKey = true
             target.target.getComponent(UIOpacity).opacity = 100

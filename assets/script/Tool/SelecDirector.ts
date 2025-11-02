@@ -36,7 +36,6 @@ export class SelecDirector extends Component {
                 } else {
                     this.node.children.forEach(e => e.active = false);
                     this.idSelect = value;
-                    console.log("Selected:", this.idSelect);
                     item.active = true;
                     Tools.getInstance().idDirector = this.idSelect
                 }

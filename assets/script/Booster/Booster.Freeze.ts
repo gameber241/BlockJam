@@ -5,9 +5,11 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Booster_Freeze')
 export class Booster_Freeze extends BaseBooster {
-    onclick(): void {
-        super.onclick();
-        IngameLogic.getInstance().FreezeBooster()
+    onclick(): boolean {
+        if (super.onclick() == false) return false;
+        IngameLogic.getInstance().FreezeBooster();
+        return true;
     }
+
 }
 
