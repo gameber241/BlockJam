@@ -442,10 +442,12 @@ export class block extends Component {
         // Skill logic
         if (IngameLogic.getInstance().typebooster == 1) {
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
-            IngameLogic.getInstance().MagnetBlock(block.colorIndex)
+            IngameLogic.getInstance().MagnetBlock(block.colorIndex);
+            this.onBoosterFinish(event);
             return
         } else if (IngameLogic.getInstance().typebooster == 2) {
-            IngameLogic.getInstance().HammerBlock(block)
+            IngameLogic.getInstance().HammerBlock(block);
+            this.onBoosterFinish(event);
             return
         }
         else {
@@ -453,9 +455,7 @@ export class block extends Component {
                 const hit = this.getClickedShapeCell(event);
                 if (hit) {
                     this.breakCell(hit);
-                    IngameLogic.getInstance().typebooster = -1;
-                    IngameLogic.getInstance().isUseTool = false;
-                    event.propagationStopped = true;
+                    this.onBoosterFinish(event);
                     return;
                 }
                 return
@@ -479,55 +479,68 @@ export class block extends Component {
         block.originalPos = v3(block.node.position.x, block.node.position.y).clone();
     }
 
+    onBoosterFinish(event: EventTouch) {
+        IngameLogic.getInstance().typebooster = -1;
+        IngameLogic.getInstance().isUseTool = false;
+        event.propagationStopped = true;
+    }
+
     /**
      * Xử lý sự kiện chạm di chuyển
      */
     isCanMove = true
     private onTouchMove(event: EventTouch) {
+        const selectBlock = IngameLogic.getInstance().currentSelectBlock;
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
-        if (IngameLogic.getInstance().currentSelectBlock == null) return
-        if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
+        if (selectBlock == null) return
+        if (!selectBlock.isSelected) return;
         if (this.lockNumber > 0) return
-        if (IngameLogic.getInstance().currentSelectBlock.isCanMove == false) return
+        if (selectBlock.isCanMove == false) return
         const dir = this.get8Direction(event);
 
         // Tính toán vị trí mới
-        const touchPos = IngameLogic.getInstance().currentSelectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
+        const touchPos = selectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
         let newPos: Vec3 = touchPos.subtract(
-            IngameLogic.getInstance().currentSelectBlock.touchOffset
+            selectBlock.touchOffset
         );
         // Lấy vị trí lưới hiện tại
-        const currentGridPos = IngameLogic.getInstance().currentSelectBlock.getCurrentGridPosition();
+        const currentGridPos = selectBlock.getCurrentGridPosition();
 
+        const blockBgTransform = IngameLogic.getInstance().blockBg.getComponent(UITransform);
         // Tính toán biên cơ bản
-        const minX = -IngameLogic.getInstance().blockBg.getComponent(UITransform).contentSize.width / 2 + BLOCK_GAP;
-        const minY = -IngameLogic.getInstance().blockBg.getComponent(UITransform).contentSize.height / 2 + BLOCK_GAP;
+        const minX = -blockBgTransform.contentSize.width / 2 + BLOCK_GAP;
+        const minY = -blockBgTransform.contentSize.height / 2 + BLOCK_GAP;
 
         // Tính toán động biên có thể di chuyển thực tế
-        const dynamicBounds = IngameLogic.getInstance().currentSelectBlock.calculateShapeAwareBounds(currentGridPos);
+        const dynamicBounds = selectBlock.calculateShapeAwareBounds(currentGridPos);
+        const cellSize = BLOCK_SIZE + BLOCK_GAP;
         // Chuyển đổi thành biên tọa độ thế giới
-        const worldMinX = minX + dynamicBounds.minCol * (BLOCK_SIZE + BLOCK_GAP);
-        const worldMaxX = minX + dynamicBounds.maxCol * (BLOCK_SIZE + BLOCK_GAP);
-        const worldMinY = minY + dynamicBounds.minRow * (BLOCK_SIZE + BLOCK_GAP);
-        const worldMaxY = minY + dynamicBounds.maxRow * (BLOCK_SIZE + BLOCK_GAP);
+        const worldMinX = minX + dynamicBounds.minCol * cellSize;
+        const worldMaxX = minX + dynamicBounds.maxCol * cellSize;
+        const worldMinY = minY + dynamicBounds.minRow * cellSize;
+        const worldMaxY = minY + dynamicBounds.maxRow * cellSize;
 
         // Giới hạn vị trí trong biên động
-        if (IngameLogic.getInstance().currentSelectBlock.dir == 1) {
-            // log(IngameLogic.getInstance().currentSelectBlock.initPos.x, IngameLogic.getInstance().currentSelectBlock.originalPos.x)
-            newPos.x = IngameLogic.getInstance().currentSelectBlock.initPos.x; // Giữ vị trí x gốc
+        if (selectBlock.dir == 1) {
+            // log(selectBlock.initPos.x, selectBlock.originalPos.x)
+            newPos.x = selectBlock.initPos.x; // Giữ vị trí x gốc
             newPos.y = misc.clampf(newPos.y, worldMinY, worldMaxY);
-        } else if (IngameLogic.getInstance().currentSelectBlock.dir == 2) {
-            // log(IngameLogic.getInstance().currentSelectBlock.initPos.y, IngameLogic.getInstance().currentSelectBlock.originalPos.y)
-            newPos.y = IngameLogic.getInstance().currentSelectBlock.initPos.y; // Giữ vị trí y gốc
+        } else if (selectBlock.dir == 2) {
+            // log(selectBlock.initPos.y, selectBlock.originalPos.y)
+            newPos.y = selectBlock.initPos.y; // Giữ vị trí y gốc
             newPos.x = misc.clampf(newPos.x, worldMinX, worldMaxX);
         } else {
             newPos.x = misc.clampf(newPos.x, worldMinX, worldMaxX);
             newPos.y = misc.clampf(newPos.y, worldMinY, worldMaxY);
+
+
         }
 
+
+
         // Áp dụng vị trí mới
-        IngameLogic.getInstance().currentSelectBlock.node.position = v3(newPos);
+        selectBlock.node.position = v3(newPos);
 
         event.propagationStopped = true;
     }
@@ -701,6 +714,26 @@ export class block extends Component {
             default: return 60; // Khác
         }
     }
+    private getFloatGridPosition(): { x: number, y: number } {
+        const blockBg = IngameLogic.getInstance().blockBg;
+        const uiTransform = blockBg.getComponent(UITransform);
+        if (!uiTransform) return { x: 0, y: 0 };
+
+        const startPos = v3(
+            -uiTransform.contentSize.width / 2 + BLOCK_GAP,
+            -uiTransform.contentSize.height / 2 + BLOCK_GAP,
+            0
+        );
+        if (!this.node) return;
+        const relativePos = this.node.position.clone().subtract(startPos);
+
+        const cellSize = BLOCK_SIZE + BLOCK_GAP;
+
+        const gridX = relativePos.x / cellSize;
+        const gridY = relativePos.y / cellSize;
+
+        return { x: gridX, y: gridY };
+    }
     public getCurrentGridPosition(): { x: number, y: number } {
         const blockBg = IngameLogic.getInstance().blockBg;
         const uiTransform = blockBg.getComponent(UITransform);
@@ -711,15 +744,14 @@ export class block extends Component {
             -uiTransform.contentSize.height / 2 + BLOCK_GAP,
             0
         );
-
+        if (!this.node) return;
         const relativePos = this.node.position.clone().subtract(startPos);
 
         const cellSize = BLOCK_SIZE + BLOCK_GAP;
         function roundGrid(value: number): number {
-            const base = Math.floor(value / cellSize);
-            const frac = value / cellSize - base;
+            const base = Math.round(value / cellSize);
 
-            if (frac > 0.9) return base + 1;
+            //if (frac > 0.9) return base + 1;
             return base;
         }
 
@@ -810,6 +842,7 @@ export class block extends Component {
         return false;
     }
 
+
     private async alignToGrid() {
         // Lấy vị trí đích trên grid
         const targetPos2D: Vec2 = v2(
@@ -835,7 +868,7 @@ export class block extends Component {
         // // Chờ tween chạy xong
         // await delay(moveTime);
 
-        this.node.setPosition(targetPos3D)
+        this.node.setPosition(targetPos3D);
     }
     public getBlockSize(): { width: number, height: number } {
         switch (this.typeIndex) {
@@ -1043,10 +1076,27 @@ export class block extends Component {
     private updateShape(cells: Vec2[], newType: number) {
         IngameLogic.getInstance().updateBlockLimitData(this, false);
 
+        // Tính toán lại vị trí grid dựa trên cells còn lại
+        const minX = Math.min(...cells.map(c => c.x));
+        const minY = Math.min(...cells.map(c => c.y));
+        
+        // Cập nhật vị trí grid mới
+        this.xIndex = this.xIndex + minX;
+        this.yIndex = this.yIndex + minY;
+
+        // Cập nhật shape
         this.typeIndex = newType;
         this.initSprite();
         this.listIcon.removeAllChildren();
         this.iniIconBlock();
+
+        // Tính vị trí mới trên UI
+        const targetPos2D = v2(
+            this.xIndex * (BLOCK_SIZE + BLOCK_GAP),
+            this.yIndex * (BLOCK_SIZE + BLOCK_GAP)
+        );
+        const newUIPos = IngameLogic.getInstance().getRealPos(targetPos2D);
+        this.node.setPosition(newUIPos);
 
         IngameLogic.getInstance().updateBlockLimitData(this, true);
     }
@@ -1073,6 +1123,7 @@ export class block extends Component {
             const minY = Math.min(...g.map(c => c.y));
 
             // Block mới sẽ đặt đúng vị trí cell ban đầu trên grid
+            // Vị trí grid của block mới = vị trí block gốc + vị trí relative của mảnh
             const newGridX = originX + minX;
             const newGridY = originY + minY;
 
@@ -1095,13 +1146,12 @@ export class block extends Component {
                 false
             );
 
-            // Vị trí hiển thị ngoài UI
-            const uiPos = IngameLogic.getInstance().getRealPos(
-                new Vec2(
-                    newGridX * (BLOCK_SIZE + BLOCK_GAP),
-                    newGridY * (BLOCK_SIZE + BLOCK_GAP)
-                )
+            // Tính vị trí thực tế trên UI dựa trên grid position
+            const targetPos2D = v2(
+                newGridX * (BLOCK_SIZE + BLOCK_GAP),
+                newGridY * (BLOCK_SIZE + BLOCK_GAP)
             );
+            const uiPos = IngameLogic.getInstance().getRealPos(targetPos2D);
             newBlockNode.setPosition(uiPos);
 
             // đánh dấu chiếm diện grid

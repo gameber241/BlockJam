@@ -14,14 +14,14 @@ export class LoadingManager extends Component {
         let progress = { value: 0 }; // biến dùng để tween
 
         tween(progress)
-            .to(20, { value: 100 }, { // chạy trong 2 giây
+            .to(15, { value: 100 }, { // chạy trong 15 giây
                 onUpdate: (target: { value: number }) => {
                     this.loadingLb.string = `${Math.floor(target.value)}%`;
                 }
             })
             .start();
             
-        tween(this.loadingProgress).to(20, { fillRange: 1 }).start()
+        tween(this.loadingProgress).to(15, { fillRange: 1 }).start()
 
     }
 
