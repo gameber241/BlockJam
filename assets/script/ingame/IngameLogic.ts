@@ -10,6 +10,8 @@ import { BlockJamManager } from '../Manager/BlockJamManager';
 import { COLORblOCK } from '../Tool/SelectColorBlock';
 import { BlockTool } from '../Tool/BlockTool';
 import { BuyBooster } from '../Booster/BuyBooster';
+import { MenuLayer } from '../ui/MenuLayer';
+import { DataManager } from '../DataManager';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -58,9 +60,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     @property(Label)
     coinContinue: Label = null
-
-    @property(BuyBooster)
-    buyBooster: BuyBooster = null
 
     timeNumber: 0
 
@@ -123,6 +122,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
             this.startFromString('1:30', this.ShowOutOfTime.bind(this));
             this.coinLb.string = BlockJamManager.getInstance().coin.toString()
+            this.UseTools()
+
         }, 0.1)
 
 
@@ -150,6 +151,65 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         this.initBlockLimit()
         this.initExit(levelConfig.exits)
         this.buildShapeDict();
+
+    }
+
+
+
+    UseTools() {
+        console.log(MenuLayer.getInstance().idBoosters)
+        MenuLayer.getInstance().idBoosters.forEach(e => {
+
+            if (e == 0) {
+                this.FreezeBooster()
+            }
+            if (e == 1) {
+                this.UserocketRandom()
+            }
+            DataManager.SaveBooster(e, -1)
+            director.emit("UPDATE_BOOSTER")
+        })
+        MenuLayer.getInstance().idBoosters = []
+    }
+
+    UserocketRandom() {
+        let blocks = this.blockBg.getComponentsInChildren(block)
+        // Lấy danh sách tất cả các ô trong block
+        for (let i = 0; i < blocks.length; i++) {
+            let e = blocks[i]
+            if (e.freezeNum > 0) continue
+            if (e.subcolor == true) continue
+            if (e.lockNumber > 0) continue
+            if (e.isKey == true) continue
+            if (e.isStar == true) continue
+            if (e.isWire == true) continue
+            if (e.colorWire != -1) continue
+            if (e.colorsWire.length > 0) continue
+
+            const shape = e.getBlockShape();
+            const cells: Vec2[] = [];
+            for (let y = 0; y < shape.length; y++) {
+                for (let x = 0; x < shape[y].length; x++) {
+                    if (shape[y][x] === 1) {
+                        cells.push(new Vec2(x, y));
+                    }
+                }
+            }
+
+            // Không có ô nào thì thoát
+            if (cells.length === 0) continue;
+
+            // Chọn ngẫu nhiên 1 ô
+            const randomCell = cells[Math.floor(Math.random() * cells.length)];
+
+            // Phá ô đó
+            e.breakCell(randomCell);
+
+            // Kết thúc booster
+            e.onBoosterFinish(null);
+            return;
+        }
+
 
 
     }
@@ -925,30 +985,30 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
         // Set sorting layer lên trên cùng để hiện trên các block khác
         targetBlock.node.setSiblingIndex(9999)
-        
+
         // Thời gian delay cho mỗi block để tạo hiệu ứng sóng
         const delayTime = index * 0.08
-        
+
         // Tính toán vị trí giữa màn hình
         const screenCenter = v3(0, 0, 0)
-        
+
         // Lấy kích thước block để tính tâm xoay
         const blockTransform = targetBlock.node.getComponent(UITransform)
         const blockCenterOffset = v3(blockTransform.width / 2, blockTransform.height / 2, 0)
-        
+
         // Tạo node tạm để làm tâm xoay
         const rotationPivot = new Node('RotationPivot')
         targetBlock.node.parent.addChild(rotationPivot)
-        
+
         // Đặt pivot tại tâm block
         const blockCenter = targetBlock.node.position.clone().add(blockCenterOffset)
         rotationPivot.setPosition(blockCenter)
-        
+
         // Chuyển block thành con của pivot và điều chỉnh vị trí relative
         const originalParent = targetBlock.node.parent
         targetBlock.node.setParent(rotationPivot)
         targetBlock.node.setPosition(blockCenterOffset.negative())
-        
+
         // Hiệu ứng thu nhỏ dần trước khi bắt đầu bay
         tween(rotationPivot)
             .delay(delayTime)
@@ -957,13 +1017,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             .parallel(
                 // Di chuyển về giữa màn hình với hiệu ứng hút
                 tween().to(0.8, { position: screenCenter }, { easing: 'sineIn' }),
-                
+
                 // Scale nhỏ dần với nhiều giai đoạn
                 tween()
                     .to(0.4, { scale: v3(0.6, 0.6, 0.6) }, { easing: 'quartOut' })
                     .to(0.2, { scale: v3(0.3, 0.3, 0.3) }, { easing: 'quartIn' })
                     .to(0.2, { scale: v3(0, 0, 0) }, { easing: 'backIn' }),
-                
+
                 // Xoay vòng với tốc độ tăng dần
                 tween()
                     .by(0.4, { angle: 360 })
@@ -974,7 +1034,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 // Sau khi hoàn thành hiệu ứng, xóa toàn bộ pivot (bao gồm block)
                 rotationPivot.destroy()
                 this.blockClearNum += 1
-                
+
                 // Gọi callback khi hoàn thành hiệu ứng block cuối cùng
                 if (index === totalBlocks - 1) {
                     this.checkGame()
@@ -993,7 +1053,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     MagnetBlock(colorId: number) {
         let listBlock = this.blockBg.getComponentsInChildren(block)
         const targetBlocks: block[] = []
-        
+
         // Tìm tất cả block có màu phù hợp
         listBlock.forEach(e => {
             if (e.freezeNum > 0) return
