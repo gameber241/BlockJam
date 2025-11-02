@@ -906,8 +906,91 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
 
-    MagnetBlock(colorId) {
+    /**
+     * Tạo hiệu ứng hút block về giữa màn hình
+     * @param targetBlock Block cần tạo hiệu ứng
+     * @param index Thứ tự của block (để tạo delay)
+     * @param totalBlocks Tổng số block (để biết block cuối cùng)
+     * @param onComplete Callback khi hoàn thành hiệu ứng
+     */
+    private createMagnetEffect(targetBlock: block, index: number, totalBlocks: number, onComplete?: () => void) {
+        // Reset currentSelectBlock nếu cần
+        if (targetBlock == IngameLogic.getInstance().currentSelectBlock) {
+            this.currentSelectBlock = null
+        }
+
+        // Set sorting layer lên trên cùng để hiện trên các block khác
+        targetBlock.node.setSiblingIndex(9999)
+        
+        // Thời gian delay cho mỗi block để tạo hiệu ứng sóng
+        const delayTime = index * 0.08
+        
+        // Tính toán vị trí giữa màn hình
+        const screenCenter = v3(0, 0, 0)
+        
+        // Lấy kích thước block để tính tâm xoay
+        const blockTransform = targetBlock.node.getComponent(UITransform)
+        const blockCenterOffset = v3(blockTransform.width / 2, blockTransform.height / 2, 0)
+        
+        // Tạo node tạm để làm tâm xoay
+        const rotationPivot = new Node('RotationPivot')
+        targetBlock.node.parent.addChild(rotationPivot)
+        
+        // Đặt pivot tại tâm block
+        const blockCenter = targetBlock.node.position.clone().add(blockCenterOffset)
+        rotationPivot.setPosition(blockCenter)
+        
+        // Chuyển block thành con của pivot và điều chỉnh vị trí relative
+        const originalParent = targetBlock.node.parent
+        targetBlock.node.setParent(rotationPivot)
+        targetBlock.node.setPosition(blockCenterOffset.negative())
+        
+        // Hiệu ứng thu nhỏ dần trước khi bắt đầu bay
+        tween(rotationPivot)
+            .delay(delayTime)
+            .to(0.2, { scale: v3(0.8, 0.8, 0.8) }, { easing: 'backOut' })
+            .to(0.1, { scale: v3(1.1, 1.1, 1.1) }, { easing: 'backOut' })
+            .parallel(
+                // Di chuyển về giữa màn hình với hiệu ứng hút
+                tween().to(0.8, { position: screenCenter }, { easing: 'sineIn' }),
+                
+                // Scale nhỏ dần với nhiều giai đoạn
+                tween()
+                    .to(0.4, { scale: v3(0.6, 0.6, 0.6) }, { easing: 'quartOut' })
+                    .to(0.2, { scale: v3(0.3, 0.3, 0.3) }, { easing: 'quartIn' })
+                    .to(0.2, { scale: v3(0, 0, 0) }, { easing: 'backIn' }),
+                
+                // Xoay vòng với tốc độ tăng dần
+                tween()
+                    .by(0.4, { angle: 360 })
+                    .by(0.2, { angle: 540 }) // Tăng tốc xoay
+                    .by(0.2, { angle: 720 }) // Xoay rất nhanh cuối
+            )
+            .call(() => {
+                // Sau khi hoàn thành hiệu ứng, xóa toàn bộ pivot (bao gồm block)
+                rotationPivot.destroy()
+                this.blockClearNum += 1
+                
+                // Gọi callback khi hoàn thành hiệu ứng block cuối cùng
+                if (index === totalBlocks - 1) {
+                    this.checkGame()
+                    if (onComplete) {
+                        onComplete()
+                    }
+                }
+            })
+            .start()
+    }
+
+    /**
+     * Sử dụng booster Magnet để hút tất cả block cùng màu
+     * @param colorId Màu của block cần hút
+     */
+    MagnetBlock(colorId: number) {
         let listBlock = this.blockBg.getComponentsInChildren(block)
+        const targetBlocks: block[] = []
+        
+        // Tìm tất cả block có màu phù hợp
         listBlock.forEach(e => {
             if (e.freezeNum > 0) return
             if (e.subcolor == true) return
@@ -918,18 +1001,26 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             if (e.colorWire != -1) return
             if (e.colorsWire.length > 0) return
             if (e.colorIndex == colorId) {
-                if (e == IngameLogic.getInstance().currentSelectBlock) {
-                    this.currentSelectBlock = null
-                }
-                e.node.destroy();
-                this.blockClearNum += 1;
-                this.checkGame()
+                targetBlocks.push(e)
             }
-
-
-
         })
 
+        // Kiểm tra có block nào để hút không
+        if (targetBlocks.length === 0) {
+            this.typebooster = -1
+            this.isBooster = false
+            return
+        }
+
+        // Tạo hiệu ứng hút cho từng block
+        targetBlocks.forEach((targetBlock, index) => {
+            this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
+                // Callback khi hoàn thành tất cả hiệu ứng
+                console.log('Magnet effect completed!')
+            })
+        })
+
+        // Reset booster state
         this.typebooster = -1
         this.isBooster = false
     }
