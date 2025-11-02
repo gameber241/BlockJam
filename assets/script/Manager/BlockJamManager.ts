@@ -6,6 +6,7 @@ import { PoolManager } from './PoolManager';
 import { HeartSystem } from '../ui/HeartSystem';
 import { WinSubHeart } from '../ingame/WinSubHeart';
 import { PopupRefillYoutLife } from './PopupRefillYoutLife';
+import { IAPManager } from './IAPManager';
 const { ccclass, property } = _decorator;
 const STORAGE_KEY = 'CC2_BLOCK_JAM'
 @ccclass('BlockJamManager')
@@ -35,6 +36,10 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         this.LoadingUI.active = true
         this.LobbyUI.active = false
         await ResourcesManager.getInstance().loadAllResources()
+        
+        // Initialize IAP Manager
+        IAPManager.getInstance();
+        
         this.restore()
         this.ShowLobby()
         this.GetAccount()
