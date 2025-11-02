@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider, BoxCollider2D, Component, director, EventTouch, Input, instantiate, Label, misc, Node, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider, BoxCollider2D, Component, director, EventTouch, Input, instantiate, Label, misc, Node, Size, sp, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BLOCK_GAP, BLOCK_SIZE, ENUM_GAME_STATUS, IngameLogic } from './IngameLogic';
 import { delay } from '../Utils';
@@ -442,15 +442,16 @@ export class block extends Component {
         // Skill logic
         if (IngameLogic.getInstance().typebooster == 1) {
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
+            IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
             IngameLogic.getInstance().MagnetBlock(block.colorIndex);
             this.onBoosterFinish(event);
             event.propagationStopped = true;
 
             return
         } else if (IngameLogic.getInstance().typebooster == 2) {
-            IngameLogic.getInstance().HammerBlock(block);
-            this.onBoosterFinish(event);
-            event.propagationStopped = true;
+            IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+            IngameLogic.getInstance().HammerBlock(block, event);
+
 
             return
         }
@@ -463,11 +464,23 @@ export class block extends Component {
                 if (block.isWire == true) return
                 if (block.colorWire != -1) return
                 if (block.colorsWire.length > 0) return
+                IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
                 const hit = this.getClickedShapeCell(event);
                 if (hit) {
-                    this.breakCell(hit);
-                    this.onBoosterFinish(event);
+                    IngameLogic.getInstance().moveToTarget(this.node, event.getUILocation())
+                    this.scheduleOnce(() => {
+                        IngameLogic.getInstance().conffeti.active = true
+                        IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+
+                        IngameLogic.getInstance().conffeti.setWorldPosition(new Vec3(event.getUILocation().x, event.getUILocation().y))
+                        IngameLogic.getInstance().scheduleOnce(() => {
+                            IngameLogic.getInstance().conffeti.active = false
+                        }, 0.5)
+                        this.breakCell(hit);
+                        this.onBoosterFinish(event);
+                    }, 2)
                     event.propagationStopped = true;
+
 
                     return;
                 }
@@ -498,6 +511,8 @@ export class block extends Component {
     onBoosterFinish(event: EventTouch) {
         IngameLogic.getInstance().typebooster = -1;
         IngameLogic.getInstance().isUseTool = false;
+        IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+
         if (event)
             event.propagationStopped = true;
     }

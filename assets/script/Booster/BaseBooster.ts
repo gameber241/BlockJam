@@ -27,11 +27,11 @@ export class BaseBooster extends Component {
 
 
     onclick() {
+        if (IngameLogic.getInstance().isUseTool == true) return false
         if (this.quantityNB <= 0) {
             BuyBooster.getInstance().Show(this.typeBooster)
             return false
         }
-        if (IngameLogic.getInstance().isUseTool == true) return false
         IngameLogic.getInstance().isUseTool = true
         DataManager.SaveBooster(this.typeBooster, -1)
         director.emit("UPDATE_BOOSTER")

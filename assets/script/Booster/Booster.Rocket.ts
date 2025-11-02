@@ -7,7 +7,10 @@ const { ccclass, property } = _decorator;
 export class Booster_Rocket extends BaseBooster {
 
     onclick(): boolean {
-        if (super.onclick() == false) return false;
+        let is = super.onclick()
+        if (is == false) return false;
+        console.log("denday", is)
+
         IngameLogic.getInstance().Rocket();
         return true;
     }

@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, Label, Node, ParticleSystem, PhysicsSystem2D, Prefab, RigidBody2D, Size, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, EventTouch, Label, math, Node, ParticleSystem, PhysicsSystem2D, Prefab, RigidBody2D, Size, sp, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -60,6 +60,18 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     @property(Label)
     coinContinue: Label = null
+
+    @property(Node)
+    freezeEff: Node = null
+
+    @property(Node)
+    HammerEffect: Node = null
+
+    @property(Node)
+    conffeti: Node = null
+
+    @property(Node)
+    rocketEffect: Node = null
 
     timeNumber: 0
 
@@ -171,6 +183,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     UserocketRandom() {
+        IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+
         let blocks = this.blockBg.getComponentsInChildren(block)
         // Lấy danh sách tất cả các ô trong block
         for (let i = 0; i < blocks.length; i++) {
@@ -192,18 +206,32 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     }
                 }
             }
-
-            // Không có ô nào thì thoát
             if (cells.length === 0) continue;
+            let size = e.node.getComponent(UITransform).contentSize
+            IngameLogic.getInstance().moveToTarget(this.node, new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
+            this.scheduleOnce(() => {
+                let size = e.node.getComponent(UITransform).contentSize
+                this.HammerEffect.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
+                IngameLogic.getInstance().conffeti.active = true
+                IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
 
-            // Chọn ngẫu nhiên 1 ô
-            const randomCell = cells[Math.floor(Math.random() * cells.length)];
+                IngameLogic.getInstance().conffeti.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
+                IngameLogic.getInstance().scheduleOnce(() => {
+                    IngameLogic.getInstance().conffeti.active = false
+                }, 0.5)
 
-            // Phá ô đó
-            e.breakCell(randomCell);
 
-            // Kết thúc booster
-            e.onBoosterFinish(null);
+                // Chọn ngẫu nhiên 1 ô
+                const randomCell = cells[Math.floor(Math.random() * cells.length)];
+
+                // Phá ô đó
+                e.breakCell(randomCell);
+
+                // Kết thúc booster
+                e.onBoosterFinish(null);
+            }, 2)
+            // Không có ô nào thì thoát
+
             return;
         }
 
@@ -822,6 +850,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     public resume() {
+        this.freezeEff.active = false
         if (this.remainingSeconds > 0) this.running = true;
         if (this.isBooster == true) {
             this.isBooster = false
@@ -942,6 +971,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     FreezeBooster() {
+        this.freezeEff.active = true
+        this.freezeEff.getComponent(sp.Skeleton).setAnimation(0, "start", false)
+        this.freezeEff.getComponent(sp.Skeleton).addAnimation(0, "idle", true)
         this.pause()
         this.scheduleOnce(this.resume, 10)
 
@@ -1072,6 +1104,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         targetBlocks.forEach((targetBlock, index) => {
             this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
                 // Callback khi hoàn thành tất cả hiệu ứng
+                IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
             })
         })
 
@@ -1081,7 +1114,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
 
-    HammerBlock(block) {
+    HammerBlock(block: block, event: EventTouch) {
         if (block.freezeNum > 0) return
         if (block.lockNumber > 0) return
         if (block.isKey == true) return
@@ -1092,9 +1125,29 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         if (block == IngameLogic.getInstance().currentSelectBlock) {
             this.currentSelectBlock = null
         }
-        block.node.destroy();
-        this.blockClearNum += 1;
-        this.checkGame()
+        this.HammerEffect.active = true
+        let size = block.node.getComponent(UITransform).contentSize
+        this.HammerEffect.setWorldPosition(new Vec3(block.node.getWorldPosition().x + size.width / 2, block.node.getWorldPosition().y + size.height / 2))
+        this.HammerEffect.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+        this.scheduleOnce(() => {
+            this.conffeti.active = true
+            this.conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+
+            this.conffeti.setWorldPosition(new Vec3(block.node.getWorldPosition().x + size.width / 2, block.node.getWorldPosition().y + size.height / 2))
+            this.scheduleOnce(() => {
+                this.conffeti.active = false
+            }, 0.5)
+            this.HammerEffect.active = false
+            block.onBoosterFinish(event);
+            event.propagationStopped = true;
+            block.node.destroy();
+            this.blockClearNum += 1;
+            this.checkGame()
+            IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+
+
+        }, 1)
+
     }
 
     shapeDict: Map<string, number> = new Map();
@@ -1135,6 +1188,56 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     Rocket() {
         this.typebooster = 3
+    }
+
+
+
+    @property
+    public rotateDuration = 0.3; // thời gian quay (giây)
+
+    @property
+    public moveDuration = 1;   // thời gian bay (giây)
+
+    /** Gọi hàm này để rocket quay và bay đến target */
+    public moveToTarget(target: Node, event) {
+        this.rocketEffect.active = true
+        if (target.position.y > 0)
+            if (target.position.x < 0)
+                this.rocketEffect.setPosition(new Vec3(1200, -1200))
+            else
+                this.rocketEffect.setPosition(new Vec3(-1200, -1200))
+
+        else {
+            if (target.position.x < 0)
+                this.rocketEffect.setPosition(new Vec3(1200, 1200))
+            else
+                this.rocketEffect.setPosition(new Vec3(-1200, 1200))
+        }
+        if (!target) {
+            console.warn("RocketTween: Chưa gán target!");
+            return;
+        }
+
+        const rocketPos = this.rocketEffect.worldPosition.clone();
+        const targetPos = target.worldPosition.clone();
+
+        // === Tính góc cần quay (sprite mặc định hướng +Y nên trừ 90 độ) ===
+        const dir = new Vec3(targetPos.x - rocketPos.x, targetPos.y - rocketPos.y, 0);
+        const angleRad = Math.atan2(dir.y, dir.x);
+        const angleDeg = math.toDegree(angleRad) - 90;
+
+        // === Tween quay rồi bay ===
+        tween(this.rocketEffect)
+            .to(0, { eulerAngles: new Vec3(0, 0, angleDeg) }, { easing: 'quadOut' })
+            .call(() => {
+                tween(this.rocketEffect)
+                    .to(2, { worldPosition: new Vec3(event.x, event.y) }, { easing: 'quadIn' })
+                    .call(() => {
+                        this.rocketEffect.active = false
+                    })
+                    .start();
+            })
+            .start();
     }
 }
 
