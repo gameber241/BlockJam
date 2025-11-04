@@ -2,6 +2,7 @@ import { _decorator, CCInteger, Component, director, Input, Label, Node, sys } f
 import { IngameLogic } from '../ingame/IngameLogic';
 import { DataManager } from '../DataManager';
 import { BuyBooster } from './BuyBooster';
+import { BlockJamManager } from '../Manager/BlockJamManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BaseBooster')
@@ -34,6 +35,7 @@ export class BaseBooster extends Component {
         }
         IngameLogic.getInstance().isUseTool = true
         DataManager.SaveBooster(this.typeBooster, -1)
+
         director.emit("UPDATE_BOOSTER")
         return true
 

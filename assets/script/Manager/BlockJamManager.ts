@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, sys } from 'cc';
+import { _decorator, Component, director, Node, sys } from 'cc';
 import { ResourcesManager } from './ResourcesManager';
 import { BaseSingleton } from '../Base/BaseSingleton';
 import { MenuLayer } from '../ui/MenuLayer';
@@ -99,6 +99,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
     }
 
     save() {
+        director.emit("UPDATE_ACCOUNT")
         sys.localStorage.setItem(STORAGE_KEY, JSON.stringify({
             // isSoundOn: this.isSoundOn,
             // isMusicOn: this.isMusicOn,

@@ -105,7 +105,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     };
 
     protected start() {
+        director.on("UPDATE_ACCOUNT", this.updateCoin, this)
         this.Reset()
+    }
+
+    protected onDestroy(): void {
+        director.off("UPDATE_ACCOUNT", this.updateCoin, this)
+        super.onDestroy()
     }
 
     Reset() {
@@ -132,7 +138,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.init()
             this.status = ENUM_GAME_STATUS.RUNING
             this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
-            this.startFromString('1:30', this.ShowOutOfTime.bind(this));
+            this.startFromString('5:00', this.ShowOutOfTime.bind(this));
             this.coinLb.string = BlockJamManager.getInstance().coin.toString()
             this.UseTools()
 
@@ -140,7 +146,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
 
     }
-
+    updateCoin() {
+        this.coinLb.string = BlockJamManager.getInstance().coin.toString()
+    }
 
     init() {
         // PhysicsSystem2D.instance.debugDrawFlags = EPhysics2DDrawFlags.Aabb | EPhysics2DDrawFlags.Pair;
@@ -700,7 +708,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-
                                 }
                                 break;
                         }

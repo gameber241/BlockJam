@@ -1,8 +1,9 @@
-import { _decorator, BoxCollider, BoxCollider2D, Component, director, EventTouch, Input, instantiate, Label, misc, Node, Size, Sprite, tween, UIOpacity, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider, BoxCollider2D, Component, director, EventTouch, Input, instantiate, Label, math, misc, Node, Size, sp, Sprite, tween, UIOpacity, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BLOCK_GAP, BLOCK_SIZE, ENUM_GAME_STATUS, IngameLogic } from './IngameLogic';
 import { delay } from '../Utils';
 import { PoolManager } from '../Manager/PoolManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('block')
@@ -67,7 +68,9 @@ export class block extends Component {
     isStar = false
     isKey = false
     lockNumber = 0
-    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire) {
+    colorWire = -1
+    colorsWire = []
+    init(index: number, typeIndex: number, colorIndex: number, xIndex: number, yIndex: number, freezeNum: number, dir: number, colors, lockNumber, isKey, isStar, isWire, colorWire = -1, colorsWire = []) {
         this.index = index
         this.typeIndex = typeIndex
         this.colorIndex = colorIndex
@@ -155,7 +158,6 @@ export class block extends Component {
 
 
     initLock() {
-        console.log("lock_" + this.colorIndex + "_" + this.typeIndex)
         this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.typeIndex)
         this.lockLb.getComponent(Label).string = this.lockNumber.toString()
         switch (this.typeIndex) {
@@ -243,26 +245,26 @@ export class block extends Component {
         this.freezeLb.string = this.freezeNum.toString()
         if (this.freezeNum == 0) {
             this.freezeLb.node.active = false
-            // this.freeNode.destroy()
-            tween(this.freeNode.getComponent(UIOpacity)).to(0.5, { opacity: 0 })
+            this.freeNode.addComponent(UIOpacity).opacity = 255
+            tween(this.freeNode.getComponent(UIOpacity))
+                .to(0.5, { opacity: 0 })
                 .call(() => {
                     this.freeNode.destroy()
-
                     this.freeNode = null
+                    this.iniIconBlock()
                 })
+                .start()
 
         }
     }
-
     iniIconBlock() {
         let shape = this.getBlockShape()
-        console.log(shape)
+        this.listIcon.destroyAllChildren()
         for (let i = 0; i < shape.length; i++) {
             for (let j = 0; j < shape[i].length; j++) {
                 if (shape[i][j] == 0) continue
                 let icon = PoolManager.getInstance().getNode("iconBlock")
                 icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("fish_" + this.colorIndex)
-                console.log("fish_" + this.typeIndex)
                 this.listIcon.addChild(icon)
                 icon.setPosition(new Vec3(j * 100, i * 100))
                 icon.setScale(0.7, 0.7, 0.7)
@@ -312,28 +314,15 @@ export class block extends Component {
         this.colorIndex = this.colors[0]
         this.subcolor = false
         this.isSelected = false
-        // console.log(this.colorIndex, this.isSelected)
-
-        let shape = this.getBlockShape()
-        console.log(shape)
-        this.listIcon.destroyAllChildren()
-        for (let i = 0; i < shape.length; i++) {
-            for (let j = 0; j < shape[i].length; j++) {
-                if (shape[i][j] == 0) continue
-                let icon = PoolManager.getInstance().getNode("iconBlock")
-                icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("fish_" + this.colorIndex)
-                console.log("fish_" + this.typeIndex)
-                this.listIcon.addChild(icon)
-                icon.setPosition(new Vec3(j * 100, i * 100))
-                icon.setScale(0.7, 0.7, 0.7)
-                icon.setPosition(icon.position.x + 100 * 0.3 / 2, icon.position.y + 100 * 0.3 / 2)
-            }
-        }
-
+        this.colors = []
+        this.iniIconBlock()
     }
 
     initListColor(colors: number[]) {
+
         if (colors.length == 0) return
+        this.listColor.destroyAllChildren()
+        console.log("den day", colors, this.typeIndex)
         colors.forEach((e, index) => {
             this.subcolor = true
             let newIcon = PoolManager.getInstance().getNode("blockInner", this.listColor)
@@ -455,43 +444,63 @@ export class block extends Component {
         if (this.lockNumber > 0) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
-
         if (touchedBlocks.length === 0) return;
         const block = touchedBlocks[touchedBlocks.length - 1];
         this.sibilingCurrent = this.node.getSiblingIndex()
         // Skill logic
-        // if (IngameLogic.getInstance().currentSkillIndex == 0) {
-        //     // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
-        //     block.colorIndex = IngameLogic.getInstance().currentColorIndex += 1
-        //     // this.changeColor()
-        //     IngameLogic.getInstance().currentSkillIndex = -1
-        //     // IngameLogic.getInstance().ins.toggleSkillTip(false)
-        //     return
-        // } else if (IngameLogic.getInstance().currentSkillIndex == 1) {
-        //     // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_OUT)
-        //     // block.node.zIndex = 888
-        //     // block.isExited = true
-        //     // IngameLogic.getInstance().updateBlockLimitData(block, false)
-        //     // let act = null
-        //     // if (block.xIndex >= IngameLogic.getInstance().colNum / 2) {
-        //     //     act = moveBy(0.1, 200, 0)
-        //     // } else {
-        //     //     act = moveBy(0.1, -200, 0)
-        //     // }
-        //     // tween(block.node).then(act).call(() => {
-        //     //     block.node.destroy()
-        //     // }).start()
-        //     // IngameLogic.getInstance().blockClearNum += 1
-        //     // IngameLogic.getInstance().currentSkillIndex = -1
-        //     // IngameLogic.getInstance().toggleSkillTip(false)
-        //     // return
-        // }
+        if (IngameLogic.getInstance().typebooster == 1) {
+            // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
+            IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+            IngameLogic.getInstance().MagnetBlock(block.colorIndex);
+            this.onBoosterFinish(event);
+            event.propagationStopped = true;
+
+            return
+        } else if (IngameLogic.getInstance().typebooster == 2) {
+            IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+            IngameLogic.getInstance().HammerBlock(block, event);
 
 
-        console.log("den day ne", block.isSelected)
+            return
+        }
+        else { // rocket
+            if (IngameLogic.getInstance().typebooster == 3) {
+                if (block.freezeNum > 0) return
+                if (block.lockNumber > 0) return
+                if (block.isKey == true) return
+                if (block.isStar == true) return
+                if (block.isWire == true) return
+                if (block.colorWire != -1) return
+                if (block.colorsWire.length > 0) return
+                IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+                const hit = this.getClickedShapeCell(event);
+                if (hit) {
+                    IngameLogic.getInstance().moveToTarget(this.node, event.getUILocation())
+                    this.scheduleOnce(() => {
+                        IngameLogic.getInstance().conffeti.active = true
+                        IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+
+                        IngameLogic.getInstance().conffeti.setWorldPosition(new Vec3(event.getUILocation().x, event.getUILocation().y))
+                        IngameLogic.getInstance().scheduleOnce(() => {
+                            IngameLogic.getInstance().conffeti.active = false
+                        }, 0.5)
+                        this.breakCell(hit);
+                        this.onBoosterFinish(event);
+                    }, 2)
+                    event.propagationStopped = true;
+
+
+                    return;
+                }
+                event.propagationStopped = true;
+
+                return
+            }
+        }
+
         // Nếu block hiện tại đã được chọn, trả về trực tiếp
         if (block.isSelected) return;
-
+        AudioManager.getInstance().playOneShot('pop');
         // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_CHOOSE)
         // Đặt trạng thái được chọn
         IngameLogic.getInstance().currentSelectBlock = block;
@@ -500,17 +509,20 @@ export class block extends Component {
         block.node.setSiblingIndex(9999)
 
         IngameLogic.getInstance().updateBlockLimitData(IngameLogic.getInstance().currentSelectBlock, false);
-
         // Lưu độ lệch chạm
         const touchPos = block.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
         block.touchOffset = touchPos.subtract(v3(block.node.position.x, block.node.position.y));
-
         // Lưu lại vị trí gốc của block
         block.originalPos = v3(block.node.position.x, block.node.position.y).clone();
+    }
 
-        // Ngăn không cho sự kiện lan truyền
-        // event.propagationStopped = true;
+    onBoosterFinish(event: EventTouch) {
+        IngameLogic.getInstance().typebooster = -1;
+        IngameLogic.getInstance().isUseTool = false;
+        IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
 
+        if (event)
+            event.propagationStopped = true;
     }
 
     /**
@@ -518,49 +530,51 @@ export class block extends Component {
      */
     isCanMove = true
     private onTouchMove(event: EventTouch) {
+        const selectBlock = IngameLogic.getInstance().currentSelectBlock;
         if (this.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
-        if (IngameLogic.getInstance().currentSelectBlock == null) return
-        if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
+        if (selectBlock == null) return
+        if (!selectBlock.isSelected) return;
         if (this.lockNumber > 0) return
-        if (IngameLogic.getInstance().currentSelectBlock.isCanMove == false) return
-        const dir = this.get8Direction(event);
+        if (selectBlock.isCanMove == false) return
+
         // Tính toán vị trí mới
-        const touchPos = IngameLogic.getInstance().currentSelectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
+        const touchPos = selectBlock.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(event.getUILocation().x, event.getUILocation().y));
         let newPos: Vec3 = touchPos.subtract(
-            IngameLogic.getInstance().currentSelectBlock.touchOffset
+            selectBlock.touchOffset
         );
         // Lấy vị trí lưới hiện tại
-        const currentGridPos = IngameLogic.getInstance().currentSelectBlock.getCurrentGridPosition();
+        const currentGridPos = selectBlock.getCurrentGridPosition();
 
+        const blockBgTransform = IngameLogic.getInstance().blockBg.getComponent(UITransform);
         // Tính toán biên cơ bản
-        const minX = -IngameLogic.getInstance().blockBg.getComponent(UITransform).contentSize.width / 2 + BLOCK_GAP;
-        const minY = -IngameLogic.getInstance().blockBg.getComponent(UITransform).contentSize.height / 2 + BLOCK_GAP;
+        const minX = -blockBgTransform.contentSize.width / 2 + BLOCK_GAP;
+        const minY = -blockBgTransform.contentSize.height / 2 + BLOCK_GAP;
 
         // Tính toán động biên có thể di chuyển thực tế
-        const dynamicBounds = IngameLogic.getInstance().currentSelectBlock.calculateShapeAwareBounds(currentGridPos);
+        const dynamicBounds = selectBlock.calculateShapeAwareBounds(currentGridPos);
+        const cellSize = BLOCK_SIZE + BLOCK_GAP;
         // Chuyển đổi thành biên tọa độ thế giới
-        const worldMinX = minX + dynamicBounds.minCol * (BLOCK_SIZE + BLOCK_GAP);
-        const worldMaxX = minX + dynamicBounds.maxCol * (BLOCK_SIZE + BLOCK_GAP);
-        const worldMinY = minY + dynamicBounds.minRow * (BLOCK_SIZE + BLOCK_GAP);
-        const worldMaxY = minY + dynamicBounds.maxRow * (BLOCK_SIZE + BLOCK_GAP);
+        const worldMinX = minX + dynamicBounds.minCol * cellSize;
+        const worldMaxX = minX + dynamicBounds.maxCol * cellSize;
+        const worldMinY = minY + dynamicBounds.minRow * cellSize;
+        const worldMaxY = minY + dynamicBounds.maxRow * cellSize;
 
         // Giới hạn vị trí trong biên động
-        if (IngameLogic.getInstance().currentSelectBlock.dir == 1) {
-            // log(IngameLogic.getInstance().currentSelectBlock.initPos.x, IngameLogic.getInstance().currentSelectBlock.originalPos.x)
-            newPos.x = IngameLogic.getInstance().currentSelectBlock.initPos.x; // Giữ vị trí x gốc
+        if (selectBlock.dir == 1) {
+            // log(selectBlock.initPos.x, selectBlock.originalPos.x)
+            newPos.x = selectBlock.initPos.x; // Giữ vị trí x gốc
             newPos.y = misc.clampf(newPos.y, worldMinY, worldMaxY);
-        } else if (IngameLogic.getInstance().currentSelectBlock.dir == 2) {
-            // log(IngameLogic.getInstance().currentSelectBlock.initPos.y, IngameLogic.getInstance().currentSelectBlock.originalPos.y)
-            newPos.y = IngameLogic.getInstance().currentSelectBlock.initPos.y; // Giữ vị trí y gốc
+        } else if (selectBlock.dir == 2) {
+            // log(selectBlock.initPos.y, selectBlock.originalPos.y)
+            newPos.y = selectBlock.initPos.y; // Giữ vị trí y gốc
             newPos.x = misc.clampf(newPos.x, worldMinX, worldMaxX);
         } else {
             newPos.x = misc.clampf(newPos.x, worldMinX, worldMaxX);
             newPos.y = misc.clampf(newPos.y, worldMinY, worldMaxY);
         }
-
         // Áp dụng vị trí mới
-        IngameLogic.getInstance().currentSelectBlock.node.position = v3(newPos);
+        selectBlock.node.position = v3(newPos);
 
         event.propagationStopped = true;
     }
@@ -734,6 +748,26 @@ export class block extends Component {
             default: return 60; // Khác
         }
     }
+    private getFloatGridPosition(): { x: number, y: number } {
+        const blockBg = IngameLogic.getInstance().blockBg;
+        const uiTransform = blockBg.getComponent(UITransform);
+        if (!uiTransform) return { x: 0, y: 0 };
+
+        const startPos = v3(
+            -uiTransform.contentSize.width / 2 + BLOCK_GAP,
+            -uiTransform.contentSize.height / 2 + BLOCK_GAP,
+            0
+        );
+        if (!this.node) return;
+        const relativePos = this.node.position.clone().subtract(startPos);
+
+        const cellSize = BLOCK_SIZE + BLOCK_GAP;
+
+        const gridX = relativePos.x / cellSize;
+        const gridY = relativePos.y / cellSize;
+
+        return { x: gridX, y: gridY };
+    }
     public getCurrentGridPosition(): { x: number, y: number } {
         const blockBg = IngameLogic.getInstance().blockBg;
         const uiTransform = blockBg.getComponent(UITransform);
@@ -744,17 +778,17 @@ export class block extends Component {
             -uiTransform.contentSize.height / 2 + BLOCK_GAP,
             0
         );
-
+        if (!this.node) return;
         const relativePos = this.node.position.clone().subtract(startPos);
 
         const cellSize = BLOCK_SIZE + BLOCK_GAP;
-        console.log(startPos, this.node.position)
-        // Hàm làm tròn an toàn, kể cả khi relativePos < 0
-        const gridX = Math.round(relativePos.x / (BLOCK_SIZE + BLOCK_GAP));
-        const gridY = Math.round(relativePos.y / (BLOCK_SIZE + BLOCK_GAP));
+
+        const gridX = Math.round(relativePos.x / cellSize);
+        const gridY = Math.round(relativePos.y / cellSize);
 
         return { x: gridX, y: gridY };
     }
+
 
 
 
@@ -770,7 +804,7 @@ export class block extends Component {
         // Tạm thời xóa chiếm dụng của block hiện tại
         // IngameLogic.getInstance().updateBlockLimitData(this, false);
 
-        // Kiểm tra cản trở 4 hướng
+        // Kiểm tra cản trở 4 hướng (bao gồm cả blocks và walls)
         const checkDirection = (dx: number, dy: number) => {
             for (let step = 1; step <= Math.max(IngameLogic.getInstance().colNum, IngameLogic.getInstance().rowNum); step++) {
                 const testX = currentPos.x + dx * step;
@@ -789,11 +823,13 @@ export class block extends Component {
                                 return step - 1;
                             }
 
-                            // Kiểm tra chiếm dụng
+                            // Kiểm tra chiếm dụng blocks
                             if (IngameLogic.getInstance().blockLimitData[checkY] &&
                                 IngameLogic.getInstance().blockLimitData[checkY][checkX] === 1) {
                                 return step - 1;
                             }
+
+
                         }
                     }
                 }
@@ -836,6 +872,7 @@ export class block extends Component {
         return false;
     }
 
+
     private async alignToGrid() {
         // Lấy vị trí đích trên grid
         const targetPos2D: Vec2 = v2(
@@ -861,7 +898,7 @@ export class block extends Component {
         // // Chờ tween chạy xong
         // await delay(moveTime);
 
-        this.node.setPosition(targetPos3D)
+        this.node.setPosition(targetPos3D);
     }
     public getBlockSize(): { width: number, height: number } {
         switch (this.typeIndex) {
@@ -1004,6 +1041,287 @@ export class block extends Component {
 
         return "none"; // fallback
     }
+
+    private getCells(): Vec2[] {
+        const shape = this.getBlockShape();
+        const cells: Vec2[] = [];
+        for (let y = 0; y < shape.length; y++) {
+            for (let x = 0; x < shape[y].length; x++) {
+                if (shape[y][x] === 1) cells.push(new Vec2(x, y));
+            }
+        }
+        return cells;
+    }
+
+    // ⭐ ADD: canonical key
+    private toKey(cells: Vec2[]): string {
+        const minX = Math.min(...cells.map(c => c.x));
+        const minY = Math.min(...cells.map(c => c.y));
+        const norm = cells.map(c => ({ x: c.x - minX, y: c.y - minY }))
+            .sort((a, b) => a.y - b.y || a.x - b.x);
+        return norm.map(c => `${c.x},${c.y}`).join("|");
+    }
+
+    // ⭐ ADD: tách nhóm liên thông
+    private splitConnectedCells(cells: Vec2[]): Vec2[][] {
+        const set = new Set(cells.map(c => `${c.x},${c.y}`));
+        const visited = new Set<string>();
+        const results: Vec2[][] = [];
+        const dirs = [new Vec2(1, 0), new Vec2(-1, 0), new Vec2(0, 1), new Vec2(0, -1)];
+
+        for (const c of cells) {
+            const key = `${c.x},${c.y}`;
+            if (visited.has(key)) continue;
+
+            const comp: Vec2[] = [];
+            const q: Vec2[] = [c];
+            visited.add(key);
+
+            while (q.length > 0) {
+                const cur = q.shift()!;
+                comp.push(cur);
+                for (const d of dirs) {
+                    const nx = cur.x + d.x;
+                    const ny = cur.y + d.y;
+                    const k = `${nx},${ny}`;
+                    if (set.has(k) && !visited.has(k)) {
+                        visited.add(k);
+                        q.push(new Vec2(nx, ny));
+                    }
+                }
+            }
+            results.push(comp);
+        }
+        return results;
+    }
+
+    // ⭐ ADD: mapping lại shape mới
+    private identifyShape(cells: Vec2[]): number {
+        const key = this.toKey(cells);
+        const dict = IngameLogic.getInstance().shapeDict;
+        return dict.has(key) ? dict.get(key)! : -1;
+    }
+
+    // ⭐ ADD: update shape
+    private updateShape(cells: Vec2[], newType: number) {
+        IngameLogic.getInstance().updateBlockLimitData(this, false);
+
+        // Tính toán lại vị trí grid dựa trên cells còn lại
+        const minX = Math.min(...cells.map(c => c.x));
+        const minY = Math.min(...cells.map(c => c.y));
+
+        // Cập nhật vị trí grid mới
+        this.xIndex = this.xIndex + minX;
+        this.yIndex = this.yIndex + minY;
+
+        // Cập nhật shape
+        this.typeIndex = newType;
+        this.initSprite();
+        this.listIcon.removeAllChildren();
+        this.iniIconBlock();
+
+        this.init(
+            IngameLogic.getInstance().blockTotalNum++,
+            newType,
+            this.colorIndex,
+            this.xIndex,
+            this.yIndex,
+            this.freezeNum,
+            this.dir,
+            this.colors,
+            this.lockNumber,
+            this.isKey,
+            this.isStar,
+            this.isWire
+        );
+
+        // Tính vị trí mới trên UI
+        const targetPos2D = v2(
+            this.xIndex * (BLOCK_SIZE + BLOCK_GAP),
+            this.yIndex * (BLOCK_SIZE + BLOCK_GAP)
+        );
+        const newUIPos = IngameLogic.getInstance().getRealPos(targetPos2D);
+        this.node.setPosition(newUIPos);
+
+        IngameLogic.getInstance().updateBlockLimitData(this, true);
+    }
+
+    // ⭐ ADD: remove block chuẩn
+    private removeBlock() {
+        IngameLogic.getInstance().updateBlockLimitData(this, false);
+        this.node.destroy();
+        director.emit("MERGE")
+
+        IngameLogic.getInstance().blockClearNum++;
+        IngameLogic.getInstance().checkGame();
+    }
+
+    // ⭐ ADD: spawn nhiều block khi chia
+    private spawnFragments(groups: Vec2[][]) {
+        const originX = this.xIndex;
+        const originY = this.yIndex;
+
+        for (const g of groups) {
+            const newType = this.identifyShape(g);
+            if (newType === -1) continue;
+
+            // Tính min của nhóm để chuẩn hóa tọa độ block mới
+            const minX = Math.min(...g.map(c => c.x));
+            const minY = Math.min(...g.map(c => c.y));
+
+            // Block mới sẽ đặt đúng vị trí cell ban đầu trên grid
+            // Vị trí grid của block mới = vị trí block gốc + vị trí relative của mảnh
+            const newGridX = originX + minX;
+            const newGridY = originY + minY;
+
+            // tạo node block mới
+            const newBlockNode = PoolManager.getInstance().getNode('block', IngameLogic.getInstance().blockBg);
+            const newBlock = newBlockNode.getComponent(block);
+
+            newBlock.init(
+                IngameLogic.getInstance().blockTotalNum++,
+                newType,
+                this.colorIndex,
+                newGridX,
+                newGridY,
+                this.freezeNum,
+                this.dir,
+                this.colors,
+                this.lockNumber,
+                this.isKey,
+                this.isStar,
+                this.isWire
+            );
+
+            // Tính vị trí thực tế trên UI dựa trên grid position
+            const targetPos2D = v2(
+                newGridX * (BLOCK_SIZE + BLOCK_GAP),
+                newGridY * (BLOCK_SIZE + BLOCK_GAP)
+            );
+            const uiPos = IngameLogic.getInstance().getRealPos(targetPos2D);
+            newBlockNode.setPosition(uiPos);
+            console.log(newGridX, newGridY)
+            // đánh dấu chiếm diện grid
+            IngameLogic.getInstance().updateBlockLimitData(newBlock, true);
+        }
+    }
+
+    // ⭐ ADD: break cell
+    public breakCell(hit: Vec2) {
+        AudioManager.getInstance().playOneShot('rocketHit');
+        // hit.y đã là chỉ số "từ TRÊN xuống" rồi (do getHitCell đã chuyển đổi)
+        const cells = this.getCells(); // getCells() cũng tạo (x,y) theo hàng trên xuống
+
+        // Tìm đúng cell để xóa
+        const idx = cells.findIndex(c => c.x === hit.x && c.y === hit.y);
+        if (idx === -1) return;
+
+        // Xóa ô bị phá
+        cells.splice(idx, 1);
+
+        // Không còn ô nào → xóa block
+        if (cells.length === 0) {
+            this.removeBlock();
+            return;
+        }
+
+        // Tách các nhóm liên thông
+        const groups = this.splitConnectedCells(cells);
+
+        // Nếu chia thành nhiều mảnh → spawn mảnh mới rồi xóa block cũ
+        if (groups.length > 1) {
+            this.removeBlock();
+            this.spawnFragments(groups);
+
+            return;
+        }
+
+        // Còn đúng 1 mảnh → nhận diện shape mới
+        const newType = this.identifyShape(groups[0]);
+        if (newType === -1) {
+            // Không khớp shape hợp lệ → xóa block (tùy gameplay bạn có thể đổi fallback)
+            this.removeBlock();
+            return;
+        }
+
+        // Cập nhật block hiện tại thành shape mới
+        this.updateShape(groups[0], newType);
+
+    }
+
+
+    // ⭐ ADD: xác định cell bị nhấn
+    private getHitCell(event: EventTouch): Vec2 | null {
+        const ui = this.node.getComponent(UITransform)!;
+        const shape = this.getBlockShape();
+        const totalRows = shape.length;
+        const totalCols = shape[0].length;
+
+        // Anchor = (0,0): gốc ở góc trái DƯỚI
+        const local = ui.convertToNodeSpaceAR(
+            new Vec3(event.getUILocation().x, event.getUILocation().y)
+        );
+
+        // Chuyển local XY → chỉ số cột/hàng tính từ DƯỚI lên
+        const colFromLeft = Math.floor(local.x / BLOCK_SIZE);
+        const rowFromBottom = Math.floor(local.y / BLOCK_SIZE);
+
+        // Ngoài vùng block
+        if (colFromLeft < 0 || rowFromBottom < 0) return null;
+        if (colFromLeft >= totalCols || rowFromBottom >= totalRows) return null;
+
+        // ĐỔI trục Y: getBlockShape() định nghĩa hàng 0 ở TRÊN CÙNG
+        const rowFromTop = totalRows - 1 - rowFromBottom;
+
+        // Ô này có tồn tại trong shape không
+        if (shape[rowFromTop][colFromLeft] !== 1) return null;
+
+        // Trả về (col, row) theo CHUẨN của shape (tức là row tính TỪ TRÊN XUỐNG)
+        return new Vec2(colFromLeft, rowFromTop);
+    }
+
+
+    // ✅ GẮN logic phá vào Touch Start (chỉ THÊM, không sửa logic cũ)
+    // onTouchStart(event: EventTouch) {
+    //     const hit = this.getHitCell(event);
+    //     if (hit) {
+    //         this.breakCell(hit);
+    //         event.propagationStopped = true;
+    //         return;
+    //     }
+
+    //     // phần code cũ xử lý kéo block giữ nguyên...
+    // }
+
+    /**
+     * Trả về đúng cell theo shape (row tính từ TRÊN xuống)
+     */
+    public getClickedShapeCell(event: EventTouch): Vec2 | null {
+        const ui = this.node.getComponent(UITransform)!;
+        const shape = this.getBlockShape();
+
+        const totalRows = shape.length;
+        const totalCols = shape[0].length;
+        // tọa độ click relative trong block (anchor = 0,0 = bottom-left)
+        const local = ui.convertToNodeSpaceAR(
+            new Vec3(event.getUILocation().x, event.getUILocation().y)
+        );
+
+        const col = Math.floor(local.x / BLOCK_SIZE);
+        const rowBottom = Math.floor(local.y / BLOCK_SIZE);
+        // ngoài vùng block
+        if (col < 0 || col >= totalCols) return null;
+        if (rowBottom < 0 || rowBottom >= totalRows) return null;
+
+
+
+        // check có ô không
+        if (shape[rowBottom][col] !== 1) return null;
+
+        return new Vec2(col, rowBottom);
+    }
+
+
 }
 
 
