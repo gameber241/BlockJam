@@ -12,6 +12,7 @@ import { BlockTool } from '../Tool/BlockTool';
 import { BuyBooster } from '../Booster/BuyBooster';
 import { MenuLayer } from '../ui/MenuLayer';
 import { DataManager } from '../DataManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -1144,6 +1145,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.blockClearNum += 1;
             this.checkGame()
             IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+            AudioManager.getInstance().playOneShot('rocketHit');
 
 
         }, 1)

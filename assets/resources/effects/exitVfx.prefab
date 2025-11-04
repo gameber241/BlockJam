@@ -23,14 +23,14 @@
         "__id__": 2
       },
       {
-        "__id__": 55
+        "__id__": 57
       },
       {
-        "__id__": 57
+        "__id__": 59
       }
     ],
     "_prefab": {
-      "__id__": 59
+      "__id__": 61
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -121,7 +121,7 @@
     },
     "duration": 3,
     "loop": false,
-    "simulationSpeed": 3,
+    "simulationSpeed": 1,
     "playOnAwake": false,
     "gravityModifier": {
       "__id__": 14
@@ -165,13 +165,13 @@
       "__id__": 45
     },
     "_noiseModule": {
-      "__id__": 48
+      "__id__": 50
     },
     "_trailModule": {
-      "__id__": 49
+      "__id__": 51
     },
     "renderer": {
-      "__id__": 54
+      "__id__": 56
     },
     "_prewarm": false,
     "_capacity": 100,
@@ -187,16 +187,16 @@
     "_mode": 0,
     "color": {
       "__type__": "cc.Color",
-      "r": 144,
-      "g": 238,
-      "b": 144,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     }
   },
   {
     "__type__": "cc.CurveRange",
     "mode": 0,
-    "constant": 1,
+    "constant": 1.5,
     "multiplier": 1
   },
   {
@@ -214,7 +214,7 @@
   {
     "__type__": "cc.CurveRange",
     "mode": 0,
-    "constant": 5,
+    "constant": 7,
     "multiplier": 1
   },
   {
@@ -326,7 +326,7 @@
       "z": 1
     },
     "_arc": 6.283185307179586,
-    "_angle": 0.48404961474810737
+    "_angle": 0.4787438138220446
   },
   {
     "__type__": "cc.CurveRange",
@@ -545,37 +545,37 @@
   {
     "__type__": "cc.CurveRange",
     "mode": 0,
-    "constant": 1.5707963267948966,
+    "constant": 0,
     "multiplier": 1
   },
   {
     "__type__": "cc.CurveRange",
     "mode": 0,
-    "constant": 1.5707963267948966,
+    "constant": 0,
     "multiplier": 1
   },
   {
     "__type__": "cc.CurveRange",
     "mode": 0,
-    "constant": 1.5707963267948966,
+    "constant": 0.5235987755982988,
     "multiplier": 1
   },
   {
     "__type__": "cc.TextureAnimationModule",
-    "_enable": false,
-    "_numTilesX": 0,
-    "numTilesX": 0,
-    "_numTilesY": 0,
-    "numTilesY": 0,
+    "_enable": true,
+    "_numTilesX": 5,
+    "numTilesX": 5,
+    "_numTilesY": 5,
+    "numTilesY": 5,
     "_mode": 0,
     "animation": 0,
     "frameOverTime": {
       "__id__": 46
     },
     "startFrame": {
-      "__id__": 47
+      "__id__": 49
     },
-    "cycleCount": 0,
+    "cycleCount": 2,
     "_flipU": 0,
     "_flipV": 0,
     "_uvChannelMask": -1,
@@ -584,14 +584,89 @@
   },
   {
     "__type__": "cc.CurveRange",
-    "mode": 0,
-    "constant": 0,
+    "mode": 2,
+    "splineMin": {
+      "__id__": 47
+    },
+    "splineMax": {
+      "__id__": 48
+    },
     "multiplier": 1
+  },
+  {
+    "__type__": "cc.RealCurve",
+    "_times": [
+      0,
+      1
+    ],
+    "_values": [
+      {
+        "__type__": "cc.RealKeyframeValue",
+        "interpolationMode": 2,
+        "tangentWeightMode": 0,
+        "value": 0,
+        "rightTangent": 0.5652173913043478,
+        "rightTangentWeight": 0,
+        "leftTangent": 0.5652173913043478,
+        "leftTangentWeight": 0,
+        "easingMethod": 0,
+        "__editorExtras__": null
+      },
+      {
+        "__type__": "cc.RealKeyframeValue",
+        "interpolationMode": 2,
+        "tangentWeightMode": 0,
+        "value": 0.4925925925925926,
+        "rightTangent": 0.5038759689922475,
+        "rightTangentWeight": 0,
+        "leftTangent": 0.5038759689922475,
+        "leftTangentWeight": 0,
+        "easingMethod": 0,
+        "__editorExtras__": null
+      }
+    ],
+    "preExtrapolation": 1,
+    "postExtrapolation": 1
+  },
+  {
+    "__type__": "cc.RealCurve",
+    "_times": [
+      0,
+      1
+    ],
+    "_values": [
+      {
+        "__type__": "cc.RealKeyframeValue",
+        "interpolationMode": 2,
+        "tangentWeightMode": 0,
+        "value": 0.4925925925925926,
+        "rightTangent": 0.5374677002583977,
+        "rightTangentWeight": 0,
+        "leftTangent": 0.5374677002583977,
+        "leftTangentWeight": 0,
+        "easingMethod": 0,
+        "__editorExtras__": null
+      },
+      {
+        "__type__": "cc.RealKeyframeValue",
+        "interpolationMode": 2,
+        "tangentWeightMode": 0,
+        "value": 1,
+        "rightTangent": 0.5135802469135798,
+        "rightTangentWeight": 0,
+        "leftTangent": 0.5135802469135798,
+        "leftTangentWeight": 0,
+        "easingMethod": 0,
+        "__editorExtras__": null
+      }
+    ],
+    "preExtrapolation": 1,
+    "postExtrapolation": 1
   },
   {
     "__type__": "cc.CurveRange",
     "mode": 0,
-    "constant": 0,
+    "constant": 1,
     "multiplier": 1
   },
   {
@@ -616,21 +691,21 @@
     "_enable": false,
     "mode": 0,
     "lifeTime": {
-      "__id__": 50
+      "__id__": 52
     },
     "_minParticleDistance": 0.1,
     "existWithParticles": true,
     "textureMode": 0,
     "widthFromParticle": true,
     "widthRatio": {
-      "__id__": 51
+      "__id__": 53
     },
     "colorFromParticle": false,
     "colorOverTrail": {
-      "__id__": 52
+      "__id__": 54
     },
     "colorOvertime": {
-      "__id__": 53
+      "__id__": 55
     },
     "_space": 0,
     "_particleSystem": null
@@ -671,19 +746,19 @@
   },
   {
     "__type__": "cc.ParticleSystemRenderer",
-    "_renderMode": 4,
+    "_renderMode": 0,
     "_velocityScale": 1,
     "_lengthScale": 1,
-    "_mesh": {
-      "__uuid__": "1263d74c-8167-4928-91a6-4e2672411f47@a804a",
-      "__expectedType__": "cc.Mesh"
-    },
+    "_mesh": null,
     "_cpuMaterial": {
       "__uuid__": "6a196155-0f71-49ea-8627-da60c561f522",
       "__expectedType__": "cc.Material"
     },
     "_gpuMaterial": null,
-    "_mainTexture": null,
+    "_mainTexture": {
+      "__uuid__": "7d8097d2-dd8d-467b-b257-85a75245a0f9@6c48a",
+      "__expectedType__": "cc.Texture2D"
+    },
     "_useGPU": false,
     "_alignSpace": 2
   },
@@ -696,7 +771,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 56
+      "__id__": 58
     },
     "_id": ""
   },
@@ -713,7 +788,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 58
+      "__id__": 60
     },
     "_contentSize": {
       "__type__": "cc.Size",
