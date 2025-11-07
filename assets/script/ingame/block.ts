@@ -316,8 +316,10 @@ export class block extends Component {
         this.isSelected = false
         this.colors = []
         this.iniIconBlock()
-    }
+        // this.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
 
+    }
+    iconSub = null
     initListColor(colors: number[]) {
 
         if (colors.length == 0) return
@@ -325,8 +327,8 @@ export class block extends Component {
         console.log("den day", colors, this.typeIndex)
         colors.forEach((e, index) => {
             this.subcolor = true
-            let newIcon = PoolManager.getInstance().getNode("blockInner", this.listColor)
-            newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_inner_${e}_${this.typeIndex}`)
+            this.iconSub = PoolManager.getInstance().getNode("blockInner", this.listColor)
+            this.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_inner_${e}_${this.typeIndex}`)
             // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
 
             // switch (this.typeIndex) {

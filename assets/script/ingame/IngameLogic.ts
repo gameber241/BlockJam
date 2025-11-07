@@ -74,6 +74,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     rocketEffect: Node = null
 
+    @property(Node)
+    magnetEffect: Node = null
+
     timeNumber: 0
 
     /** Bước hướng dẫn hiện tại */
@@ -644,6 +647,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 .start();
 
                         }
+                        if (block.subcolor == true) {
+                            // this.iniIconBlock()
+                            block.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${block.colors[0]}_${block.typeIndex}`)
+                        }
+                        block.icon.setSiblingIndex(1)
                         tween(block.icon)
                             .by(0.5, { position: new Vec3(moveX2, moveY2) })
                             .call(() => {
@@ -675,7 +683,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
-
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 1)
                                 }
                                 break;
                             case 1:
@@ -686,6 +696,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 1)
 
 
                                 }
@@ -698,6 +711,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 1)
                                 }
                                 break;
                             case 3:
@@ -708,6 +724,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 1)
                                 }
                                 break;
                         }
@@ -1084,41 +1103,51 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
      * @param colorId Màu của block cần hút
      */
     MagnetBlock(colorId: number) {
-        let listBlock = this.blockBg.getComponentsInChildren(block)
-        const targetBlocks: block[] = []
+        this.magnetEffect.active = true
+        this.magnetEffect.getComponent(sp.Skeleton).setAnimation(0, "start", false)
+        this.magnetEffect.getComponent(sp.Skeleton).addAnimation(0, "loop", true)
+        this.scheduleOnce(() => {
+            let listBlock = this.blockBg.getComponentsInChildren(block)
+            const targetBlocks: block[] = []
 
-        // Tìm tất cả block có màu phù hợp
-        listBlock.forEach(e => {
-            if (e.freezeNum > 0) return
-            if (e.lockNumber > 0) return
-            if (e.isKey == true) return
-            if (e.isStar == true) return
-            if (e.isWire == true) return
-            if (e.colorWire != -1) return
-            if (e.colorsWire.length > 0) return
-            if (e.colorIndex == colorId) {
-                targetBlocks.push(e)
-            }
-        })
-
-        // Kiểm tra có block nào để hút không
-        if (targetBlocks.length === 0) {
-            this.typebooster = -1
-            this.isBooster = false
-            return
-        }
-
-        // Tạo hiệu ứng hút cho từng block
-        targetBlocks.forEach((targetBlock, index) => {
-            this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
-                // Callback khi hoàn thành tất cả hiệu ứng
-                IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+            // Tìm tất cả block có màu phù hợp
+            listBlock.forEach(e => {
+                if (e.freezeNum > 0) return
+                if (e.lockNumber > 0) return
+                if (e.isKey == true) return
+                if (e.isStar == true) return
+                if (e.isWire == true) return
+                if (e.colorWire != -1) return
+                if (e.colorsWire.length > 0) return
+                if (e.colorIndex == colorId) {
+                    targetBlocks.push(e)
+                }
             })
-        })
 
-        // Reset booster state
-        this.typebooster = -1
-        this.isBooster = false
+            // Kiểm tra có block nào để hút không
+            if (targetBlocks.length === 0) {
+                this.typebooster = -1
+                this.isBooster = false
+                return
+            }
+
+            // Tạo hiệu ứng hút cho từng block
+            targetBlocks.forEach((targetBlock, index) => {
+                this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
+                    // Callback khi hoàn thành tất cả hiệu ứng
+                    IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+                })
+            })
+            this.scheduleOnce(() => {
+                this.magnetEffect.active = false
+                this.typebooster = -1
+                this.isBooster = false
+            }, 1)
+
+            // Reset booster state
+
+        }, 1)
+
     }
 
 

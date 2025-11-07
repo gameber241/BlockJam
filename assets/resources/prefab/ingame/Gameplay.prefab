@@ -49,25 +49,28 @@
       },
       {
         "__id__": 494
+      },
+      {
+        "__id__": 500
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 500
-      },
-      {
-        "__id__": 502
-      },
-      {
-        "__id__": 504
-      },
-      {
         "__id__": 506
+      },
+      {
+        "__id__": 508
+      },
+      {
+        "__id__": 510
+      },
+      {
+        "__id__": 512
       }
     ],
     "_prefab": {
-      "__id__": 508
+      "__id__": 514
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -11192,6 +11195,140 @@
     "nestedPrefabInstanceRoots": null
   },
   {
+    "__type__": "cc.Node",
+    "_name": "magnet",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [],
+    "_active": false,
+    "_components": [
+      {
+        "__id__": 501
+      },
+      {
+        "__id__": 503
+      }
+    ],
+    "_prefab": {
+      "__id__": 505
+    },
+    "_lpos": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": -209.155,
+      "z": 0
+    },
+    "_lrot": {
+      "__type__": "cc.Quat",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    },
+    "_lscale": {
+      "__type__": "cc.Vec3",
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "_mobility": 0,
+    "_layer": 33554432,
+    "_euler": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.UITransform",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 500
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 502
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 512,
+      "height": 512
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.24203125
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "31w9lx5C9C7YzQcW+mvuzY"
+  },
+  {
+    "__type__": "sp.Skeleton",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 500
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 504
+    },
+    "_customMaterial": null,
+    "_srcBlendFactor": 2,
+    "_dstBlendFactor": 4,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "loop": true,
+    "_timeScale": 1,
+    "_useTint": false,
+    "_preCacheMode": 0,
+    "_cacheMode": 0,
+    "_defaultCacheMode": 0,
+    "_debugBones": false,
+    "_debugSlots": false,
+    "_skeletonData": {
+      "__uuid__": "14bbed56-7f0d-43ea-b191-88c61bcef045",
+      "__expectedType__": "sp.SkeletonData"
+    },
+    "_premultipliedAlpha": false,
+    "defaultSkin": "default",
+    "defaultAnimation": "start",
+    "_enableBatch": false,
+    "_sockets": [],
+    "_debugMesh": false,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "cdaMcGHdRMcJuw4BMjVU17"
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "16HUMQlcdMlpmhtnRZZ0ee",
+    "instance": null,
+    "targetOverrides": null,
+    "nestedPrefabInstanceRoots": null
+  },
+  {
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
@@ -11200,7 +11337,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 501
+      "__id__": 507
     },
     "_contentSize": {
       "__type__": "cc.Size",
@@ -11227,7 +11364,7 @@
     },
     "_enabled": false,
     "__prefab": {
-      "__id__": 503
+      "__id__": 509
     },
     "_alignFlags": 45,
     "_target": null,
@@ -11262,7 +11399,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 505
+      "__id__": 511
     },
     "blockBg": {
       "__id__": 10
@@ -11301,6 +11438,9 @@
     "rocketEffect": {
       "__id__": 488
     },
+    "magnetEffect": {
+      "__id__": 500
+    },
     "displayMode": "mm:ss",
     "rotateDuration": 0.3,
     "moveDuration": 0.8,
@@ -11319,7 +11459,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 507
+      "__id__": 513
     },
     "_id": ""
   },
