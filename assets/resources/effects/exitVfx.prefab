@@ -119,7 +119,7 @@
     "startLifetime": {
       "__id__": 13
     },
-    "duration": 1,
+    "duration": 0.5,
     "loop": false,
     "simulationSpeed": 1,
     "playOnAwake": false,

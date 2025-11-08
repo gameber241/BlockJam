@@ -441,14 +441,16 @@ export class block extends Component {
 
 
     onTouchStart(event: EventTouch) {
-
-        if (this.freeNode != null) return
-        if (this.lockNumber > 0) return
-        if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         const touchedBlocks = IngameLogic.getInstance().getBlocksAtPosition(event.getUILocation());
         if (touchedBlocks.length === 0) return;
         const block = touchedBlocks[touchedBlocks.length - 1];
-        this.sibilingCurrent = this.node.getSiblingIndex()
+        if (block == null) return
+        if (block.freeNode != null) return
+        if (block.lockNumber > 0) return
+
+        if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
+
+        this.sibilingCurrent = block.node.getSiblingIndex()
         // Skill logic
         if (IngameLogic.getInstance().typebooster == 1) {
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
@@ -533,11 +535,13 @@ export class block extends Component {
     isCanMove = true
     private onTouchMove(event: EventTouch) {
         const selectBlock = IngameLogic.getInstance().currentSelectBlock;
-        if (this.freeNode != null) return
+        if (selectBlock == null) return
+
+        if (selectBlock.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (selectBlock == null) return
         if (!selectBlock.isSelected) return;
-        if (this.lockNumber > 0) return
+        if (selectBlock.lockNumber > 0) return
         if (selectBlock.isCanMove == false) return
 
         // Tính toán vị trí mới
@@ -586,13 +590,14 @@ export class block extends Component {
      * Xử lý sự kiện chạm kết thúc
      */
     private onTouchEnd(event: EventTouch) {
-
-        if (this.freeNode != null) return
+        const block = IngameLogic.getInstance().currentSelectBlock;
+        if (block == null) return
+        if (block.freeNode != null) return
         if (IngameLogic.getInstance().status == ENUM_GAME_STATUS.UNRUNING) return
         if (IngameLogic.getInstance().currentSelectBlock == null) return
         if (!IngameLogic.getInstance().currentSelectBlock.isSelected) return;
-        if (this.lockNumber > 0) return
-        const block = IngameLogic.getInstance().currentSelectBlock;
+        if (block.lockNumber > 0) return
+
         if (block.isCanMove == false) return
 
         // Thử đặt block

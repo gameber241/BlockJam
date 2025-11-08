@@ -419,10 +419,7 @@
     "__prefab": {
       "__id__": 17
     },
-    "_customMaterial": {
-      "__uuid__": "091396ba-c3ef-46c1-98a9-d8de302ee981",
-      "__expectedType__": "cc.Material"
-    },
+    "_customMaterial": null,
     "_srcBlendFactor": 2,
     "_dstBlendFactor": 4,
     "_color": {
@@ -464,8 +461,6 @@
       "__id__": 0
     },
     "fileId": "9b+5QYBZtAEZZ2IE+dyT6J",
-    "instance": null,
-    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -481,8 +476,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 100
+      "width": 300,
+      "height": 300
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

@@ -44,8 +44,14 @@ export class exit extends Component {
         this.yIndex = yIndex
         this.size = size
         this.initSprite()
-        this.isStar = isStar
-        this.star.active = isStar
+
+        if (isStar == false) {
+            this.star.active = false
+
+        }
+        else {
+            this.star.active = true
+        }
     }
 
     initSprite() {
