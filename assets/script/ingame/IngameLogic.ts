@@ -663,7 +663,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     this.blockClearNum += 1;
                                     director.emit("MERGE")
                                     if (block.isKey == true) {
-                                        director.emit("KEY")
+
+                                        block.AnimationKey()
                                     }
                                     block.node.destroy();
                                     this.checkGame();
@@ -686,37 +687,37 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
-                                    this.scheduleOnce(() => {
-                                        eff.destroy()
-                                    }, 0.5)
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 0.5)
                                 }
                                 break;
                             case 1:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    this.scheduleOnce(() => {
-                                        eff.destroy()
-                                    }, 0.5)
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 0.5)
 
 
                                 }
                                 break;
                             case 2:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    this.scheduleOnce(() => {
-                                        eff.destroy()
-                                    }, 0.5)
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 0.5)
                                 }
                                 break;
                             case 3:
@@ -727,9 +728,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    this.scheduleOnce(() => {
-                                        eff.destroy()
-                                    }, 0.5) 
+                                    // this.scheduleOnce(() => {
+                                    //     eff.destroy()
+                                    // }, 0.5)
                                 }
                                 break;
                         }
@@ -1087,6 +1088,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             )
             .call(() => {
                 // Sau khi hoàn thành hiệu ứng, xóa toàn bộ pivot (bao gồm block)
+                this.updateBlockLimitData(targetBlock, false)
                 rotationPivot.destroy()
                 this.blockClearNum += 1
 

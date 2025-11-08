@@ -116,6 +116,31 @@ export class block extends Component {
         }
     }
 
+
+
+    AnimationKey() {
+        let pos = this.key.getWorldPosition().clone()
+        this.key.removeFromParent()
+        IngameLogic.getInstance().blockBg.addChild(this.key)
+        this.key.setWorldPosition(pos)
+        this.key.setSiblingIndex(99)
+        let key = this.key
+        let blocks = IngameLogic.getInstance().blockBg.getComponentsInChildren(block)
+        blocks.forEach(e => {
+            if (e.lockNumber > 0) {
+                let size = e.node.getComponent(UITransform).contentSize
+                tween(key).to(0.3, { position: new Vec3(e.node.position.x + size.width / 2, e.node.position.y + size.height / 2) })
+                    .call(() => {
+                        console.log(this)
+                        key.active = false
+                        director.emit("KEY")
+                    })
+                    .start()
+
+            }
+        })
+    }
+
     SubKey() {
         if (this.lockNumber == 0) return
         this.lockNumber--;
