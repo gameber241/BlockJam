@@ -687,9 +687,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 1)
+                                    this.scheduleOnce(() => {
+                                        eff.destroy()
+                                    }, 0.5)
                                 }
                                 break;
                             case 1:
@@ -700,9 +700,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 1)
+                                    this.scheduleOnce(() => {
+                                        eff.destroy()
+                                    }, 0.5)
 
 
                                 }
@@ -715,9 +715,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 1)
+                                    this.scheduleOnce(() => {
+                                        eff.destroy()
+                                    }, 0.5)
                                 }
                                 break;
                             case 3:
@@ -728,9 +728,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 1)
+                                    this.scheduleOnce(() => {
+                                        eff.destroy()
+                                    }, 0.5) 
                                 }
                                 break;
                         }
