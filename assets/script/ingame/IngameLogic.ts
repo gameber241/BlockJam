@@ -382,7 +382,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             }
         }
 
-        console.log("BlockLimitData:", JSON.stringify(this.blockLimitData, null, 2));
     }
 
 
