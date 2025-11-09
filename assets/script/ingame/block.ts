@@ -223,7 +223,7 @@ export class block extends Component {
                 this.lockLb.setPosition(new Vec3(149, 158, 0))
                 break
             case 13:
-                this.lockLb.setPosition(new Vec3(100, 148, 0))
+                this.lockLb.setPosition(new Vec3(51, 147, 0))
                 break
             case 14:
                 this.lockLb.setPosition(new Vec3(46, 164, 0))
@@ -1181,8 +1181,12 @@ export class block extends Component {
     // ⭐ ADD: remove block chuẩn
     private removeBlock() {
         IngameLogic.getInstance().updateBlockLimitData(this, false);
-        this.node.destroy();
+        if (this.subcolor == true)
+            director.emit("MERGE")
         director.emit("MERGE")
+        this.node.destroy();
+
+
 
         IngameLogic.getInstance().blockClearNum++;
         IngameLogic.getInstance().checkGame();

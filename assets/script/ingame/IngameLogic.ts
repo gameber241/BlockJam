@@ -658,10 +658,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             .call(() => {
                                 block.icon.active = false
                                 block.isCanMove = true
+                                director.emit("MERGE")
 
                                 if (block.subcolor == false) {
                                     this.blockClearNum += 1;
-                                    director.emit("MERGE")
+                                    // director.emit("MERGE")
                                     if (block.isKey == true) {
 
                                         block.AnimationKey()
@@ -1090,6 +1091,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 // Sau khi hoàn thành hiệu ứng, xóa toàn bộ pivot (bao gồm block)
                 this.updateBlockLimitData(targetBlock, false)
                 rotationPivot.destroy()
+                if (targetBlock.subcolor == true) {
+                    director.emit("MERGE")
+                }
+                director.emit("MERGE")
                 this.blockClearNum += 1
 
                 // Gọi callback khi hoàn thành hiệu ứng block cuối cùng
@@ -1187,6 +1192,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.checkGame()
             IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
             AudioManager.getInstance().playOneShot('rocketHit');
+            if (block.subcolor == true) {
+                director.emit("MERGE")
+
+            }
+            director.emit("MERGE")
 
 
         }, 1)
