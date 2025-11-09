@@ -10,12 +10,15 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
     private jsonMap: Record<string, any> = {};
     private txtMap: Record<string, string> = {};
 
-    public async loadAllResources() {
+    public async loadAllResources(onProgress?: (progress: number) => void) {
         return new Promise<void>((resolve, reject) => {
             resources.loadDir(
                 "", // load tất cả trong resources/
                 (finished: number, total: number) => {
-                    const percent = (finished / total * 100).toFixed(2);
+                    const percent = finished / total * 100;
+                    if (onProgress) {
+                        onProgress(percent);
+                    }
                 },
                 (err, assets: Asset[]) => {
                     if (err) {

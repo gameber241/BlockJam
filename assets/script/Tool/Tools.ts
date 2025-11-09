@@ -11,6 +11,7 @@ import { border } from '../ingame/border';
 import { SelectIdExit } from './SelectIdExit';
 import { WallTool } from './WallTool';
 import { ExitTool } from './ExitTool';
+import { LoadingManager } from '../Manager/LoadingManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Tools')
@@ -18,7 +19,28 @@ export class Tools extends BaseSingleton<Tools> {
     @property(Node)
     loading: Node = null
     async start() {
-        await ResourcesManager.getInstance().loadAllResources()
+        // Lấy LoadingManager component từ loading node
+        const loadingManager = this.loading.getComponent(LoadingManager);
+        
+        // Reset và bắt đầu loading từ 0%
+        if (loadingManager) {
+            loadingManager.reset();
+        }
+        
+        // Load tất cả assets với callback progress thật
+        await ResourcesManager.getInstance().loadAllResources((progress: number) => {
+            if (loadingManager) {
+                loadingManager.updateProgress(progress);
+            }
+        });
+        
+        // Đảm bảo loading đạt 100% và chờ một chút cho animation hoàn thành
+        if (loadingManager) {
+            loadingManager.updateProgress(100);
+            // Chờ 0.5 giây để người dùng thấy 100%
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
         this.loading.active = false
         this.selectIdBlock.init()
         this.selectIdWall.init()

@@ -8,6 +8,7 @@ import { WinSubHeart } from '../ingame/WinSubHeart';
 import { PopupRefillYoutLife } from './PopupRefillYoutLife';
 import { IAPManager } from './IAPManager';
 import { AudioManager } from './AudioManager';
+import { LoadingManager } from './LoadingManager';
 const { ccclass, property } = _decorator;
 const STORAGE_KEY = 'CC2_BLOCK_JAM'
 @ccclass('BlockJamManager')
@@ -36,7 +37,28 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         this.heartSystem = new HeartSystem()
         this.LoadingUI.active = true
         this.LobbyUI.active = false
-        await ResourcesManager.getInstance().loadAllResources()
+        
+        // Lấy LoadingManager component từ LoadingUI
+        const loadingManager = this.LoadingUI.getComponent(LoadingManager);
+        
+        // Reset và bắt đầu loading từ 0%
+        if (loadingManager) {
+            loadingManager.reset();
+        }
+        
+        // Load tất cả assets với callback progress thật
+        await ResourcesManager.getInstance().loadAllResources((progress: number) => {
+            if (loadingManager) {
+                loadingManager.updateProgress(progress);
+            }
+        });
+        
+        // Đảm bảo loading đạt 100% và chờ một chút cho animation hoàn thành
+        if (loadingManager) {
+            loadingManager.updateProgress(100);
+            // Chờ 0.5 giây để người dùng thấy 100%
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
         
         // Initialize Managers
         IAPManager.getInstance();
