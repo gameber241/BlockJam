@@ -478,6 +478,13 @@ export class block extends Component {
         this.sibilingCurrent = block.node.getSiblingIndex()
         // Skill logic
         if (IngameLogic.getInstance().typebooster == 1) {
+            if (block.freezeNum > 0) return
+            if (block.lockNumber > 0) return
+            if (block.isKey == true) return
+            if (block.isStar == true) return
+            if (block.isWire == true) return
+            if (block.colorWire != -1) return
+            if (block.colorsWire.length > 0) return
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
             IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
             IngameLogic.getInstance().MagnetBlock(block.colorIndex);
@@ -486,6 +493,13 @@ export class block extends Component {
 
             return
         } else if (IngameLogic.getInstance().typebooster == 2) {
+            if (block.freezeNum > 0) return
+            if (block.lockNumber > 0) return
+            if (block.isKey == true) return
+            if (block.isStar == true) return
+            if (block.isWire == true) return
+            if (block.colorWire != -1) return
+            if (block.colorsWire.length > 0) return
             IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
             IngameLogic.getInstance().HammerBlock(block, event);
 
