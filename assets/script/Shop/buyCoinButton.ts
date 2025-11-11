@@ -1,5 +1,6 @@
 import { _decorator, Component, Label, Node, Button, log } from 'cc';
 import { IAPManager, ProductInfo } from '../Manager/IAPManager';
+import { CallNative } from '../CallNative';
 const { ccclass, property } = _decorator;
 
 @ccclass('buyCoinButton')
@@ -16,6 +17,7 @@ export class buyCoinButton extends Component {
 
     @property()
     productId: string = '';
+
 
     private button: Button = null;
     private productInfo: ProductInfo = null;
@@ -62,6 +64,8 @@ export class buyCoinButton extends Component {
             log('Product ID not set for this button');
             return;
         }
+
+        CallNative.CallIAP(this.productId)
 
         // Disable button để tránh spam click
         if (this.button) {

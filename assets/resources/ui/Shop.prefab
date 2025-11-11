@@ -951,7 +951,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.31,
+      "width": 31.29,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -986,7 +986,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "500",
+    "_string": "10",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -1226,7 +1226,8 @@
     "priceLabel": {
       "__id__": 35
     },
-    "productId": "",
+    "productId": "com.block.colorjam.100",
+    "buyNumber": 10,
     "_id": ""
   },
   {
@@ -1500,7 +1501,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117.95,
+      "width": 127.65,
       "height": 63
     },
     "_anchorPoint": {
@@ -1535,7 +1536,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "1000",
+    "_string": "2000",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -1692,7 +1693,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.31,
+      "width": 37.11,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -1727,7 +1728,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "500",
+    "_string": "20",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -1967,7 +1968,8 @@
     "priceLabel": {
       "__id__": 68
     },
-    "productId": "",
+    "productId": "com.block.colorjam.200",
+    "buyNumber": 30,
     "_id": ""
   },
   {
@@ -2241,7 +2243,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117.95,
+      "width": 126.95,
       "height": 63
     },
     "_anchorPoint": {
@@ -2276,7 +2278,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "1000",
+    "_string": "3000",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -2433,7 +2435,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.31,
+      "width": 36.69,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -2468,7 +2470,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "500",
+    "_string": "30",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -2708,7 +2710,8 @@
     "priceLabel": {
       "__id__": 101
     },
-    "productId": "",
+    "productId": "com.block.colorjam.300",
+    "buyNumber": 50,
     "_id": ""
   },
   {
@@ -2982,7 +2985,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117.95,
+      "width": 128.65,
       "height": 63
     },
     "_anchorPoint": {
@@ -3017,7 +3020,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "1000",
+    "_string": "4000",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -3174,7 +3177,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.31,
+      "width": 37.71,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -3209,7 +3212,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "500",
+    "_string": "40",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -3449,7 +3452,8 @@
     "priceLabel": {
       "__id__": 134
     },
-    "productId": "",
+    "productId": "com.block.colorjam.400",
+    "buyNumber": 70,
     "_id": ""
   },
   {
@@ -3723,7 +3727,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117.95,
+      "width": 126.75,
       "height": 63
     },
     "_anchorPoint": {
@@ -3758,7 +3762,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "1000",
+    "_string": "5000",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -3915,7 +3919,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.31,
+      "width": 36.57,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -3950,7 +3954,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "500",
+    "_string": "50",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -4190,7 +4194,8 @@
     "priceLabel": {
       "__id__": 167
     },
-    "productId": "",
+    "productId": "com.block.colorjam.500",
+    "buyNumber": 90,
     "_id": ""
   },
   {
@@ -4464,7 +4469,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117.95,
+      "width": 129.5,
       "height": 63
     },
     "_anchorPoint": {
@@ -4499,7 +4504,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "1000",
+    "_string": "6000",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -4656,7 +4661,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.31,
+      "width": 38.22,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -4691,7 +4696,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "500",
+    "_string": "60",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -4931,7 +4936,8 @@
     "priceLabel": {
       "__id__": 200
     },
-    "productId": "",
+    "productId": "com.block.colorjam.600",
+    "buyNumber": 100,
     "_id": ""
   },
   {
