@@ -108,11 +108,14 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     };
 
     protected start() {
+        AudioManager.getInstance().play('game', true);
         director.on("UPDATE_ACCOUNT", this.updateCoin, this)
         this.Reset()
     }
 
     protected onDestroy(): void {
+        AudioManager.getInstance().stop('game');
+
         director.off("UPDATE_ACCOUNT", this.updateCoin, this)
         super.onDestroy()
     }
@@ -759,6 +762,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         const blocks = this.blockBg.getComponentsInChildren(block);
         if (blocks.length === 0) {
             this.scheduleOnce(() => {
+                AudioManager.getInstance().playOneShot('win');
+
                 BlockJamManager.getInstance().heartSystem.addHeart(1);
                 BlockJamManager.getInstance().updateScore(200);
                 BlockJamManager.getInstance().UpdateLevel();
