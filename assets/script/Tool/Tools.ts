@@ -21,26 +21,26 @@ export class Tools extends BaseSingleton<Tools> {
     async start() {
         // Lấy LoadingManager component từ loading node
         const loadingManager = this.loading.getComponent(LoadingManager);
-        
+
         // Reset và bắt đầu loading từ 0%
         if (loadingManager) {
             loadingManager.reset();
         }
-        
+
         // Load tất cả assets với callback progress thật
         await ResourcesManager.getInstance().loadAllResources((progress: number) => {
             if (loadingManager) {
                 loadingManager.updateProgress(progress);
             }
         });
-        
+
         // Đảm bảo loading đạt 100% và chờ một chút cho animation hoàn thành
         if (loadingManager) {
             loadingManager.updateProgress(100);
             // Chờ 0.5 giây để người dùng thấy 100%
             await new Promise(resolve => setTimeout(resolve, 500));
         }
-        
+
         this.loading.active = false
         this.selectIdBlock.init()
         this.selectIdWall.init()
@@ -77,7 +77,11 @@ export class Tools extends BaseSingleton<Tools> {
     @property(SelectIdExit)
     selectIdExit: SelectIdExit = null
 
+    @property(EditBox)
+    EDWire: EditBox = null
 
+    @property(EditBox)
+    Drag: EditBox = null
     rowNumber: number = 0
 
     colNumber: number = 0
@@ -161,7 +165,9 @@ export class Tools extends BaseSingleton<Tools> {
         const y = this.rowSelect * (BLOCK_SIZE + BLOCK_GAP)
         const pos = this.getRealPos(v2(x, y))
         blockTool.setPosition(pos)
-        blockTool.getComponent(BlockTool).init(this.colSelect, this.rowSelect, this.idBlock, this.idColor, this.idDirector, this.idColorSub, Number(this.ice.string), this.isKey, this.isDrag, Number(this.lockNumber.string), [], this.isStar)
+        let wires = this.EDWire.string
+        const arr = wires.split(",").map(Number);
+        blockTool.getComponent(BlockTool).init(this.colSelect, this.rowSelect, this.idBlock, this.idColor, this.idDirector, this.idColorSub, Number(this.ice.string), this.isKey, this.isDrag, Number(this.lockNumber.string), arr, this.isStar, this.Drag.string)
     }
 
     getRealPos(pos: Vec2) {
