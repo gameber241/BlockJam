@@ -3,6 +3,8 @@ import { ResourcesManager } from '../Manager/ResourcesManager';
 import { Tools } from './Tools';
 import { BLOCK_SIZE } from '../ingame/IngameLogic';
 import { PoolManager } from '../Manager/PoolManager';
+import { DataManager } from '../DataManager';
+import { CustomVerticalCenter } from './CenterVerticalLayout';
 const { ccclass, property } = _decorator;
 
 @ccclass('BlockTool')
@@ -35,6 +37,9 @@ export class BlockTool extends Component {
     @property(Node)
     lockLb: Node = null
 
+    @property(Node)
+    wireNode: Node = null
+
     col: number = 0
     row: number = 0
     idBlock = 0
@@ -47,7 +52,8 @@ export class BlockTool extends Component {
     numberLock = 0
     corlorWire = []
     isStar = false
-    init(col, row, idBlock, idColor, director, idColorSub, ice, isKey, isDrag, numberLock, colorWire, isStar) {
+    dragIndex: number
+    init(col, row, idBlock, idColor, director, idColorSub, ice, isKey, isDrag, numberLock, colorWire, isStar, dragIndex) {
         this.director = director
         this.idBlock = idBlock
         this.col = col
@@ -83,8 +89,56 @@ export class BlockTool extends Component {
         else {
             this.key.active = false
         }
+        this.scheduleOnce(() => {
+            if (this.corlorWire.length > 0) {
+                this.initWires()
+            }
+        }, 0.16)
+
+        this.dragIndex = dragIndex
+
+    }
 
 
+    initWires() {
+        let shape = this.getBlockShape()
+
+        this.corlorWire.forEach(e => {
+            let item = PoolManager.getInstance().getNode('WireBlock', this.wireNode)
+            item.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("wire_" + e)
+            item.name = "wire_" + e
+        })
+
+        this.wireNode.getComponent(CustomVerticalCenter).updateLayout()
+        this.scheduleOnce(() => {
+            for (let i = 0; i < shape.length; i++) {
+                let hol = 0
+                let margin = 0
+                for (let j = 0; j < shape[i].length; j++) {
+                    if (shape[i][j] == 0) {
+                        margin += 100
+                        continue
+                    }
+                    hol += 1
+
+
+                }
+                if (hol == 0) continue
+                this.wireNode.children.forEach(e => {
+                    // let pos = new Vec3(j * 100 + 100 / 2, )
+                    // console.log(pos)
+                    let y = i * 100 + 100 / 2
+                    // icon.setPosition()
+                    if (y + 50 >= e.position.y && e.position.y >= y - 50) {
+                        let x = hol * 100 / 2
+                        e.setPosition(x + margin, e.position.y)
+                        e.getComponent(UITransform).setContentSize(new Size(100 * hol, 10))
+                    }
+
+
+                })
+            }
+        })
     }
 
     initKey() {
@@ -353,6 +407,7 @@ export class BlockTool extends Component {
 
         this.node.getComponent(UITransform).setContentSize(size)
         // this.icon.getComponent(UITransform).setContentSize(size)
+        this.wireNode.getComponent(UITransform).setContentSize(size)
 
         this.mask.getComponent(UITransform).setContentSize(size)
         this.icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.idColor}_${this.idBlock}`)
@@ -415,6 +470,134 @@ export class BlockTool extends Component {
             "lockNumber": this.numberLock,
             "colorWire": this.corlorWire,
             "isStar": this.isStar
+        }
+    }
+
+
+    public getBlockShape(): number[][] {
+        switch (this.idBlock) {
+            case 1: // Block 1x1
+                return [
+                    [1]
+                ];
+            case 2:
+                return [
+                    [1, 1, 1]
+                ];
+            case 3:
+                return [
+                    [1],
+                    [1],
+                    [1]
+                ];
+            case 4:
+                return [
+                    [1, 1]
+                ];
+            case 5:
+                return [
+                    [1],
+                    [1]
+                ];
+            case 6:
+                return [
+                    [0, 1],
+                    [1, 1]
+                ];
+            case 7:
+                return [
+                    [1, 0],
+                    [1, 1]
+                ];
+            case 8:
+                return [
+                    [1, 1],
+                    [0, 1]
+                ];
+            case 9:
+                return [
+                    [1, 1],
+                    [1, 0]
+                ];
+            case 10:
+                return [
+                    [0, 0, 1],
+                    [1, 1, 1]
+                ]
+            case 11:
+                return [
+                    [1, 0, 0],
+                    [1, 1, 1]
+                ]
+            case 12:
+                return [
+                    [1, 1],
+                    [0, 1],
+                    [0, 1]
+                ]
+            case 13:
+                return [
+                    [1, 1],
+                    [1, 0],
+                    [1, 0]
+                ]
+            case 14:
+                return [
+                    [1, 0],
+                    [1, 0],
+                    [1, 1]
+                ]
+            case 15:
+                return [
+                    [0, 1],
+                    [0, 1],
+                    [1, 1]
+                ]
+            case 16:
+                return [
+                    [0, 1],
+                    [1, 1],
+                    [0, 1]
+                ]
+            case 17:
+                return [
+                    [1, 0],
+                    [1, 1],
+                    [1, 0]
+                ]
+            case 18:
+                return [
+                    [0, 1, 0],
+                    [1, 1, 1]
+                ]
+            case 19:
+                return [
+                    [1, 1, 1],
+                    [0, 1, 0]
+                ]
+            case 20:
+                return [
+                    [0, 1, 0],
+                    [1, 1, 1],
+                    [0, 1, 0]
+                ];
+            case 21:
+                return [
+                    [1, 1],
+                    [1, 1],
+
+                ];
+            case 22:
+                return [
+                    [1],
+                    [1],
+                    [1],
+                    [1]
+                ];
+            case 23:
+                return [
+                    [1, 1, 1, 1]
+                ];
         }
     }
 }
