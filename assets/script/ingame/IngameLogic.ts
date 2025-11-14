@@ -161,12 +161,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
 
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
-        if (this.colNum > 10) {
-            this.blockBg.setScale(0.8, 0.8, 0.8)
-        }
-        else {
-            this.blockBg.setScale(1, 1, 1)
-        }
+
+        const mapSize = this.colNum > 7 ? 9 / this.colNum : 1.25;
+
+        this.blockBg.setScale(mapSize, mapSize, mapSize);
 
         this.initBlockBg(levelConfig.board)
         this.createBlockBorders(levelConfig.border)
