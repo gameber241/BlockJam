@@ -35,7 +35,12 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
     nameUser: string = ""
 
     protected async start() {
-        window.ReceiveMessageToNative = new ReceiveMessageToNative()
+        // Fix window type để tránh lỗi TypeScript
+        (window as any).ReceiveMessageToNative = new ReceiveMessageToNative();
+        
+        // Listen purchase event từ ReceiveMessageToNative
+        director.on("PURCHASE_SUCCESS", this.onPurchaseSuccess, this);
+        
         this.heartSystem = new HeartSystem()
         this.LoadingUI.active = true
         this.LobbyUI.active = false
@@ -70,6 +75,18 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         this.ShowLobby()
         this.GetAccount()
 
+    }
+
+    /**
+     * Xử lý khi mua hàng thành công
+     */
+    private onPurchaseSuccess(coins: number) {
+        this.updateScore(coins);
+    }
+
+    protected onDestroy() {
+        director.off("PURCHASE_SUCCESS", this.onPurchaseSuccess, this);
+        super.onDestroy();
     }
 
 
