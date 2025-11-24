@@ -1391,7 +1391,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "BtnRetry",
+    "_name": "Btn Confirm",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -1447,7 +1447,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Retry",
+    "_name": "Confirm",
     "_objFlags": 0,
     "_parent": {
       "__id__": 63
@@ -1507,7 +1507,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 315.6,
+      "width": 475.08,
       "height": 151.2
     },
     "_anchorPoint": {
@@ -1542,7 +1542,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Retry",
+    "_string": "Confirm",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 120,

@@ -194,6 +194,11 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         let popup = PoolManager.getInstance().getNode("WillSubHeart", this.LobbyUI.children[2])
         popup.getComponent(WinSubHeart).init(callback)
     }
+
+    ShowPausingPopup() {
+        let popup = PoolManager.getInstance().getNode("PausePopup", this.LobbyUI.children[2])
+        // Popup sẽ tự động pause timer trong onEnable()
+    }
 }
 
 

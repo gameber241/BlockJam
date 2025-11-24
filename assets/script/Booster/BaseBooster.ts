@@ -7,7 +7,9 @@ const { ccclass, property } = _decorator;
 
 @ccclass('BaseBooster')
 export class BaseBooster extends Component {
-    btnAdd: Node = null
+    @property(Node)
+    plusIcon: Node = null
+    @property(Node)
     quantity: Node = null
 
     @property(CCInteger)
@@ -16,8 +18,6 @@ export class BaseBooster extends Component {
 
     quantityNB = 0
     protected onEnable(): void {
-        this.btnAdd = this.node.getChildByName("add")
-        this.quantity = this.node.getChildByName("quantity")
 
         this.updateQuantity()
         director.on("UPDATE_BOOSTER", this.updateQuantity, this)
@@ -42,15 +42,25 @@ export class BaseBooster extends Component {
     }
 
     updateQuantity() {
+        // Kiểm tra null để tránh lỗi khi node chưa được gán
+        if (!this.plusIcon || !this.quantity) {
+            console.warn(`BaseBooster: plusIcon hoặc quantity chưa được gán trong Inspector cho booster type ${this.typeBooster}`);
+            return;
+        }
+
         let quantityNb = DataManager.getBooster(this.typeBooster)
         this.quantityNB = quantityNb
         if (quantityNb > 0) {
-            this.btnAdd.active = false
+            this.plusIcon.active = false
             this.quantity.active = true
-            this.quantity.getComponent(Label).string = quantityNb.toString()
+            
+            const label = this.quantity.getComponent(Label);
+            if (label) {
+                label.string = quantityNb.toString();
+            }
         }
         else {
-            this.btnAdd.active = true
+            this.plusIcon.active = true
             this.quantity.active = false
         }
 

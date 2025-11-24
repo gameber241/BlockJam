@@ -10,7 +10,8 @@ export class Booster_Freeze_Menu extends BaseBooster {
     tick: Node = null
 
     isTick = false
-    onclick() {
+
+    onclick() : boolean {
         if (this.isTick == false) {
             if (this.quantityNB <= 0) {
                 BuyBooster.getInstance().Show(this.typeBooster)
