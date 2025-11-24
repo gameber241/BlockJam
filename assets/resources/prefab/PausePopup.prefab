@@ -495,6 +495,8 @@
       "__id__": 0
     },
     "fileId": "9013S/KvlP+p6V44Vl/qZt",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -577,6 +579,8 @@
       "__id__": 0
     },
     "fileId": "faX6JxvhpHypfkEqGn6Zpu",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -1206,7 +1210,7 @@
       }
     ],
     "_interactable": true,
-    "_transition": 0,
+    "_transition": 3,
     "_normalColor": {
       "__type__": "cc.Color",
       "r": 255,
@@ -1243,7 +1247,7 @@
     "_pressedSprite": null,
     "_disabledSprite": null,
     "_duration": 0.1,
-    "_zoomScale": 1.2,
+    "_zoomScale": 1.1,
     "_target": {
       "__id__": 35
     },
@@ -1272,6 +1276,8 @@
       "__id__": 0
     },
     "fileId": "ceQewzoX1ISL5pPgY04HLq",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -1693,7 +1699,7 @@
       }
     ],
     "_interactable": true,
-    "_transition": 0,
+    "_transition": 3,
     "_normalColor": {
       "__type__": "cc.Color",
       "r": 255,
@@ -1730,7 +1736,7 @@
     "_pressedSprite": null,
     "_disabledSprite": null,
     "_duration": 0.1,
-    "_zoomScale": 1.2,
+    "_zoomScale": 1.1,
     "_target": {
       "__id__": 56
     },
@@ -1759,6 +1765,8 @@
       "__id__": 0
     },
     "fileId": "d8ua23WxZP5IXJVQvT+gXU",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -1890,6 +1898,8 @@
       "__id__": 0
     },
     "fileId": "cf3Jp3GBdMLKRZcefF/ZEz",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -2113,6 +2123,7 @@
       "__id__": 0
     },
     "fileId": "e4mE2yaldNOo8Czze+EzCs",
-    "instance": null
+    "instance": null,
+    "targetOverrides": null
   }
 ]

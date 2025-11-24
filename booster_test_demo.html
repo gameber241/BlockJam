@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booster Utils - Test Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button.secondary {
+            background: #2196F3;
+        }
+        button.danger {
+            background: #f44336;
+        }
+        .status {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .log {
+            background: #f5f5f5;
+            padding: 10px;
+            border-left: 3px solid #4CAF50;
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .booster-item {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ff9800;
+        }
+        .booster-item h4 {
+            margin: 0 0 10px 0;
+            color: #e65100;
+        }
+        .booster-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6f00;
+        }
+        .level-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Booster Utils - Test Demo</h1>
+    
+    <div class="container">
+        <h2>📊 Trạng thái người chơi</h2>
+        <div class="level-display" id="currentLevel">Level: 1</div>
+        
+        <div class="inventory" id="inventory">
+            <div class="booster-item">
+                <h4>⏰ Timer</h4>
+                <div class="booster-count" id="timer-count">0</div>
+            </div>
+            <div class="booster-item">
+                <h4>🚀 Rocket</h4>
+                <div class="booster-count" id="rocket-count">0</div>
+            </div>
+            <div class="booster-item">
+                <h4>🔨 Hammer</h4>
+                <div class="booster-count" id="hammer-count">0</div>
+            </div>
+            <div class="booster-item">
+                <h4>🧲 Magnet</h4>
+                <div class="booster-count" id="magnet-count">0</div>
+            </div>
+        </div>
+        
+        <div class="status">
+            <strong>Đã nhận thưởng level:</strong> <span id="claimedLevels">Chưa có</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🎯 Chơi game</h2>
+        <button onclick="completeLevel()">✅ Hoàn thành level hiện tại</button>
+        <button onclick="completeMultipleLevels()">⚡ Hoàn thành 10 levels</button>
+        <button class="secondary" onclick="goToLevel(10)">→ Nhảy tới level 10</button>
+        <button class="secondary" onclick="goToLevel(20)">→ Nhảy tới level 20</button>
+    </div>
+
+    <div class="container">
+        <h2>🎁 Nhận thưởng</h2>
+        <button onclick="checkReward()">🔍 Kiểm tra thưởng level hiện tại</button>
+        <button onclick="claimReward()">🎁 Nhận thưởng</button>
+    </div>
+
+    <div class="container">
+        <h2>🛠️ Sử dụng Booster</h2>
+        <button onclick="useBooster(0)">⏰ Dùng Timer</button>
+        <button onclick="useBooster(1)">🚀 Dùng Rocket</button>
+        <button onclick="useBooster(2)">🔨 Dùng Hammer</button>
+        <button onclick="useBooster(3)">🧲 Dùng Magnet</button>
+    </div>
+
+    <div class="container">
+        <h2>🛒 Mua Booster</h2>
+        <button class="secondary" onclick="buyBooster(0, 5)">Mua 5 Timer</button>
+        <button class="secondary" onclick="buyBooster(1, 3)">Mua 3 Rocket</button>
+        <button class="secondary" onclick="buyBooster(2, 2)">Mua 2 Hammer</button>
+        <button class="secondary" onclick="buyBooster(3, 1)">Mua 1 Magnet</button>
+    </div>
+
+    <div class="container">
+        <h2>ℹ️ Support Booster</h2>
+        <button onclick="showSupportBoosters()">📋 Xem support booster level hiện tại</button>
+    </div>
+
+    <div class="container">
+        <h2>⚙️ Công cụ</h2>
+        <button class="danger" onclick="resetAll()">🔄 Reset tất cả dữ liệu</button>
+        <button onclick="showFullStatus()">📊 Xem trạng thái đầy đủ</button>
+    </div>
+
+    <div class="container">
+        <h2>📝 Console Log</h2>
+        <div id="logContainer"></div>
+    </div>
+
+    <script>
+        // Mock BoosterUtils cho demo (trong thực tế sẽ import từ TypeScript)
+        const BOOSTER_TYPE = {
+            TIMER: 0,
+            ROCKET: 1,
+            HAMMER: 2,
+            MAGNET: 3,
+        };
+
+        const BOOSTER_NAMES = ['Timer', 'Rocket', 'Hammer', 'Magnet'];
+        const BOOSTER_ICONS = ['⏰', '🚀', '🔨', '🧲'];
+
+        // Simplified BoosterUtils for demo
+        const BoosterUtils = {
+            getCurrentLevel: () => {
+                const level = localStorage.getItem('player_current_level');
+                return level ? parseInt(level) : 1;
+            },
+            
+            saveCurrentLevel: (level) => {
+                localStorage.setItem('player_current_level', level.toString());
+            },
+            
+            getBoosterInventory: () => {
+                const data = localStorage.getItem('player_booster_inventory');
+                if (data) return JSON.parse(data);
+                return { 0: 0, 1: 0, 2: 0, 3: 0 };
+            },
+            
+            saveBoosterInventory: (inventory) => {
+                localStorage.setItem('player_booster_inventory', JSON.stringify(inventory));
+            },
+            
+            getRewardStatus: () => {
+                const data = localStorage.getItem('player_reward_status');
+                if (data) return JSON.parse(data);
+                return { claimedLevels: [] };
+            },
+            
+            saveRewardStatus: (status) => {
+                localStorage.setItem('player_reward_status', JSON.stringify(status));
+            },
+            
+            checkLevelReward: (level) => {
+                if (level % 10 !== 0) return null;
+                
+                const status = BoosterUtils.getRewardStatus();
+                if (status.claimedLevels.indexOf(level) !== -1) return null;
+                
+                // Simplified reward logic
+                const rewards = {
+                    10: { type: 0, quantity: 1 },
+                    20: { type: 1, quantity: 1 },
+                    30: { type: 2, quantity: 1 },
+                    40: { type: 3, quantity: 1 },
+                    50: { type: 0, quantity: 2 },
+                    60: { type: 1, quantity: 2 },
+                };
+                
+                return rewards[level] || null;
+            },
+            
+            claimReward: (level) => {
+                const reward = BoosterUtils.checkLevelReward(level);
+                if (!reward) return false;
+                
+                const inventory = BoosterUtils.getBoosterInventory();
+                inventory[reward.type] += reward.quantity;
+                BoosterUtils.saveBoosterInventory(inventory);
+                
+                const status = BoosterUtils.getRewardStatus();
+                status.claimedLevels.push(level);
+                BoosterUtils.saveRewardStatus(status);
+                
+                return true;
+            },
+            
+            useBooster: (type) => {
+                const inventory = BoosterUtils.getBoosterInventory();
+                if (inventory[type] <= 0) return false;
+                
+                inventory[type]--;
+                BoosterUtils.saveBoosterInventory(inventory);
+                return true;
+            },
+            
+            addBooster: (type, quantity) => {
+                const inventory = BoosterUtils.getBoosterInventory();
+                inventory[type] += quantity;
+                BoosterUtils.saveBoosterInventory(inventory);
+            },
+            
+            resetAll: () => {
+                localStorage.removeItem('player_current_level');
+                localStorage.removeItem('player_booster_inventory');
+                localStorage.removeItem('player_reward_status');
+            }
+        };
+
+        // UI Functions
+        function updateUI() {
+            const level = BoosterUtils.getCurrentLevel();
+            const inventory = BoosterUtils.getBoosterInventory();
+            const status = BoosterUtils.getRewardStatus();
+            
+            document.getElementById('currentLevel').textContent = `Level: ${level}`;
+            document.getElementById('timer-count').textContent = inventory[0];
+            document.getElementById('rocket-count').textContent = inventory[1];
+            document.getElementById('hammer-count').textContent = inventory[2];
+            document.getElementById('magnet-count').textContent = inventory[3];
+            
+            const claimed = status.claimedLevels.length > 0 
+                ? status.claimedLevels.join(', ') 
+                : 'Chưa có';
+            document.getElementById('claimedLevels').textContent = claimed;
+        }
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log';
+            
+            const time = new Date().toLocaleTimeString();
+            logEntry.innerHTML = `[${time}] ${message}`;
+            
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
+            
+            // Giới hạn số log
+            if (logContainer.children.length > 20) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+        }
+
+        // Game Functions
+        function completeLevel() {
+            const currentLevel = BoosterUtils.getCurrentLevel();
+            log(`✅ Hoàn thành level ${currentLevel}`);
+            
+            const reward = BoosterUtils.checkLevelReward(currentLevel);
+            if (reward) {
+                log(`🎁 Level ${currentLevel} có thưởng: ${BOOSTER_ICONS[reward.type]} ${BOOSTER_NAMES[reward.type]} x${reward.quantity}`);
+            }
+            
+            BoosterUtils.saveCurrentLevel(currentLevel + 1);
+            updateUI();
+        }
+
+        function completeMultipleLevels() {
+            const startLevel = BoosterUtils.getCurrentLevel();
+            for (let i = 0; i < 10; i++) {
+                const level = startLevel + i;
+                const reward = BoosterUtils.checkLevelReward(level);
+                if (reward) {
+                    log(`🎁 Level ${level} có thưởng!`);
+                }
+            }
+            BoosterUtils.saveCurrentLevel(startLevel + 10);
+            log(`⚡ Hoàn thành 10 levels (${startLevel} → ${startLevel + 9})`);
+            updateUI();
+        }
+
+        function goToLevel(level) {
+            BoosterUtils.saveCurrentLevel(level);
+            log(`→ Nhảy tới level ${level}`);
+            updateUI();
+        }
+
+        function checkReward() {
+            const level = BoosterUtils.getCurrentLevel();
+            const reward = BoosterUtils.checkLevelReward(level);
+            
+            if (reward) {
+                log(`🎁 Level ${level} có thưởng: ${BOOSTER_ICONS[reward.type]} ${BOOSTER_NAMES[reward.type]} x${reward.quantity}`);
+            } else {
+                log(`ℹ️ Level ${level} không có thưởng hoặc đã nhận rồi`);
+            }
+        }
+
+        function claimReward() {
+            const level = BoosterUtils.getCurrentLevel();
+            const success = BoosterUtils.claimReward(level);
+            
+            if (success) {
+                log(`✅ Đã nhận thưởng level ${level}!`);
+                updateUI();
+            } else {
+                log(`❌ Không thể nhận thưởng level ${level}`);
+            }
+        }
+
+        function useBooster(type) {
+            const success = BoosterUtils.useBooster(type);
+            
+            if (success) {
+                log(`✅ Đã sử dụng ${BOOSTER_ICONS[type]} ${BOOSTER_NAMES[type]}`);
+                updateUI();
+            } else {
+                log(`❌ Không đủ ${BOOSTER_ICONS[type]} ${BOOSTER_NAMES[type]}!`);
+            }
+        }
+
+        function buyBooster(type, quantity) {
+            BoosterUtils.addBooster(type, quantity);
+            log(`🛒 Đã mua ${quantity} ${BOOSTER_ICONS[type]} ${BOOSTER_NAMES[type]}`);
+            updateUI();
+        }
+
+        function showSupportBoosters() {
+            const level = BoosterUtils.getCurrentLevel();
+            log(`📋 Support booster cho level ${level}: Xem trong console hoặc code`);
+        }
+
+        function resetAll() {
+            if (confirm('Bạn có chắc muốn reset tất cả dữ liệu?')) {
+                BoosterUtils.resetAll();
+                log('🔄 Đã reset tất cả dữ liệu');
+                updateUI();
+            }
+        }
+
+        function showFullStatus() {
+            const level = BoosterUtils.getCurrentLevel();
+            const inventory = BoosterUtils.getBoosterInventory();
+            const status = BoosterUtils.getRewardStatus();
+            
+            log('=== TRẠNG THÁI ĐẦY ĐỦ ===');
+            log(`Level hiện tại: ${level}`);
+            log(`Timer: ${inventory[0]}, Rocket: ${inventory[1]}, Hammer: ${inventory[2]}, Magnet: ${inventory[3]}`);
+            log(`Đã nhận thưởng: ${status.claimedLevels.join(', ') || 'Chưa có'}`);
+        }
+
+        // Initialize
+        updateUI();
+        log('🎮 Booster Utils Demo đã sẵn sàng!');
+    </script>
+</body>
+</html>
