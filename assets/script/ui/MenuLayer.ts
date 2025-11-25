@@ -4,7 +4,7 @@ import { PoolManager } from '../Manager/PoolManager';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BuyBooster } from '../Booster/BuyBooster';
 import { BaseSingleton } from '../Base/BaseSingleton';
-import { rewartdBooster } from '../Booster/BoosterReward';
+import { rewartdBooster, suportBooster } from '../Booster/BoosterReward';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuLayer')
@@ -51,6 +51,9 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
     @property(Label)
     titleUnlock: Label = null
+
+    @property(Node)
+    boosterSupport: Node = null
 
     idBoosters = []
     protected onEnable(): void {
@@ -155,10 +158,17 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
     }
 
     initInf() {
+        let dataBooster = suportBooster[BlockJamManager.getInstance().level]
+        this.boosterSupport.children.forEach(e => e.active = false)
+
+        for (let i = 0; i < dataBooster.length; i++) {
+            this.boosterSupport.children[dataBooster[i].type].active = true
+        }
+
         for (const key in rewartdBooster) {
             const value = rewartdBooster[key];
             let level = BlockJamManager.getInstance().level
-            if (Number(key) > level) {
+            if (Number(key) >= level) {
                 this.titleUnlock.string = "UNLOCK LEVEL " + key
                 this.boosterUnlock.children.forEach((e, i) => {
                     if (i == value.type) {

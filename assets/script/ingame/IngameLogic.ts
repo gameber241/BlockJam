@@ -14,6 +14,7 @@ import { MenuLayer } from '../ui/MenuLayer';
 import { DataManager } from '../DataManager';
 import { AudioManager } from '../Manager/AudioManager';
 import { BoosterUtils } from '../Booster/BoosterUtils';
+import { rewartdBooster, suportBooster } from '../Booster/BoosterReward';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -74,6 +75,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     @property(Node)
     rocketEffect: Node = null
+
+    @property(Node)
+    boosterSupport: Node = null
+
 
     timeNumber: 0
 
@@ -139,13 +144,25 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.init()
             this.status = ENUM_GAME_STATUS.RUNING
             this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
-            this.startFromString('5:00', this.ShowOutOfTime.bind(this));
+            this.startFromString('05:30', this.ShowOutOfTime.bind(this));
             this.coinLb.string = BlockJamManager.getInstance().coin.toString()
-            this.UseTools()
+            this.scheduleOnce(() => {
+                this.UseTools()
+
+            }, 0.2)
 
         }, 0.1)
 
 
+    }
+
+    BtnRetry() {
+        if (BlockJamManager.getInstance().heartSystem.currentHearts == 0) {
+            BlockJamManager.getInstance().ShowREfill(this.Reset.bind(this))
+
+            return
+        }
+        this.Reset()
     }
     updateCoin() {
         this.coinLb.string = BlockJamManager.getInstance().coin.toString()
@@ -183,13 +200,92 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             if (e == 0) {
                 this.FreezeBooster()
             }
+
             if (e == 1) {
                 this.UserocketRandom()
             }
-            DataManager.SaveBooster(e, -1)
-            director.emit("UPDATE_BOOSTER")
+            this.scheduleOnce(() => {
+                if (e == 2) {
+                    this.UsetHammer()
+                }
+            }, 0.1)
+            this.scheduleOnce(() => {
+                if (e == 3) {
+                    this.UseMagnet()
+                }
+            }, 0.2)
+
+
+            DataManager.SaveBoosterSupport(e, BlockJamManager.getInstance().level, -1)
+            director.emit("UPDATE_BOOSTER_SUPPORT")
         })
         MenuLayer.getInstance().idBoosters = []
+    }
+
+    UsetHammer() {
+        IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+
+        let blocks = this.blockBg.getComponentsInChildren(block)
+        // Lấy danh sách tất cả các ô trong block
+        for (let i = 0; i < blocks.length; i++) {
+            let e = blocks[i]
+            if (e.freezeNum > 0) continue
+            if (e.lockNumber > 0) continue
+            if (e.isKey == true) continue
+            if (e.isStar == true) continue
+            if (e.isWire == true) continue
+            if (e.colorWire != -1) continue
+            if (e.colorsWire.length > 0) continue
+            if (e.isDestroying) continue;
+
+            // 🔒 KHÓA block lại
+            e.isDestroying = true;
+            this.HammerEffect.active = true
+            let size = e.node.getComponent(UITransform).contentSize
+            this.HammerEffect.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
+            this.HammerEffect.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+            this.scheduleOnce(() => {
+
+                this.conffeti.active = true
+                this.conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+
+                this.conffeti.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
+                this.scheduleOnce(() => {
+                    this.conffeti.active = false
+                }, 0.5)
+                this.HammerEffect.active = false
+                e.onBoosterFinish(null);
+                e.node.destroy();
+                this.blockClearNum += 1;
+                this.checkGame()
+                IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+                AudioManager.getInstance().playOneShot('rocketHit');
+
+
+            }, 1)
+
+            return
+        }
+    }
+
+    UseMagnet() {
+        IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+
+        let blocks = this.blockBg.getComponentsInChildren(block)
+        // Lấy danh sách tất cả các ô trong block
+        for (let i = 0; i < blocks.length; i++) {
+            let e = blocks[i]
+            if (e.freezeNum > 0) continue
+            if (e.lockNumber > 0) continue
+            if (e.isKey == true) continue
+            if (e.isStar == true) continue
+            if (e.isWire == true) continue
+            if (e.colorWire != -1) continue
+            if (e.colorsWire.length > 0) continue
+            this.MagnetBlock(e.colorIndex)
+
+            return
+        }
     }
 
     UserocketRandom() {
@@ -206,7 +302,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             if (e.isWire == true) continue
             if (e.colorWire != -1) continue
             if (e.colorsWire.length > 0) continue
+            if (e.isDestroying) continue;
 
+            // 🔒 KHÓA block lại
+            e.isDestroying = true;
+            console.log("check ", e.uuid)
             const shape = e.getBlockShape();
             const cells: Vec2[] = [];
             for (let y = 0; y < shape.length; y++) {
@@ -218,6 +318,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             }
             if (cells.length === 0) continue;
             let size = e.node.getComponent(UITransform).contentSize
+            console.log(e)
             IngameLogic.getInstance().moveToTarget(this.node, new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
             this.scheduleOnce(() => {
                 let size = e.node.getComponent(UITransform).contentSize
@@ -649,11 +750,15 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                             .by(0.5, { position: new Vec3(moveX2, moveY2) })
                             .call(() => {
 
+                                block.icon.active = false
+                                block.isCanMove = true
+
                                 if (block.subcolor == false) {
                                     this.blockClearNum += 1;
                                     director.emit("MERGE")
                                     if (block.isKey == true) {
-                                        director.emit("KEY")
+
+                                        block.AnimationKey()
                                     }
                                     block.node.destroy();
                                     this.checkGame();
@@ -740,13 +845,14 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.scheduleOnce(() => {
                 BlockJamManager.getInstance().heartSystem.addHeart(1);
                 BlockJamManager.getInstance().updateScore(200);
-                BlockJamManager.getInstance().UpdateLevel();
                 this.levelComplete.active = true;
                 let reward = BoosterUtils.checkLevelReward(BlockJamManager.getInstance().level)
-                console.log(reward, BlockJamManager.getInstance().level)
+
                 if (reward != null) {
                     DataManager.SaveBooster(reward.type, reward.quantity)
                 }
+                BlockJamManager.getInstance().UpdateLevel();
+
                 this.pause();
             }, 0.5);
 
@@ -962,6 +1068,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     BtnCloseOutOfTime() {
         this.popupClose.active = true
         this.outoftime1.active = false
+        this.initInf()
     }
 
     BtnClosePopupClose() {
@@ -1093,7 +1200,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         let listBlock = this.blockBg.getComponentsInChildren(block)
         const targetBlocks: block[] = []
 
-        // Tìm tất cả block có màu phù hợp
+
         listBlock.forEach(e => {
             if (e.freezeNum > 0) return
             if (e.lockNumber > 0) return
@@ -1102,7 +1209,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             if (e.isWire == true) return
             if (e.colorWire != -1) return
             if (e.colorsWire.length > 0) return
+            if (e.isDestroying) return;
+            console.log(e.uuid)
+            // 🔒 KHÓA block lại
+
             if (e.colorIndex == colorId) {
+                e.isDestroying = true;
                 targetBlocks.push(e)
             }
         })
@@ -1253,6 +1365,32 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     .start();
             })
             .start();
+    }
+
+    initInf() {
+        let dataBooster = suportBooster[BlockJamManager.getInstance().level]
+        this.boosterSupport.children.forEach(e => e.active = false)
+
+        for (let i = 0; i < dataBooster.length; i++) {
+            this.boosterSupport.children[dataBooster[i].type].active = true
+        }
+
+        // for (const key in rewartdBooster) {
+        //     const value = rewartdBooster[key];
+        //     let level = BlockJamManager.getInstance().level
+        //     if (Number(key) > level) {
+        //         this.titleUnlock.string = "UNLOCK LEVEL " + key
+        //         this.boosterUnlock.children.forEach((e, i) => {
+        //             if (i == value.type) {
+        //                 e.active = true
+        //             }
+        //             else {
+        //                 e.active = false
+        //             }
+        //         })
+        //         return
+        //     }
+        // }
     }
 }
 

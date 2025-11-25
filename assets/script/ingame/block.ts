@@ -61,6 +61,8 @@ export class block extends Component {
     @property(Node)
     lockLb: Node = null
 
+
+    isDestroying = false
     sibilingCurrent = -1
     subcolor = false
     freeNode = null
@@ -129,7 +131,7 @@ export class block extends Component {
         blocks.forEach(e => {
             if (e.lockNumber > 0) {
                 let size = e.node.getComponent(UITransform).contentSize
-                tween(key).to(0.3, { position: new Vec3(e.node.position.x + size.width / 2, e.node.position.y + size.height / 2) })
+                tween(key).to(0.5, { position: new Vec3(e.node.position.x + size.width / 2, e.node.position.y + size.height / 2) })
                     .call(() => {
                         console.log(this)
                         key.active = false

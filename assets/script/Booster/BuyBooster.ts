@@ -15,8 +15,11 @@ export class BuyBooster extends BaseSingleton<BuyBooster> {
     protected start(): void {
 
     }
-    Show(typeBooster) {
+
+    isSuppor = false
+    Show(typeBooster, isSupport = false) {
         this.typeBooster = typeBooster
+        this.isSuppor = isSupport
         this.node.active = true
         this.buyBoosters.children.forEach(e => e.active = false)
         this.buyBoosters.children[typeBooster].active = true
@@ -33,8 +36,15 @@ export class BuyBooster extends BaseSingleton<BuyBooster> {
     btnBuy() {
         if (BlockJamManager.getInstance().coin >= 900) {
             BlockJamManager.getInstance().updateScore(-900)
-            DataManager.SaveBooster(this.typeBooster, 1)
-            director.emit("UPDATE_BOOSTER")
+            if (this.isSuppor == false) {
+                DataManager.SaveBooster(this.typeBooster, 1)
+                director.emit("UPDATE_BOOSTER")
+
+            }
+            else {
+                DataManager.SaveBoosterSupport(this.typeBooster, BlockJamManager.getInstance().level, 1)
+                director.emit("UPDATE_BOOSTER_SUPPORT")
+            }
             this.node.active = false
         }
     }

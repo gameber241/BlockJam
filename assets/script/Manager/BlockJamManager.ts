@@ -10,6 +10,8 @@ import { IAPManager } from './IAPManager';
 import { AudioManager } from './AudioManager';
 import { LoadingManager } from './LoadingManager';
 import { ReceiveMessageToNative } from '../ReceiveMessageToNative';
+import { DataManager } from '../DataManager';
+import { suportBooster } from '../Booster/BoosterReward';
 const { ccclass, property } = _decorator;
 const STORAGE_KEY = 'CC2_BLOCK_JAM'
 @ccclass('BlockJamManager')
@@ -37,10 +39,10 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
     protected async start() {
         // Fix window type để tránh lỗi TypeScript
         (window as any).ReceiveMessageToNative = new ReceiveMessageToNative();
-        
+
         // Listen purchase event từ ReceiveMessageToNative
         director.on("PURCHASE_SUCCESS", this.onPurchaseSuccess, this);
-        
+        this.SaveBoosterSupport()
         this.heartSystem = new HeartSystem()
         this.LoadingUI.active = true
         this.LobbyUI.active = false
@@ -75,6 +77,20 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         this.ShowLobby()
         this.GetAccount()
 
+    }
+
+    SaveBoosterSupport() {
+        if (DataManager.isSaveBoosterSupport() == false) {
+            sys.localStorage.setItem("IS_SAVE", "11");
+            for (const key in suportBooster) {
+                console.log(key)
+                const value = suportBooster[key];
+                for (let i = 0; i < value.length; i++) {
+                    DataManager.SaveBoosterSupport(value[i].type, key, value[i].quantity)
+                }
+
+            }
+        }
     }
 
     /**
