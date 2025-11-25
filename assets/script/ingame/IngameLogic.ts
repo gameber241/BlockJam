@@ -13,6 +13,7 @@ import { BuyBooster } from '../Booster/BuyBooster';
 import { MenuLayer } from '../ui/MenuLayer';
 import { DataManager } from '../DataManager';
 import { AudioManager } from '../Manager/AudioManager';
+import { BoosterUtils } from '../Booster/BoosterUtils';
 const { ccclass, property } = _decorator;
 
 export const BLOCK_SIZE = 100
@@ -74,9 +75,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     rocketEffect: Node = null
 
-    @property(Node)
-    magnetEffect: Node = null
-
     timeNumber: 0
 
     /** Bước hướng dẫn hiện tại */
@@ -108,14 +106,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     };
 
     protected start() {
-        AudioManager.getInstance().play('game', true);
         director.on("UPDATE_ACCOUNT", this.updateCoin, this)
         this.Reset()
     }
 
     protected onDestroy(): void {
-        AudioManager.getInstance().stop('game');
-
         director.off("UPDATE_ACCOUNT", this.updateCoin, this)
         super.onDestroy()
     }
@@ -164,10 +159,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         let sizeBg = new Size(this.colNum * 100, this.rowNum * 100)
 
         this.blockBg.getComponent(UITransform).setContentSize(sizeBg)
-
-        const mapSize = this.colNum > 7 ? 9 / this.colNum : 1.25;
-
-        this.blockBg.setScale(mapSize, mapSize, mapSize);
+        if (this.colNum > 10) {
+            this.blockBg.setScale(0.8, 0.8, 0.8)
+        }
+        else {
+            this.blockBg.setScale(1, 1, 1)
+        }
 
         this.initBlockBg(levelConfig.board)
         this.createBlockBorders(levelConfig.border)
@@ -383,6 +380,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             }
         }
 
+        console.log("BlockLimitData:", JSON.stringify(this.blockLimitData, null, 2));
     }
 
 
@@ -647,26 +645,15 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 .start();
 
                         }
-                        if (block.subcolor == true) {
-                            // this.iniIconBlock()
-                            block.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${block.colors[0]}_${block.typeIndex}`)
-                        }
-                        block.icon.setSiblingIndex(1)
-                        block.isCanMove = false
-
                         tween(block.icon)
                             .by(0.5, { position: new Vec3(moveX2, moveY2) })
                             .call(() => {
-                                block.icon.active = false
-                                block.isCanMove = true
-                                director.emit("MERGE")
 
                                 if (block.subcolor == false) {
                                     this.blockClearNum += 1;
-                                    // director.emit("MERGE")
+                                    director.emit("MERGE")
                                     if (block.isKey == true) {
-
-                                        block.AnimationKey()
+                                        director.emit("KEY")
                                     }
                                     block.node.destroy();
                                     this.checkGame();
@@ -689,37 +676,29 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
 
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 0.5)
+
                                 }
                                 break;
                             case 1:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 0.5)
 
 
                                 }
                                 break;
                             case 2:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
                                     eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 0.5)
                                 }
                                 break;
                             case 3:
@@ -730,9 +709,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                     eff.setRotationFromEuler(new Vec3(90, 0, 0))
                                     eff.getComponent(ParticleSystem).startColor.color = this.COLOR_MAP[block.colorIndex]
                                     eff.getComponent(ParticleSystem).play()
-                                    // this.scheduleOnce(() => {
-                                    //     eff.destroy()
-                                    // }, 0.5)
                                 }
                                 break;
                         }
@@ -762,12 +738,15 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         const blocks = this.blockBg.getComponentsInChildren(block);
         if (blocks.length === 0) {
             this.scheduleOnce(() => {
-                AudioManager.getInstance().playOneShot('win');
-
                 BlockJamManager.getInstance().heartSystem.addHeart(1);
                 BlockJamManager.getInstance().updateScore(200);
                 BlockJamManager.getInstance().UpdateLevel();
                 this.levelComplete.active = true;
+                let reward = BoosterUtils.checkLevelReward(BlockJamManager.getInstance().level)
+                console.log(reward, BlockJamManager.getInstance().level)
+                if (reward != null) {
+                    DataManager.SaveBooster(reward.type, reward.quantity)
+                }
                 this.pause();
             }, 0.5);
 
@@ -994,13 +973,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         BlockJamManager.getInstance().ShowWinSubHeart(this.Reset.bind(this))
     }
 
-    BtnHome() {
-        BlockJamManager.getInstance().ShowWinSubHeart(() => {
-            this.node.destroy();
-            BlockJamManager.getInstance().BackToMenu();
-        });
-    }
-
     public isOccupied(x: number, y: number): boolean {
         if (x < 0 || x >= this.colNum || y < 0 || y >= this.rowNum) {
             return true; // ngoài biên coi như bị chặn
@@ -1009,7 +981,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     PauseGame() {
-        BlockJamManager.getInstance().ShowPausingPopup();
+
     }
 
     FreezeBooster() {
@@ -1099,12 +1071,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             )
             .call(() => {
                 // Sau khi hoàn thành hiệu ứng, xóa toàn bộ pivot (bao gồm block)
-                this.updateBlockLimitData(targetBlock, false)
                 rotationPivot.destroy()
-                if (targetBlock.subcolor == true) {
-                    director.emit("MERGE")
-                }
-                director.emit("MERGE")
                 this.blockClearNum += 1
 
                 // Gọi callback khi hoàn thành hiệu ứng block cuối cùng
@@ -1123,51 +1090,41 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
      * @param colorId Màu của block cần hút
      */
     MagnetBlock(colorId: number) {
-        this.magnetEffect.active = true
-        this.magnetEffect.getComponent(sp.Skeleton).setAnimation(0, "start", false)
-        this.magnetEffect.getComponent(sp.Skeleton).addAnimation(0, "loop", true)
-        this.scheduleOnce(() => {
-            let listBlock = this.blockBg.getComponentsInChildren(block)
-            const targetBlocks: block[] = []
+        let listBlock = this.blockBg.getComponentsInChildren(block)
+        const targetBlocks: block[] = []
 
-            // Tìm tất cả block có màu phù hợp
-            listBlock.forEach(e => {
-                if (e.freezeNum > 0) return
-                if (e.lockNumber > 0) return
-                if (e.isKey == true) return
-                if (e.isStar == true) return
-                if (e.isWire == true) return
-                if (e.colorWire != -1) return
-                if (e.colorsWire.length > 0) return
-                if (e.colorIndex == colorId) {
-                    targetBlocks.push(e)
-                }
-            })
-
-            // Kiểm tra có block nào để hút không
-            if (targetBlocks.length === 0) {
-                this.typebooster = -1
-                this.isBooster = false
-                return
+        // Tìm tất cả block có màu phù hợp
+        listBlock.forEach(e => {
+            if (e.freezeNum > 0) return
+            if (e.lockNumber > 0) return
+            if (e.isKey == true) return
+            if (e.isStar == true) return
+            if (e.isWire == true) return
+            if (e.colorWire != -1) return
+            if (e.colorsWire.length > 0) return
+            if (e.colorIndex == colorId) {
+                targetBlocks.push(e)
             }
+        })
 
-            // Tạo hiệu ứng hút cho từng block
-            targetBlocks.forEach((targetBlock, index) => {
-                this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
-                    // Callback khi hoàn thành tất cả hiệu ứng
-                    IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
-                })
+        // Kiểm tra có block nào để hút không
+        if (targetBlocks.length === 0) {
+            this.typebooster = -1
+            this.isBooster = false
+            return
+        }
+
+        // Tạo hiệu ứng hút cho từng block
+        targetBlocks.forEach((targetBlock, index) => {
+            this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
+                // Callback khi hoàn thành tất cả hiệu ứng
+                IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
             })
-            this.scheduleOnce(() => {
-                this.magnetEffect.active = false
-                this.typebooster = -1
-                this.isBooster = false
-            }, 1)
+        })
 
-            // Reset booster state
-
-        }, 1)
-
+        // Reset booster state
+        this.typebooster = -1
+        this.isBooster = false
     }
 
 
@@ -1202,11 +1159,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.checkGame()
             IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
             AudioManager.getInstance().playOneShot('rocketHit');
-            if (block.subcolor == true) {
-                director.emit("MERGE")
-
-            }
-            director.emit("MERGE")
 
 
         }, 1)
