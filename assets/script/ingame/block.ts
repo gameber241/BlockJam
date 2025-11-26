@@ -531,6 +531,7 @@ export class block extends Component {
                         }, 0.5)
                         this.breakCell(hit);
                         this.onBoosterFinish(event);
+                        IngameLogic.getInstance().boosters[1].setPosition(IngameLogic.getInstance().boosters[1].position.x, 0)
                     }, 2)
                     event.propagationStopped = true;
 

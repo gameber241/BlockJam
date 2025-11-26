@@ -79,6 +79,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     boosterSupport: Node = null
 
+    @property(Node)
+    boosters: Node[] = []
+
 
     timeNumber: 0
 
@@ -974,6 +977,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         if (this.remainingSeconds > 0) this.running = true;
         if (this.isBooster == true) {
             this.isBooster = false
+
         }
     }
 
@@ -1092,6 +1096,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     FreezeBooster() {
+        IngameLogic.getInstance().isUseTool = false
+        this.boosters[0].setPosition(this.boosters[0].position.x, 0, 0)
         this.freezeEff.active = true
         this.freezeEff.getComponent(sp.Skeleton).setAnimation(0, "start", false)
         this.freezeEff.getComponent(sp.Skeleton).addAnimation(0, "idle", true)
@@ -1231,6 +1237,8 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.createMagnetEffect(targetBlock, index, targetBlocks.length, () => {
                 // Callback khi hoàn thành tất cả hiệu ứng
                 IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+                IngameLogic.getInstance().boosters[3].setPosition(IngameLogic.getInstance().boosters[3].position.x, 2)
+
             })
         })
 
@@ -1271,6 +1279,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.checkGame()
             IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
             AudioManager.getInstance().playOneShot('rocketHit');
+            IngameLogic.getInstance().boosters[2].setPosition(IngameLogic.getInstance().boosters[2].position.x, 0)
 
 
         }, 1)
@@ -1315,6 +1324,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     Rocket() {
         this.typebooster = 3
+
     }
 
 

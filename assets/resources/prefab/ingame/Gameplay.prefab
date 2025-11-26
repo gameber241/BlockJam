@@ -16285,6 +16285,20 @@
     "boosterSupport": {
       "__id__": 544
     },
+    "boosters": [
+      {
+        "__id__": 99
+      },
+      {
+        "__id__": 140
+      },
+      {
+        "__id__": 181
+      },
+      {
+        "__id__": 222
+      }
+    ],
     "displayMode": "mm:ss",
     "rotateDuration": 0.3,
     "moveDuration": 0.8,

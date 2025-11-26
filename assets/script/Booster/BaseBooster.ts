@@ -18,6 +18,7 @@ export class BaseBooster extends Component {
 
     quantityNB = 0
     protected onEnable(): void {
+        this.node.setPosition(this.node.position.x, 0, 0)
 
         this.updateQuantity()
         director.on("UPDATE_BOOSTER", this.updateQuantity, this)
@@ -35,7 +36,7 @@ export class BaseBooster extends Component {
         }
         IngameLogic.getInstance().isUseTool = true
         DataManager.SaveBooster(this.typeBooster, -1)
-
+        this.node.setPosition(this.node.position.x, 20, 0)
         director.emit("UPDATE_BOOSTER")
         return true
 
@@ -53,7 +54,7 @@ export class BaseBooster extends Component {
         if (quantityNb > 0) {
             this.plusIcon.active = false
             this.quantity.active = true
-            
+
             const label = this.quantity.getComponent(Label);
             if (label) {
                 label.string = quantityNb.toString();
