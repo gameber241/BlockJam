@@ -11,8 +11,6 @@ export class FrameProfile extends Component {
     id: number = 0
     init(id) {
         this.id = id
-        //let sp = ResourcesManager.getInstance().getSprite("frame" + (id + 1))
-        //this.icon.spriteFrame = sp
 
         ResourcesManager.getInstance().setSprite("frame" + (id + 1), this.icon);
 
