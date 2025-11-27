@@ -765,6 +765,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 .start();
 
                         }
+
+                        if (block.subcolor == true) {
+                            // this.iniIconBlock()
+                            ResourcesManager.getInstance().setSprite(`block_${block.colorIndex}_${block.typeIndex}`, block.icon.getComponent(Sprite))
+                        }
+                        block.icon.setSiblingIndex(1)
+                        block.isCanMove = false
                         tween(block.icon)
                             .by(0.5, { position: new Vec3(moveX2, moveY2) })
                             .call(() => {

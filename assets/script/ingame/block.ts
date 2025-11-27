@@ -344,7 +344,6 @@ export class block extends Component {
         this.colors = []
         this.iniIconBlock()
         // this.icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
-        ResourcesManager.getInstance().setSprite(`block_${this.colorIndex}_${this.typeIndex}`, this.icon.getComponent(Sprite))
 
         // this.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
         console.log()
