@@ -85,6 +85,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     @property(Node)
     boosters: Node[] = []
 
+    @property(Node)
+    boosterReward: Node = null
+
+    @property(Node)
+    logoComplete: Node = null
+
 
     timeNumber: 0
 
@@ -858,12 +864,25 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.scheduleOnce(() => {
                 BlockJamManager.getInstance().heartSystem.addHeart(1);
                 BlockJamManager.getInstance().updateScore(200);
-                this.levelComplete.active = true;
-                let reward = BoosterUtils.checkLevelReward(BlockJamManager.getInstance().level)
 
+
+                let reward = BoosterUtils.checkLevelReward(BlockJamManager.getInstance().level)
+                this.boosterReward.children.forEach(e => e.active = false)
                 if (reward != null) {
+                    this.logoComplete.setPosition(0, 649.098)
                     DataManager.SaveBooster(reward.type, reward.quantity)
+                    this.boosterReward.children.forEach((e, idnex) => {
+                        if (idnex == reward.type) {
+                            e.active = true
+                            e.getChildByName("quantity").getComponent(Label).string = reward.quantity.toString()
+                        }
+                    })
                 }
+                else {
+                    this.logoComplete.setPosition(0, 100)
+
+                }
+                this.levelComplete.active = true;
                 BlockJamManager.getInstance().UpdateLevel();
 
                 this.pause();
