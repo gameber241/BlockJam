@@ -918,11 +918,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     private setBorderSpriteFrame(node: Node, frameName: string) {
         const sprite = node.getComponent(Sprite);
         if (!sprite) return;
-
-        const spriteFrame = ResourcesManager.getInstance().getSprite(frameName);
-        if (spriteFrame) {
-            sprite.spriteFrame = spriteFrame;
-        }
+        ResourcesManager.getInstance().setSprite(frameName, sprite);
     }
 
 
