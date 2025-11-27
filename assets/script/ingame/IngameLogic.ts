@@ -768,7 +768,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
                         if (block.subcolor == true) {
                             // this.iniIconBlock()
-                            ResourcesManager.getInstance().setSprite(`block_${block.colorIndex}_${block.typeIndex}`, block.icon.getComponent(Sprite))
+                            ResourcesManager.getInstance().setSprite(`block_${block.colors[0]}_${block.typeIndex}`, block.iconSub.getComponent(Sprite))
                         }
                         block.icon.setSiblingIndex(1)
                         block.isCanMove = false
@@ -1313,6 +1313,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.HammerEffect.active = false
             block.onBoosterFinish(event);
             event.propagationStopped = true;
+            this.updateBlockLimitData(block, false)
             block.node.destroy();
             this.blockClearNum += 1;
             this.checkGame()
