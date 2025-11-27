@@ -30,7 +30,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 63
+      "__id__": 68
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -61,7 +61,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 64
+      "__id__": 69
     },
     "_id": "7d2b2d31-8eb6-49ef-9417-0ed8b60f6fc7"
   },
@@ -1760,8 +1760,79 @@
       },
       {
         "__id__": 62
+      },
+      {
+        "__id__": 63
+      },
+      {
+        "__id__": 64
+      },
+      {
+        "__id__": 65
+      },
+      {
+        "__id__": 66
+      },
+      {
+        "__id__": 67
       }
     ],
+    "lobbyMusic": {
+      "__uuid__": "a1c8d1b6-27b1-44ec-af94-8b0b94568a83",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "gameMusic": {
+      "__uuid__": "c3df002f-7757-4db3-8966-2db05cc084ed",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "collectBooster": {
+      "__uuid__": "c66142d3-1fb0-4f17-aa2a-10d4540d842c",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "confirm": {
+      "__uuid__": "fa247f3d-4b0e-4fc5-b4ae-c43f82e46da6",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "win": {
+      "__uuid__": "40aff268-9be4-4355-bfbb-806772d0b123",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "lose": {
+      "__uuid__": "a3a17203-9f4d-4f47-ae8a-de6b75e152ee",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "timer": {
+      "__uuid__": "44f36108-0b40-44ec-a6b4-aacc26b267f1",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "rocketMove": {
+      "__uuid__": "73abb94e-b226-48aa-ad6e-32806dd66272",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "rocketHit": {
+      "__uuid__": "c4544991-8fad-43cc-9893-b05080798664",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "hammerMove": {
+      "__uuid__": "aeddba58-9edc-4cea-8b7f-24f2b7e5413d",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "hammerHit": {
+      "__uuid__": "c4544991-8fad-43cc-9893-b05080798664",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "magnet": {
+      "__uuid__": "dda9c042-6ade-4fb8-82a3-aabdd4ce44c3",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "blockExit": {
+      "__uuid__": "8f0ba925-93c4-438a-92a0-5b5856a387cd",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "iceBroken": {
+      "__uuid__": "4c68f12f-9558-4f44-b488-97c09df22ef1",
+      "__expectedType__": "cc.AudioClip"
+    },
     "_id": "07IEp9TwdFNbewNzzwVCNR"
   },
   {
@@ -1788,7 +1859,7 @@
     "__type__": "Sound",
     "name": "rocketHit",
     "clip": {
-      "__uuid__": "4c68f12f-9558-4f44-b488-97c09df22ef1",
+      "__uuid__": "c4544991-8fad-43cc-9893-b05080798664",
       "__expectedType__": "cc.AudioClip"
     },
     "type": 0,
@@ -1815,6 +1886,47 @@
     "volume": 1
   },
   {
+    "__type__": "Sound",
+    "name": "rocketMove",
+    "clip": {
+      "__uuid__": "73abb94e-b226-48aa-ad6e-32806dd66272",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "type": 0,
+    "volume": 1
+  },
+  {
+    "__type__": "Sound",
+    "name": "hammerStart",
+    "clip": {
+      "__uuid__": "7f8129d8-3554-48fd-94e4-50a3279bcf06",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "type": 0,
+    "volume": 1
+  },
+  {
+    "__type__": "Sound",
+    "name": "hammerHit",
+    "clip": null,
+    "type": 0,
+    "volume": 1
+  },
+  {
+    "__type__": "Sound",
+    "name": "",
+    "clip": null,
+    "type": 0,
+    "volume": 1
+  },
+  {
+    "__type__": "Sound",
+    "name": "",
+    "clip": null,
+    "type": 0,
+    "volume": 1
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": null,
     "asset": null,
@@ -1830,22 +1942,22 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 65
+      "__id__": 70
     },
     "shadows": {
-      "__id__": 66
+      "__id__": 71
     },
     "_skybox": {
-      "__id__": 67
+      "__id__": 72
     },
     "fog": {
-      "__id__": 68
+      "__id__": 73
     },
     "octree": {
-      "__id__": 69
+      "__id__": 74
     },
     "lightProbeInfo": {
-      "__id__": 70
+      "__id__": 75
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false
