@@ -1084,6 +1084,13 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         BlockJamManager.getInstance().ShowWinSubHeart(this.Reset.bind(this))
     }
 
+    BtnHome() {
+        BlockJamManager.getInstance().ShowWinSubHeart(() => {
+            this.node.destroy();
+            BlockJamManager.getInstance().BackToMenu();
+        });
+    }
+
     public isOccupied(x: number, y: number): boolean {
         if (x < 0 || x >= this.colNum || y < 0 || y >= this.rowNum) {
             return true; // ngoài biên coi như bị chặn
@@ -1092,7 +1099,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     }
 
     PauseGame() {
-
+        BlockJamManager.getInstance().ShowPausingPopup();
     }
 
     FreezeBooster() {
