@@ -919,7 +919,10 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         const sprite = node.getComponent(Sprite);
         if (!sprite) return;
 
-        ResourcesManager.getInstance().setSprite(frameName, sprite);
+        const spriteFrame = ResourcesManager.getInstance().getSprite(frameName);
+        if (spriteFrame) {
+            sprite.spriteFrame = spriteFrame;
+        }
     }
 
 
