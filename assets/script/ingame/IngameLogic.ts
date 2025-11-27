@@ -288,7 +288,14 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             if (e.isWire == true) continue
             if (e.colorWire != -1) continue
             if (e.colorsWire.length > 0) continue
-            this.MagnetBlock(e.colorIndex)
+            IngameLogic.getInstance().magnetEffect.active = true
+            let spx = IngameLogic.getInstance().magnetEffect.getComponent(sp.Skeleton)
+            spx.setAnimation(0, "start", false)
+            spx.addAnimation(0, "loop", true)
+            this.scheduleOnce(() => {
+                this.MagnetBlock(e.colorIndex)
+            }, 1.5)
+
 
             return
         }
