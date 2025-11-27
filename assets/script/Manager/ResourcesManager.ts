@@ -12,6 +12,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
     private spritePromises: Record<string, Promise<SpriteFrame | null>> = {};
     private jsonMap: Record<string, any> = {};
     private txtMap: Record<string, string> = {};
+    public readonly loadSpriteProgress = {}
 
     private readonly spritePaths: string[] = [
         "fish",
@@ -113,15 +114,33 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
         return null;
     }
 
+    private initSpriteGroup(groupId: string) {
 
-    public setSprite(name: string, sprite: Sprite) {
+        if (!this.loadSpriteProgress[groupId]) {
+            const spriteGroup = this.loadSpriteProgress[groupId];
+            this.loadSpriteProgress[groupId] = {};
+            spriteGroup.total = 0;
+            spriteGroup.process = 0;
+        }
+        return this.loadSpriteProgress[groupId];
+    }
+
+    public setSprite(name: string, sprite: Sprite, groupId = "default") {
+
+        const spriteGroup = this.initSpriteGroup(groupId);
+
+        if (groupId != "default") {
+            spriteGroup.total += 1;
+        }
         if (!sprite) {
             console.warn(`[ResourcesManager] setSprite called with invalid target for ${name}`);
+            spriteGroup.process += 1;
             return;
         }
 
         const cached = this.spriteMap[name];
         if (cached) {
+            spriteGroup.process += 1;
             if (isValid(sprite.node, true)) {
                 sprite.spriteFrame = cached;
                 return;
@@ -132,6 +151,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
 
         if (!this.spritePromises[name]) {
             this.spritePromises[name] = this.loadSpriteFrame(name).then((spriteFrame) => {
+                spriteGroup.process += 1;
                 if (spriteFrame) {
                     this.spriteMap[name] = spriteFrame;
                 }
@@ -141,6 +161,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
         }
 
         this.spritePromises[name].then((spriteFrame) => {
+            spriteGroup.process += 1;
             if (!spriteFrame) {
                 console.warn(`[ResourcesManager] Failed to set sprite ${name}`);
                 return;
