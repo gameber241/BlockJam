@@ -154,7 +154,7 @@ export class block extends Component {
     }
     initStar() {
         this.star.active = true
-    ResourcesManager.getInstance().setSprite(`block_star_3_${this.typeIndex}`, this.star.getComponent(Sprite))
+        ResourcesManager.getInstance().setSprite(`block_star_3_${this.typeIndex}`, this.star.getComponent(Sprite))
     }
     initKey() {
         let nodeTransform = this.node.getComponent(UITransform)
@@ -185,7 +185,7 @@ export class block extends Component {
 
 
     initLock() {
-    ResourcesManager.getInstance().setSprite("lock_1" + "_" + this.typeIndex, this.lock)
+        ResourcesManager.getInstance().setSprite("lock_1" + "_" + this.typeIndex, this.lock)
         this.lockLb.getComponent(Label).string = this.lockNumber.toString()
         switch (this.typeIndex) {
             case 1:
@@ -308,7 +308,7 @@ export class block extends Component {
         this.freezeLb.node.position = new Vec3(this.node.getComponent(UITransform).width / 2, this.node.getComponent(UITransform).height / 2)
         let newIcon = instantiate(this.icon)
         this.listColor.addChild(newIcon)
-    ResourcesManager.getInstance().setSprite(`block_11_${this.typeIndex}`, newIcon.getComponent(Sprite))
+        ResourcesManager.getInstance().setSprite(`block_11_${this.typeIndex}`, newIcon.getComponent(Sprite))
         this.freeNode = newIcon
         let nodeTransform = this.node.getComponent(UITransform)
         let dirTransform = this.freezeLb.node.getComponent(UITransform)
@@ -343,7 +343,11 @@ export class block extends Component {
         this.isSelected = false
         this.colors = []
         this.iniIconBlock()
+        // this.icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
+        ResourcesManager.getInstance().setSprite(`block_${this.colorIndex}_${this.typeIndex}`, this.icon.getComponent(Sprite))
+
         // this.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
+        console.log()
 
     }
     iconSub = null
@@ -463,7 +467,7 @@ export class block extends Component {
         this.collider.size = size
         this.collider.offset = offSet
         this.mask.getComponent(UITransform).setContentSize(new Size(size.width + 20, size.height + 20))
-    ResourcesManager.getInstance().setSprite(`block_${this.colorIndex}_${this.typeIndex}`, this.icon.getComponent(Sprite))
+        ResourcesManager.getInstance().setSprite(`block_${this.colorIndex}_${this.typeIndex}`, this.icon.getComponent(Sprite))
     }
 
 
