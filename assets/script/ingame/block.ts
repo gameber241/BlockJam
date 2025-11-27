@@ -497,6 +497,8 @@ export class block extends Component {
             spx.setAnimation(0, "start", false)
             spx.addAnimation(0, "loop", true)
             this.scheduleOnce(() => {
+                AudioManager.getInstance().playMagnet()
+
                 IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
                 IngameLogic.getInstance().MagnetBlock(block.colorIndex);
                 this.onBoosterFinish(event);
@@ -530,15 +532,17 @@ export class block extends Component {
                 if (block.colorsWire.length > 0) return
                 IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
                 const hit = this.getClickedShapeCell(event);
+                AudioManager.getInstance().playRocketMove()
+
                 if (hit) {
                     IngameLogic.getInstance().moveToTarget(this.node, event.getUILocation())
                     this.scheduleOnce(() => {
                         IngameLogic.getInstance().conffeti.active = true
                         IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
-
                         IngameLogic.getInstance().conffeti.setWorldPosition(new Vec3(event.getUILocation().x, event.getUILocation().y))
                         IngameLogic.getInstance().scheduleOnce(() => {
                             IngameLogic.getInstance().conffeti.active = false
+
                         }, 0.5)
                         this.breakCell(hit);
                         this.onBoosterFinish(event);

@@ -25,9 +25,9 @@ export class Sound {
     @property(AudioClip)
     clip: AudioClip = null;
 
-    @property({ 
+    @property({
         type: Enum(AudioClipType),
-        displayName: "Audio Type" 
+        displayName: "Audio Type"
     })
     type: AudioClipType = AudioClipType.Sound;
 
@@ -120,61 +120,73 @@ export class AudioManager extends BaseSingleton<AudioManager> {
         });
     }
 
+
+
     public playLobbyMusic(): void {
         this.playClip(this.lobbyMusic, true);
+        this.stopGameMusic();
     }
 
 
 
     public playGameMusic(): void {
         this.playClip(this.gameMusic, true);
+        this.stopLobbyMusic();
     }
 
-    playCollectBooster(): void {
+    stopLobbyMusic(): void {
+        this.stop(this.lobbyMusic.name);
+    }
+
+    stopGameMusic(): void {
+        this.stop(this.gameMusic.name);
+    }
+
+    public playCollectBooster(): void {
         this.playOneShotClip(this.collectBooster);
     }
 
-    playConfirm(): void {
+    public playConfirm(): void {
         this.playOneShotClip(this.confirm);
     }
 
-    playWin(): void {
+    public playWin(): void {
         this.playOneShotClip(this.win);
     }
 
-    playLose(): void {
+    public playLose(): void {
         this.playOneShotClip(this.lose);
     }
 
-    playTimer(): void {
+    public playTimer(): void {
         this.playOneShotClip(this.timer);
     }
 
-    playRocketMove(): void {
+    public playRocketMove(): void {
         this.playOneShotClip(this.rocketMove);
     }
 
-    playRocketHit(): void {
+    public playRocketHit(): void {
         this.playOneShotClip(this.rocketHit);
     }
 
-    playHammerMove(): void {
+    public playHammerMove(): void {
         this.playOneShotClip(this.hammerMove);
     }
 
-    playHammerHit(): void {
+    public playHammerHit(): void {
         this.playOneShotClip(this.hammerHit);
     }
 
-    playMagnet(): void {
+    public playMagnet(): void {
         this.playOneShotClip(this.magnet);
     }
 
-    playBlockExit(): void {
+    public playBlockExit(): void {
         this.playOneShotClip(this.blockExit);
     }
 
-    playIceBroken(): void {
+    public playIceBroken(): void {
         this.playOneShotClip(this.iceBroken);
     }
 
@@ -281,13 +293,13 @@ export class AudioManager extends BaseSingleton<AudioManager> {
             return;
         }
 
-        const globalVolume = sound.type === AudioClipType.Music 
-            ? AudioManager.MusicVolume 
+        const globalVolume = sound.type === AudioClipType.Music
+            ? AudioManager.MusicVolume
             : AudioManager.SoundVolume;
-        
+
         const finalVolume = globalVolume * sound.volume;
         sound.audioSource.volume = finalVolume;
-        
+
         // Mute if volume is 0
         if (finalVolume === 0) {
             sound.audioSource.enabled = false;
@@ -466,8 +478,8 @@ export class AudioManager extends BaseSingleton<AudioManager> {
      * @returns Sound object hoặc null
      */
     private findSound(name: string): Sound | null {
-        return this.sounds.find(s => 
-            s.name === name || 
+        return this.sounds.find(s =>
+            s.name === name ||
             (s.name === "" && s.clip && s.clip.name === name)
         ) || null;
     }
@@ -491,7 +503,7 @@ export class AudioManager extends BaseSingleton<AudioManager> {
         newSound.clip = clip;
         newSound.type = type;
         newSound.volume = volume;
-        
+
         this.sounds.push(newSound);
     }
 
@@ -500,8 +512,8 @@ export class AudioManager extends BaseSingleton<AudioManager> {
      * @param name Tên sound
      */
     public removeSound(name: string): void {
-        const soundIndex = this.sounds.findIndex(s => 
-            s.name === name || 
+        const soundIndex = this.sounds.findIndex(s =>
+            s.name === name ||
             (s.name === "" && s.clip && s.clip.name === name)
         );
 

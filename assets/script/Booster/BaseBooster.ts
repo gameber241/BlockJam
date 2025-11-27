@@ -3,6 +3,7 @@ import { IngameLogic } from '../ingame/IngameLogic';
 import { DataManager } from '../DataManager';
 import { BuyBooster } from './BuyBooster';
 import { BlockJamManager } from '../Manager/BlockJamManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BaseBooster')

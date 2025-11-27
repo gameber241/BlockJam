@@ -5,6 +5,7 @@ import { ResourcesManager } from '../Manager/ResourcesManager';
 import { BuyBooster } from '../Booster/BuyBooster';
 import { BaseSingleton } from '../Base/BaseSingleton';
 import { rewartdBooster, suportBooster } from '../Booster/BoosterReward';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuLayer')
@@ -64,6 +65,7 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
         this.rendorLevelPreview()
         this.levelInf.active = false
+        AudioManager.getInstance().playLobbyMusic()
     }
 
     UpdateInf() {

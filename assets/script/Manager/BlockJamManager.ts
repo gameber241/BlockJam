@@ -72,12 +72,14 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
         // Initialize Managers
         IAPManager.getInstance();
         AudioManager.getInstance();
-
         this.restore()
         this.ShowLobby()
         this.GetAccount()
 
     }
+
+
+    
 
     SaveBoosterSupport() {
         if (DataManager.isSaveBoosterSupport() == false) {
