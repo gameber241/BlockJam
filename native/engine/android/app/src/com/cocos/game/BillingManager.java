@@ -208,12 +208,13 @@ public class BillingManager implements PurchasesUpdatedListener {
     public static void queryAllProducts() {
         List<String> productIds = Arrays.asList(
                 // 🔹 Bundle Packs\
-                "com.block.colorjam.100",
-                "com.block.colorjam.200",
-                "com.block.colorjam.300",
-                "com.block.colorjam.400",
-                "com.block.colorjam.500",
-                "com.block.colorjam.600"
+                "com.blockjam.100",
+                "com.blockjam.200",
+                "com.blockjam.300",
+                "com.blockjam.400",
+                "com.blockjam.500",
+                "com.blockjam.600",
+               
         );
 
         List<QueryProductDetailsParams.Product> productList = new ArrayList<>();

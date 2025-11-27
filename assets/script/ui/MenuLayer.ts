@@ -60,6 +60,8 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
         this.UpdateHeartUI()
         this.UpdateCoin()
         director.on("UpDateHeart", this.UpdateHeartUI, this)
+        director.on("UPDATE_ACCOUNT", this.UpdateCoin, this)
+
         this.rendorLevelPreview()
         this.levelInf.active = false
     }
@@ -71,6 +73,8 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
     protected onDisable(): void {
         director.off("UpDateHeart", this.UpdateHeartUI, this)
+        director.off("UPDATE_ACCOUNT", this.UpdateCoin, this)
+
     }
 
     UpdateHeartUI() {

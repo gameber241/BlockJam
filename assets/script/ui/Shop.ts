@@ -1,6 +1,7 @@
-import { _decorator, Component, Node, Button, log } from 'cc';
+import { _decorator, Component, Node, Button, log, instantiate, Prefab } from 'cc';
 import { IAPManager } from '../Manager/IAPManager';
 import { buyCoinButton } from '../Shop/buyCoinButton';
+import { IAP_SHOP } from '../Shop/ConfigIap';
 const { ccclass, property } = _decorator;
 
 @ccclass('Shop')
@@ -8,6 +9,9 @@ export class Shop extends Component {
 
     @property(Node)
     shopItemsContainer: Node = null;
+
+    @property(Prefab)
+    itemShop: Prefab = null
 
     @property(Button)
     restorePurchasesButton: Button = null;
@@ -21,22 +25,25 @@ export class Shop extends Component {
      * Khởi tạo các shop items
      */
     private initializeShopItems(): void {
-        if (!this.shopItemsContainer) {
-            // Tìm container từ child nodes nếu không được set
-            this.shopItemsContainer = this.node.getChildByName('shopItems');
-        }
 
-        if (this.shopItemsContainer) {
-            const coinButtons = this.shopItemsContainer.getComponentsInChildren(buyCoinButton);
-            
-            // Setup từng coin button với product ID tương ứng
-            coinButtons.forEach((button, index) => {
-                const coinAmounts = [100, 500, 1000]; // Tương ứng với các gói coin
-                if (index < coinAmounts.length) {
-                    button.setCoinAmount(coinAmounts[index]);
-                }
-            });
-        }
+        IAP_SHOP.forEach(e => {
+            let item = instantiate(this.itemShop)
+            this.shopItemsContainer.addChild(item)
+            item.getComponent(buyCoinButton).init(e)
+        })
+
+
+        // if (this.shopItemsContainer) {
+        //     const coinButtons = this.shopItemsContainer.getComponentsInChildren(buyCoinButton);
+
+        //     // Setup từng coin button với product ID tương ứng
+        //     coinButtons.forEach((button, index) => {
+        //         const coinAmounts = [100, 500, 1000]; // Tương ứng với các gói coin
+        //         if (index < coinAmounts.length) {
+        //             button.setCoinAmount(coinAmounts[index]);
+        //         }
+        //     });
+        // }
     }
 
     /**
@@ -61,7 +68,7 @@ export class Shop extends Component {
      */
     private async onRestorePurchases(): Promise<void> {
         log('Restoring purchases...');
-        
+
         if (this.restorePurchasesButton) {
             this.restorePurchasesButton.interactable = false;
         }
@@ -69,16 +76,16 @@ export class Shop extends Component {
         try {
             await IAPManager.getInstance().restorePurchases();
             log('Restore purchases completed');
-            
+
             // TODO: Show success message
             // PopupManager.getInstance().showSuccess('Đã khôi phục giao dịch thành công!');
-            
+
         } catch (error) {
             log('Restore purchases failed:', error);
-            
+
             // TODO: Show error message
             // PopupManager.getInstance().showError('Không thể khôi phục giao dịch. Vui lòng thử lại.');
-            
+
         } finally {
             if (this.restorePurchasesButton) {
                 this.restorePurchasesButton.interactable = true;
@@ -105,7 +112,7 @@ export class Shop extends Component {
      */
     private checkPremiumStatus(): void {
         const iapManager = IAPManager.getInstance();
-        
+
         // Kiểm tra nếu user đã mua remove ads
         if (iapManager.isAdsRemoved()) {
             // Ẩn ads hoặc cập nhật UI tương ứng
