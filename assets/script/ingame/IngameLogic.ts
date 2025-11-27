@@ -805,7 +805,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 break;
                             case 1:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     eff.setPosition(0, i * 100 + 50);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 90))
@@ -817,7 +817,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                                 break;
                             case 2:
                                 for (let i = 0; i < ex.size; i++) {
-                                    const eff = PoolManager.getInstance().getNode('exitVfx', block.node);
+                                    const eff = PoolManager.getInstance().getNode('exitVfx', ex.node);
                                     eff.setPosition(i * 100 + 50, 0);
                                     eff.setScale(30, 30, 30)
                                     eff.setRotationFromEuler(new Vec3(90, 0, 180))
