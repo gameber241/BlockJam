@@ -16282,6 +16282,9 @@
     "rocketEffect": {
       "__id__": 709
     },
+    "magnetEffect": {
+      "__id__": 721
+    },
     "boosterSupport": {
       "__id__": 544
     },

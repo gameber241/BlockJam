@@ -77,6 +77,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     rocketEffect: Node = null
 
     @property(Node)
+    magnetEffect: Node = null
+
+    @property(Node)
     boosterSupport: Node = null
 
     @property(Node)
@@ -1245,7 +1248,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                 // Callback khi hoàn thành tất cả hiệu ứng
                 IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
                 IngameLogic.getInstance().boosters[3].setPosition(IngameLogic.getInstance().boosters[3].position.x, 2)
-
+                IngameLogic.getInstance().magnetEffect.active = false
             })
         })
 

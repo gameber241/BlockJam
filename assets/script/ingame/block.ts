@@ -488,10 +488,18 @@ export class block extends Component {
             if (block.colorWire != -1) return
             if (block.colorsWire.length > 0) return
             // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.DING)
-            IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
-            IngameLogic.getInstance().MagnetBlock(block.colorIndex);
-            this.onBoosterFinish(event);
-            event.propagationStopped = true;
+            IngameLogic.getInstance().magnetEffect.active = true
+
+            let spx = IngameLogic.getInstance().magnetEffect.getComponent(sp.Skeleton)
+            spx.setAnimation(0, "start", false)
+            spx.addAnimation(0, "loop", true)
+            this.scheduleOnce(() => {
+                IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
+                IngameLogic.getInstance().MagnetBlock(block.colorIndex);
+                this.onBoosterFinish(event);
+                event.propagationStopped = true;
+            }, 1)
+
 
             return
         } else if (IngameLogic.getInstance().typebooster == 2) {
@@ -1193,6 +1201,7 @@ export class block extends Component {
         this.node.setPosition(newUIPos);
 
         IngameLogic.getInstance().updateBlockLimitData(this, true);
+        this.isDestroying = false
     }
 
     // ⭐ ADD: remove block chuẩn
