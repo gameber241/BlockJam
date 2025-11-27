@@ -99,7 +99,7 @@ export class exit extends Component {
         let collider = this.colliderNode.getComponent(BoxCollider2D)
         collider.size = sizeCollider
         collider.offset = new Vec2(sizeCollider.width / 2, sizeCollider.height / 2)
-        this.sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${this.colorIndex}_${this.typeIndex}`)
+    ResourcesManager.getInstance().setSprite(`exit_${this.colorIndex}_${this.typeIndex}`, this.sprite)
         collider.on(Contact2DType.STAY_CONTACT, this.onCollisionStay, this);
         this.star.getComponent(UITransform).setContentSize(sizeNode)
         this.star.parent.getComponent(UITransform).setContentSize(sizeNode)

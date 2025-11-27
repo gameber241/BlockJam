@@ -30,8 +30,8 @@ export class ProfileManager extends BaseSingleton<ProfileManager> {
 
 
     protected onEnable(): void {
-        this.frame.spriteFrame = ResourcesManager.getInstance().getSprite("frame" + (BlockJamManager.getInstance().frame + 1))
-        this.avatar.spriteFrame = ResourcesManager.getInstance().getSprite("person" + (BlockJamManager.getInstance().avatar + 1))
+        ResourcesManager.getInstance().setSprite("frame" + (BlockJamManager.getInstance().frame + 1), this.frame)
+        ResourcesManager.getInstance().setSprite("person" + (BlockJamManager.getInstance().avatar + 1), this.avatar)
         this.nameUser.string = BlockJamManager.getInstance().nameUser
         this.btnAvatar()
 
@@ -43,7 +43,7 @@ export class ProfileManager extends BaseSingleton<ProfileManager> {
     }
 
     changeAvatar(id) {
-        this.avatar.spriteFrame = ResourcesManager.getInstance().getSprite("person" + (id + 1))
+        ResourcesManager.getInstance().setSprite("person" + (id + 1), this.avatar)
         BlockJamManager.getInstance().avatar = id
         BlockJamManager.getInstance().saveAccount()
 
@@ -51,7 +51,7 @@ export class ProfileManager extends BaseSingleton<ProfileManager> {
 
     changeFrame(id) {
         BlockJamManager.getInstance().frame = id
-        this.frame.spriteFrame = ResourcesManager.getInstance().getSprite("frame" + (id + 1))
+        ResourcesManager.getInstance().setSprite("frame" + (id + 1), this.frame)
         BlockJamManager.getInstance().saveAccount()
 
     }

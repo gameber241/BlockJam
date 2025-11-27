@@ -154,7 +154,7 @@ export class block extends Component {
     }
     initStar() {
         this.star.active = true
-        this.star.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_star_3_${this.typeIndex}`)
+    ResourcesManager.getInstance().setSprite(`block_star_3_${this.typeIndex}`, this.star.getComponent(Sprite))
     }
     initKey() {
         let nodeTransform = this.node.getComponent(UITransform)
@@ -185,7 +185,7 @@ export class block extends Component {
 
 
     initLock() {
-        this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.typeIndex)
+    ResourcesManager.getInstance().setSprite("lock_1" + "_" + this.typeIndex, this.lock)
         this.lockLb.getComponent(Label).string = this.lockNumber.toString()
         switch (this.typeIndex) {
             case 1:
@@ -291,7 +291,7 @@ export class block extends Component {
             for (let j = 0; j < shape[i].length; j++) {
                 if (shape[i][j] == 0) continue
                 let icon = PoolManager.getInstance().getNode("iconBlock")
-                icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("fish_" + this.colorIndex)
+                ResourcesManager.getInstance().setSprite("fish_" + this.colorIndex, icon.getComponent(Sprite))
                 this.listIcon.addChild(icon)
                 icon.setPosition(new Vec3(j * 100, i * 100))
                 icon.setScale(0.7, 0.7, 0.7)
@@ -308,7 +308,7 @@ export class block extends Component {
         this.freezeLb.node.position = new Vec3(this.node.getComponent(UITransform).width / 2, this.node.getComponent(UITransform).height / 2)
         let newIcon = instantiate(this.icon)
         this.listColor.addChild(newIcon)
-        newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_11_${this.typeIndex}`)
+    ResourcesManager.getInstance().setSprite(`block_11_${this.typeIndex}`, newIcon.getComponent(Sprite))
         this.freeNode = newIcon
         let nodeTransform = this.node.getComponent(UITransform)
         let dirTransform = this.freezeLb.node.getComponent(UITransform)
@@ -355,7 +355,7 @@ export class block extends Component {
         colors.forEach((e, index) => {
             this.subcolor = true
             this.iconSub = PoolManager.getInstance().getNode("blockInner", this.listColor)
-            this.iconSub.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_inner_${e}_${this.typeIndex}`)
+            ResourcesManager.getInstance().setSprite(`block_inner_${e}_${this.typeIndex}`, this.iconSub.getComponent(Sprite))
             // Vì anchor cả 2 = (0,0), nên để con nằm giữa:
 
             // switch (this.typeIndex) {
@@ -463,7 +463,7 @@ export class block extends Component {
         this.collider.size = size
         this.collider.offset = offSet
         this.mask.getComponent(UITransform).setContentSize(new Size(size.width + 20, size.height + 20))
-        this.icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.colorIndex}_${this.typeIndex}`)
+    ResourcesManager.getInstance().setSprite(`block_${this.colorIndex}_${this.typeIndex}`, this.icon.getComponent(Sprite))
     }
 
 
@@ -1005,7 +1005,7 @@ export class block extends Component {
             const nodeTransform = this.node.getComponent(UITransform)!;
             const dirTransform = this.dirNode.getComponent(UITransform)!;
             const sprite = this.dirNode.getComponent(Sprite)!;
-            sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`PA_Up_Down_1_${this.dir}`);
+            ResourcesManager.getInstance().setSprite(`PA_Up_Down_1_${this.dir}`, sprite);
             if (this.dir === 1) {
                 this.dirNode.active = true
                 this.dirNode.getComponent(UITransform).height = this.node.getComponent(UITransform).height

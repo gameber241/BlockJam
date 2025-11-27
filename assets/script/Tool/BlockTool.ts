@@ -105,7 +105,7 @@ export class BlockTool extends Component {
 
         this.corlorWire.forEach(e => {
             let item = PoolManager.getInstance().getNode('WireBlock', this.wireNode)
-            item.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("wire_" + e)
+            ResourcesManager.getInstance().setSprite("wire_" + e, item.getComponent(Sprite));
             item.name = "wire_" + e
         })
 
@@ -170,7 +170,7 @@ export class BlockTool extends Component {
 
 
     initLock() {
-        this.lock.spriteFrame = ResourcesManager.getInstance().getSprite("lock_1" + "_" + this.idBlock)
+    ResourcesManager.getInstance().setSprite("lock_1" + "_" + this.idBlock, this.lock);
         this.lockLb.getComponent(Label).string = this.numberLock.toString()
         switch (this.idBlock) {
             case 1:
@@ -248,13 +248,13 @@ export class BlockTool extends Component {
 
     initStar() {
         this.star.active = true
-        this.star.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_star_3_${this.idBlock}`)
+        ResourcesManager.getInstance().setSprite(`block_star_3_${this.idBlock}`, this.star.getComponent(Sprite));
     }
     initListColor(colors: number[]) {
         if (colors.length == 0) return
         colors.forEach((e, index) => {
             let newIcon = PoolManager.getInstance().getNode("blockInner", this.listColor)
-            newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_inner_${e}_${this.idBlock}`)
+            ResourcesManager.getInstance().setSprite(`block_inner_${e}_${this.idBlock}`, newIcon.getComponent(Sprite));
         })
     }
 
@@ -268,7 +268,7 @@ export class BlockTool extends Component {
             const nodeTransform = this.node.getComponent(UITransform)!;
             const dirTransform = this.dirNode.getComponent(UITransform)!;
             const sprite = this.dirNode.getComponent(Sprite)!;
-            sprite.spriteFrame = ResourcesManager.getInstance().getSprite(`PA_Up_Down_1_${this.director}`);
+            ResourcesManager.getInstance().setSprite(`PA_Up_Down_1_${this.director}`, sprite);
             if (this.director === 1) {
                 this.dirNode.active = true
                 this.dirNode.getComponent(UITransform).height = this.node.getComponent(UITransform).height
@@ -409,8 +409,8 @@ export class BlockTool extends Component {
         // this.icon.getComponent(UITransform).setContentSize(size)
         this.wireNode.getComponent(UITransform).setContentSize(size)
 
-        this.mask.getComponent(UITransform).setContentSize(size)
-        this.icon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_${this.idColor}_${this.idBlock}`)
+    this.mask.getComponent(UITransform).setContentSize(size)
+    ResourcesManager.getInstance().setSprite(`block_${this.idColor}_${this.idBlock}`, this.icon);
     }
 
 
@@ -426,9 +426,9 @@ export class BlockTool extends Component {
         this.freezeLb.node.active = true
         this.freezeLb.string = iceNumber
         this.freezeLb.node.position = new Vec3(this.node.getComponent(UITransform).width / 2, this.node.getComponent(UITransform).height / 2)
-        let newIcon = instantiate(this.icon.node)
-        this.listColor.addChild(newIcon)
-        newIcon.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`block_11_${this.idBlock}`)
+    let newIcon = instantiate(this.icon.node)
+    this.listColor.addChild(newIcon)
+    ResourcesManager.getInstance().setSprite(`block_11_${this.idBlock}`, newIcon.getComponent(Sprite));
         // this.freeNode = newIcon
         let nodeTransform = this.node.getComponent(UITransform)
         let dirTransform = this.freezeLb.node.getComponent(UITransform)

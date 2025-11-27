@@ -220,10 +220,7 @@ export class Tools extends BaseSingleton<Tools> {
         const sprite = node.getComponent(Sprite);
         if (!sprite) return;
 
-        const spriteFrame = ResourcesManager.getInstance().getSprite(frameName);
-        if (spriteFrame) {
-            sprite.spriteFrame = spriteFrame;
-        }
+        ResourcesManager.getInstance().setSprite(frameName, sprite);
     }
     DeleteWall() {
         if (this.wallSelect) {

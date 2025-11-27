@@ -46,7 +46,7 @@ export class ExitTool extends Component {
                 pos = v3(this.node.position.x, this.node.position.y - BLOCK_SIZE / 2)
                 break;
         }
-        this.node.getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite(`exit_${color}_${this.id}`)
+    ResourcesManager.getInstance().setSprite(`exit_${color}_${this.id}`, this.node.getComponent(Sprite));
         this.node.getComponent(UITransform).setContentSize(sizeNode)
         this.star.getComponent(UITransform).setContentSize(sizeNode)
         this.star.parent.getComponent(UITransform).setContentSize(sizeNode)

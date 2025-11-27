@@ -65,8 +65,8 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
     }
 
     UpdateInf() {
-        this.frame.spriteFrame = ResourcesManager.getInstance().getSprite("frame" + (BlockJamManager.getInstance().frame + 1))
-        this.avatar.spriteFrame = ResourcesManager.getInstance().getSprite("person" + (BlockJamManager.getInstance().avatar + 1))
+        ResourcesManager.getInstance().setSprite("frame" + (BlockJamManager.getInstance().frame + 1), this.frame);
+        ResourcesManager.getInstance().setSprite("person" + (BlockJamManager.getInstance().avatar + 1), this.avatar);
     }
 
     protected onDisable(): void {

@@ -12,8 +12,7 @@ export class FrameAvatarProfile extends Component {
     id: number = 0
     init(id) {
         this.id = id
-        let sp = ResourcesManager.getInstance().getSprite("person" + (id + 1))
-        this.icon.spriteFrame = sp
+        ResourcesManager.getInstance().setSprite("person" + (id + 1), this.icon)
 
         this.node.on(Input.EventType.TOUCH_END, () => {
             ProfileManager.getInstance().changeAvatar(this.id)

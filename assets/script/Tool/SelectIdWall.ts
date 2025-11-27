@@ -39,7 +39,7 @@ export class SelectIdWall extends Component {
             this.node.addChild(item);
 
             // Gán màu cho item
-            item.children[0].getComponent(Sprite).spriteFrame = ResourcesManager.getInstance().getSprite("wall_" + value)
+            ResourcesManager.getInstance().setSprite("wall_" + value, item.children[0].getComponent(Sprite));
 
             // Bắt sự kiện click
             item.on(Input.EventType.TOUCH_END, () => {
