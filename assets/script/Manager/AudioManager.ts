@@ -44,6 +44,48 @@ export class AudioManager extends BaseSingleton<AudioManager> {
     @property([Sound])
     sounds: Sound[] = [];
 
+    @property(AudioClip)
+    lobbyMusic: AudioClip = null;
+
+    @property(AudioClip)
+    gameMusic: AudioClip = null;
+
+    @property(AudioClip)
+    collectBooster: AudioClip = null;
+
+    @property(AudioClip)
+    confirm: AudioClip = null;
+
+    @property(AudioClip)
+    win: AudioClip = null;
+
+    @property(AudioClip)
+    lose: AudioClip = null;
+
+    @property(AudioClip)
+    timer: AudioClip = null;
+
+    @property(AudioClip)
+    rocketMove: AudioClip = null;
+
+    @property(AudioClip)
+    rocketHit: AudioClip = null;
+
+    @property(AudioClip)
+    hammerMove: AudioClip = null;
+
+    @property(AudioClip)
+    hammerHit: AudioClip = null;
+
+    @property(AudioClip)
+    magnet: AudioClip = null;
+
+    @property(AudioClip)
+    blockExit: AudioClip = null;
+
+    @property(AudioClip)
+    iceBroken: AudioClip = null;
+
     private playOneShotAudioSource: AudioSource = null;
 
     // Static properties cho volume settings
@@ -76,6 +118,64 @@ export class AudioManager extends BaseSingleton<AudioManager> {
                 sound.audioSource.destroy();
             }
         });
+    }
+
+    public playLobbyMusic(): void {
+        this.playClip(this.lobbyMusic, true);
+    }
+
+
+
+    public playGameMusic(): void {
+        this.playClip(this.gameMusic, true);
+    }
+
+    playCollectBooster(): void {
+        this.playOneShotClip(this.collectBooster);
+    }
+
+    playConfirm(): void {
+        this.playOneShotClip(this.confirm);
+    }
+
+    playWin(): void {
+        this.playOneShotClip(this.win);
+    }
+
+    playLose(): void {
+        this.playOneShotClip(this.lose);
+    }
+
+    playTimer(): void {
+        this.playOneShotClip(this.timer);
+    }
+
+    playRocketMove(): void {
+        this.playOneShotClip(this.rocketMove);
+    }
+
+    playRocketHit(): void {
+        this.playOneShotClip(this.rocketHit);
+    }
+
+    playHammerMove(): void {
+        this.playOneShotClip(this.hammerMove);
+    }
+
+    playHammerHit(): void {
+        this.playOneShotClip(this.hammerHit);
+    }
+
+    playMagnet(): void {
+        this.playOneShotClip(this.magnet);
+    }
+
+    playBlockExit(): void {
+        this.playOneShotClip(this.blockExit);
+    }
+
+    playIceBroken(): void {
+        this.playOneShotClip(this.iceBroken);
     }
 
     /**
