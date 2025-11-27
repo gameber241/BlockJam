@@ -51,6 +51,12 @@ export class AudioManager extends BaseSingleton<AudioManager> {
     gameMusic: AudioClip = null;
 
     @property(AudioClip)
+    blockChoose: AudioClip = null;
+
+    @property(AudioClip)
+    buttonClickPop: AudioClip = null;
+
+    @property(AudioClip)
     collectBooster: AudioClip = null;
 
     @property(AudioClip)
@@ -78,13 +84,16 @@ export class AudioManager extends BaseSingleton<AudioManager> {
     hammerHit: AudioClip = null;
 
     @property(AudioClip)
+    magnetMove: AudioClip = null;
+
+    @property(AudioClip)
     magnet: AudioClip = null;
 
     @property(AudioClip)
     blockExit: AudioClip = null;
 
     @property(AudioClip)
-    iceBroken: AudioClip = null;
+    iceBreak: AudioClip = null;
 
     private playOneShotAudioSource: AudioSource = null;
 
@@ -95,6 +104,10 @@ export class AudioManager extends BaseSingleton<AudioManager> {
 
     public static set MusicVolume(value: number) {
         sys.localStorage.setItem("MusicVolume", (1 - value).toString());
+        let instance = AudioManager.getInstance();
+        if (instance) {
+            instance.updateAllVolumes();
+        }
     }
 
     public static get SoundVolume(): number {
@@ -123,23 +136,31 @@ export class AudioManager extends BaseSingleton<AudioManager> {
 
 
     public playLobbyMusic(): void {
-        this.playClip(this.lobbyMusic, true);
+        this.play('lobby', true);
         this.stopGameMusic();
     }
 
 
 
     public playGameMusic(): void {
-        this.playClip(this.gameMusic, true);
+        this.play('gameplay', true);
         this.stopLobbyMusic();
     }
 
     stopLobbyMusic(): void {
-        this.stop(this.lobbyMusic.name);
+        this.stop('lobby');
     }
 
     stopGameMusic(): void {
-        this.stop(this.gameMusic.name);
+        this.stop('gameplay');
+    }
+
+    public playBlockChoose(): void {
+        this.playOneShotClip(this.blockChoose);
+    }
+
+    public playButtonClickPop(): void {
+        this.playOneShotClip(this.buttonClickPop);
     }
 
     public playCollectBooster(): void {
@@ -177,6 +198,9 @@ export class AudioManager extends BaseSingleton<AudioManager> {
     public playHammerHit(): void {
         this.playOneShotClip(this.hammerHit);
     }
+    public playMagnetMove(): void {
+        this.playOneShotClip(this.magnetMove);
+    }
 
     public playMagnet(): void {
         this.playOneShotClip(this.magnet);
@@ -186,8 +210,8 @@ export class AudioManager extends BaseSingleton<AudioManager> {
         this.playOneShotClip(this.blockExit);
     }
 
-    public playIceBroken(): void {
-        this.playOneShotClip(this.iceBroken);
+    public playIceBreak(): void {
+        this.playOneShotClip(this.iceBreak);
     }
 
     /**

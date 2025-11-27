@@ -4,5 +4,12 @@
   "version": "3.6.3",
   "creator": {
     "version": "3.7.3"
+  },
+  "scripts": {
+    "patch:systemjs": "node ./scripts/patch-systemjs.mjs"
+  },
+  "devDependencies": {
+    "regenerator-runtime": "^0.14.1",
+    "typescript": "^4.9.5"
   }
 }

@@ -30,7 +30,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 68
+      "__id__": 60
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -61,7 +61,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 69
+      "__id__": 61
     },
     "_id": "7d2b2d31-8eb6-49ef-9417-0ed8b60f6fc7"
   },
@@ -1751,30 +1751,6 @@
       },
       {
         "__id__": 59
-      },
-      {
-        "__id__": 60
-      },
-      {
-        "__id__": 61
-      },
-      {
-        "__id__": 62
-      },
-      {
-        "__id__": 63
-      },
-      {
-        "__id__": 64
-      },
-      {
-        "__id__": 65
-      },
-      {
-        "__id__": 66
-      },
-      {
-        "__id__": 67
       }
     ],
     "lobbyMusic": {
@@ -1783,6 +1759,14 @@
     },
     "gameMusic": {
       "__uuid__": "c3df002f-7757-4db3-8966-2db05cc084ed",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "blockChoose": {
+      "__uuid__": "abb6a8a0-df29-495b-98f0-dd94525a9599",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "buttonClickPop": {
+      "__uuid__": "abb6a8a0-df29-495b-98f0-dd94525a9599",
       "__expectedType__": "cc.AudioClip"
     },
     "collectBooster": {
@@ -1821,6 +1805,10 @@
       "__uuid__": "c4544991-8fad-43cc-9893-b05080798664",
       "__expectedType__": "cc.AudioClip"
     },
+    "magnetMove": {
+      "__uuid__": "aeddba58-9edc-4cea-8b7f-24f2b7e5413d",
+      "__expectedType__": "cc.AudioClip"
+    },
     "magnet": {
       "__uuid__": "dda9c042-6ade-4fb8-82a3-aabdd4ce44c3",
       "__expectedType__": "cc.AudioClip"
@@ -1843,88 +1831,17 @@
       "__expectedType__": "cc.AudioClip"
     },
     "type": 1,
-    "volume": 1
+    "volume": 0.35
   },
   {
     "__type__": "Sound",
-    "name": "game",
+    "name": "gameplay",
     "clip": {
       "__uuid__": "c3df002f-7757-4db3-8966-2db05cc084ed",
       "__expectedType__": "cc.AudioClip"
     },
     "type": 1,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "rocketHit",
-    "clip": {
-      "__uuid__": "c4544991-8fad-43cc-9893-b05080798664",
-      "__expectedType__": "cc.AudioClip"
-    },
-    "type": 0,
-    "volume": 0.35
-  },
-  {
-    "__type__": "Sound",
-    "name": "pop",
-    "clip": {
-      "__uuid__": "abb6a8a0-df29-495b-98f0-dd94525a9599",
-      "__expectedType__": "cc.AudioClip"
-    },
-    "type": 0,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "ice",
-    "clip": {
-      "__uuid__": "b22ad1c8-de28-430d-9e01-68a0e7e25388",
-      "__expectedType__": "cc.AudioClip"
-    },
-    "type": 0,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "rocketMove",
-    "clip": {
-      "__uuid__": "73abb94e-b226-48aa-ad6e-32806dd66272",
-      "__expectedType__": "cc.AudioClip"
-    },
-    "type": 0,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "hammerStart",
-    "clip": {
-      "__uuid__": "7f8129d8-3554-48fd-94e4-50a3279bcf06",
-      "__expectedType__": "cc.AudioClip"
-    },
-    "type": 0,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "hammerHit",
-    "clip": null,
-    "type": 0,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "",
-    "clip": null,
-    "type": 0,
-    "volume": 1
-  },
-  {
-    "__type__": "Sound",
-    "name": "",
-    "clip": null,
-    "type": 0,
-    "volume": 1
+    "volume": 0.1
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1942,22 +1859,22 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 70
+      "__id__": 62
     },
     "shadows": {
-      "__id__": 71
+      "__id__": 63
     },
     "_skybox": {
-      "__id__": 72
+      "__id__": 64
     },
     "fog": {
-      "__id__": 73
+      "__id__": 65
     },
     "octree": {
-      "__id__": 74
+      "__id__": 66
     },
     "lightProbeInfo": {
-      "__id__": 75
+      "__id__": 67
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

@@ -106,6 +106,7 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
     BtnLevelCurent() {
         // 
+        AudioManager.getInstance().playButtonClickPop();
         this.levelInf.active = true
         this.titleLevelInf.string = "LEVEL " + "\n" + BlockJamManager.getInstance().level
         this.initInf()
@@ -114,6 +115,7 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
     shop = null
     BtnShop() {
+        AudioManager.getInstance().playButtonClickPop();
         if (this.shop == null) {
             this.shop = PoolManager.getInstance().getNode("Shop", this.uiShop)
         }
@@ -124,6 +126,7 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
     setting = null
     BtnSetting() {
+        AudioManager.getInstance().playButtonClickPop();
         if (this.setting == null) {
             this.setting = PoolManager.getInstance().getNode("Setting", this.uiSetting)
         }
@@ -134,6 +137,8 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
 
     BtnLevel() {
+        AudioManager.getInstance().playButtonClickPop();
+
         this.uiShop.active = false
         this.uiSetting.active = false
         this.scrollLevel.node.active = true
@@ -147,6 +152,7 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
 
 
     BtnPlayGame() {
+        AudioManager.getInstance().playButtonClickPop();
         if (BlockJamManager.getInstance().heartSystem.currentHearts == 0) {
             BlockJamManager.getInstance().ShowREfill(BlockJamManager.getInstance().PlayGame.bind(BlockJamManager.getInstance()))
 
@@ -156,11 +162,14 @@ export class MenuLayer extends BaseSingleton<MenuLayer> {
     }
 
     btnProfile() {
+        AudioManager.getInstance().playButtonClickPop();
+
         BlockJamManager.getInstance().ShowProfile()
     }
 
     btnShowRefillHeart() {
-        BlockJamManager.getInstance().ShowREfill(BlockJamManager.getInstance().PlayGame.bind(BlockJamManager.getInstance()))
+        AudioManager.getInstance().playButtonClickPop();
+        BlockJamManager.getInstance().ShowREfill(AudioManager.getInstance().playCollectBooster.bind(AudioManager.getInstance()))
     }
 
     initInf() {

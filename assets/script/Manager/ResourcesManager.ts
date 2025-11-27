@@ -28,6 +28,18 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
         "person",
     ]
 
+    public static get GamePlayLoadingProgress(): number {
+        const spriteGroup = this.getInstance().loadSpriteProgress["gameplay"];
+        if (!spriteGroup || spriteGroup.total === 0) {
+            return 100;
+        }
+        return Math.min(100, (spriteGroup.process / spriteGroup.total) * 100);
+    }
+
+    public static get GamePlayLoadingCompleted(): boolean {
+        return this.GamePlayLoadingProgress >= 100 ? true : false;
+    }
+
     public async loadAllResources(onProgress?: (progress: number) => void) {
         // Chỉ preload Json/Text/Prefab theo yêu cầu
         const phases: Array<{
@@ -117,10 +129,10 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
     private initSpriteGroup(groupId: string) {
 
         if (!this.loadSpriteProgress[groupId]) {
-            const spriteGroup = this.loadSpriteProgress[groupId];
             this.loadSpriteProgress[groupId] = {};
-            //spriteGroup.total = 0;
-            //spriteGroup.process = 0;
+            const spriteGroup = this.loadSpriteProgress[groupId];
+            spriteGroup.total = 0;
+            spriteGroup.process = 0;
         }
         return this.loadSpriteProgress[groupId];
     }
@@ -130,17 +142,17 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
         const spriteGroup = this.initSpriteGroup(groupId);
 
         if (groupId != "default") {
-            //spriteGroup.total += 1;
+            spriteGroup.total += 1;
         }
         if (!sprite) {
             console.warn(`[ResourcesManager] setSprite called with invalid target for ${name}`);
-            //spriteGroup.process += 1;
+            spriteGroup.process += 1;
             return;
         }
 
         const cached = this.spriteMap[name];
         if (cached) {
-            //spriteGroup.process += 1;
+            spriteGroup.process += 1;
             if (isValid(sprite.node, true)) {
                 sprite.spriteFrame = cached;
                 return;
@@ -151,7 +163,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
 
         if (!this.spritePromises[name]) {
             this.spritePromises[name] = this.loadSpriteFrame(name).then((spriteFrame) => {
-                //spriteGroup.process += 1;
+                spriteGroup.process += 1;
                 if (spriteFrame) {
                     this.spriteMap[name] = spriteFrame;
                 }
@@ -161,7 +173,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
         }
 
         this.spritePromises[name].then((spriteFrame) => {
-            //spriteGroup.process += 1;
+            spriteGroup.process += 1;
             if (!spriteFrame) {
                 console.warn(`[ResourcesManager] Failed to set sprite ${name}`);
                 return;

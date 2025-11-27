@@ -30,6 +30,7 @@ export class BaseBooster extends Component {
 
 
     onclick() {
+        AudioManager.getInstance().playButtonClickPop();
         if (IngameLogic.getInstance().isUseTool == true) return false
         if (this.quantityNB <= 0) {
             BuyBooster.getInstance().Show(this.typeBooster)

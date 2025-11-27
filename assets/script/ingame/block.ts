@@ -271,7 +271,8 @@ export class block extends Component {
         this.freezeNum -= 1
         this.freezeLb.string = this.freezeNum.toString()
         if (this.freezeNum == 0) {
-            this.freezeLb.node.active = false
+            this.freezeLb.node.active = false;
+            AudioManager.getInstance().playIceBreak();
             this.freeNode.addComponent(UIOpacity).opacity = 255
             tween(this.freeNode.getComponent(UIOpacity))
                 .to(0.5, { opacity: 0 })
@@ -561,7 +562,7 @@ export class block extends Component {
 
         // Nếu block hiện tại đã được chọn, trả về trực tiếp
         if (block.isSelected) return;
-        AudioManager.getInstance().playOneShot('pop');
+        AudioManager.getInstance().playBlockChoose();
         // AudioManager.instance.playSound(ENUM_AUDIO_CLIP.BLOCK_CHOOSE)
         // Đặt trạng thái được chọn
         IngameLogic.getInstance().currentSelectBlock = block;

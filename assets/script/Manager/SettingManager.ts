@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Slider, Sprite } from 'cc';
+import { _decorator, Component, Node, Slider, Sprite, sys } from 'cc';
 import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
@@ -15,6 +15,10 @@ export class SettingManager extends Component {
 
     @property(Sprite)
     fillSound: Sprite = null
+
+    policyUrl: string = "https://085448438cavvsaa.blogspot.com/2025/10/we-are-committed-to-safeguarding-your.html"
+    supportUrl: string = "https://085448438cavvsaa.blogspot.com/2025/10/we-are-committed-to-safeguarding-your.html"
+
 
     onEnable() {
         this.sliderMusic.progress = this.fillMusic.fillRange = AudioManager.MusicVolume / 1
@@ -33,17 +37,33 @@ export class SettingManager extends Component {
         AudioManager.SoundVolume = this.sliderSound.progress
     }
 
+    private openExternalUrl(url: string) {
+        if (!url) {
+            return;
+        }
+
+        if (sys && typeof sys.openURL === 'function') {
+            sys.openURL(url);
+            return;
+        }
+
+        if (typeof window !== 'undefined' && typeof window.open === 'function') {
+            window.open(url, "_blank");
+        }
+    }
 
     BtnPolicy() {
-
+        AudioManager.getInstance().playButtonClickPop();
+        this.openExternalUrl(this.policyUrl);
     }
 
     BtnRestore() {
-
+        AudioManager.getInstance().playButtonClickPop();
     }
 
     BtnSupport() {
-        
+        AudioManager.getInstance().playButtonClickPop();
+        this.openExternalUrl(this.supportUrl);
     }
 }
 

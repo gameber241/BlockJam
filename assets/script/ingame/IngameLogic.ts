@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, EventTouch, Label, math, Node, ParticleSystem, PhysicsSystem2D, Prefab, RigidBody2D, Size, sp, Sprite, tween, UITransform, v2, v3, Vec2, Vec3 } from 'cc';
+import { _decorator, BoxCollider2D, Color, Component, director, Enum, EPhysics2DDrawFlags, EventTouch, Label, math, Node, ParticleSystem, PhysicsSystem2D, Prefab, RigidBody2D, Size, sp, Sprite, tween, UIOpacity, UITransform, utils, v2, v3, Vec2, Vec3 } from 'cc';
 import { LeveConfig } from './LevelConfig';
 import { ResourcesManager } from '../Manager/ResourcesManager';
 import { PoolManager } from '../Manager/PoolManager';
@@ -6,6 +6,7 @@ import { block } from './block';
 import { BaseSingleton } from '../Base/BaseSingleton';
 import { exit } from './exit';
 import { border } from './border';
+import { delay } from '../Utils';
 import { BlockJamManager } from '../Manager/BlockJamManager';
 import { COLORblOCK } from '../Tool/SelectColorBlock';
 import { BlockTool } from '../Tool/BlockTool';
@@ -37,6 +38,9 @@ Enum(ENUM_GAME_STATUS)
 
 @ccclass('IngameLogic')
 export class IngameLogic extends BaseSingleton<IngameLogic> {
+    @property(Node)
+    loadingUI: Node = null
+
     @property(Node)
     blockBg: Node = null
 
@@ -125,8 +129,30 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
     protected start() {
         director.on("UPDATE_ACCOUNT", this.updateCoin, this)
         this.Reset()
-        AudioManager.getInstance().playGameMusic()
 
+        this.showLoadingUI();
+        AudioManager.getInstance().stopLobbyMusic();
+
+    }
+
+    showLoadingUI() {
+        if (!this.loadingUI) {
+            return;
+        }
+
+        const opacityComp = this.loadingUI.getComponent(UIOpacity) ?? this.loadingUI.addComponent(UIOpacity);
+        opacityComp.opacity = 255;
+        this.loadingUI.active = true;
+
+
+        tween(opacityComp)
+            .delay(0.5)
+            .to(0.5, { opacity: 0 })
+            .call(() => {
+                this.loadingUI.active = false;
+                AudioManager.getInstance().playGameMusic();
+            })
+            .start();
     }
 
     protected onDestroy(): void {
@@ -209,43 +235,33 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
 
 
-    UseTools() {
-        MenuLayer.getInstance().idBoosters.forEach(e => {
+    async UseTools() {
+        for (let i = 0; i < MenuLayer.getInstance().idBoosters.length; i++) {
+            let e = MenuLayer.getInstance().idBoosters[i]
 
             if (e == 0) {
                 this.FreezeBooster()
-                AudioManager.getInstance().playIceBroken()
 
             }
 
             if (e == 1) {
-                this.UserocketRandom()
-                AudioManager.getInstance().playRocketMove()
+                await this.UserocketRandom()
 
             }
-            this.scheduleOnce(() => {
-                if (e == 2) {
-                    this.UsetHammer()
-                    AudioManager.getInstance().playHammerMove()
-
-                }
-            }, 0.1)
-            this.scheduleOnce(() => {
-                if (e == 3) {
-                    this.UseMagnet()
-                    AudioManager.getInstance().playMagnet()
-
-                }
-            }, 0.2)
+            if(e == 2) await this.UsetHammer();
+            
+            if (e == 3) await this.UseMagnet();
 
 
             DataManager.SaveBoosterSupport(e, BlockJamManager.getInstance().level, -1)
             director.emit("UPDATE_BOOSTER_SUPPORT")
-        })
+        }
+
         MenuLayer.getInstance().idBoosters = []
     }
 
-    UsetHammer() {
+    async UsetHammer() {
+
         IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
 
         let blocks = this.blockBg.getComponentsInChildren(block)
@@ -260,40 +276,42 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             if (e.colorWire != -1) continue
             if (e.colorsWire.length > 0) continue
             if (e.isDestroying) continue;
+            await delay(0.6);
 
+            AudioManager.getInstance().playHammerMove();
             // 🔒 KHÓA block lại
             e.isDestroying = true;
             this.HammerEffect.active = true
             let size = e.node.getComponent(UITransform).contentSize
             this.HammerEffect.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
             this.HammerEffect.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
-            this.scheduleOnce(() => {
 
-                this.conffeti.active = true
-                this.conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+            await delay(0.6);
 
-                this.conffeti.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
-                this.scheduleOnce(() => {
-                    this.conffeti.active = false
+            this.conffeti.active = true
+            this.conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
 
-                }, 0.5)
-                this.HammerEffect.active = false
-                e.onBoosterFinish(null);
-                e.node.destroy();
-                this.blockClearNum += 1;
-                this.checkGame()
-                AudioManager.getInstance().playHammerHit()
-                IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
-                // AudioManager.getInstance().playOneShot('rocketHit');
+            this.conffeti.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
 
 
-            }, 1)
+            e.onBoosterFinish(null);
+            e.node.destroy();
+            this.blockClearNum += 1;
+            this.checkGame()
+            AudioManager.getInstance().playHammerHit()
+            IngameLogic.getInstance().status = ENUM_GAME_STATUS.RUNING
+
+            await delay(0.5);
+
+            this.conffeti.active = false
+            this.HammerEffect.active = false
 
             return
         }
     }
 
-    UseMagnet() {
+    async UseMagnet() {
+
         IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
 
         let blocks = this.blockBg.getComponentsInChildren(block)
@@ -311,16 +329,17 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             let spx = IngameLogic.getInstance().magnetEffect.getComponent(sp.Skeleton)
             spx.setAnimation(0, "start", false)
             spx.addAnimation(0, "loop", true)
-            this.scheduleOnce(() => {
-                this.MagnetBlock(e.colorIndex)
-            }, 1.5)
-
+            AudioManager.getInstance().playMagnetMove();
+            await delay(1.5);
+            AudioManager.getInstance().playMagnet();
+            this.MagnetBlock(e.colorIndex)
 
             return
         }
     }
 
-    UserocketRandom() {
+    async UserocketRandom() {
+        AudioManager.getInstance().playRocketMove()
         IngameLogic.getInstance().status = ENUM_GAME_STATUS.UNRUNING
 
         let blocks = this.blockBg.getComponentsInChildren(block)
@@ -352,30 +371,29 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             let size = e.node.getComponent(UITransform).contentSize
             console.log(e)
             IngameLogic.getInstance().moveToTarget(this.node, new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
-            this.scheduleOnce(() => {
-                let size = e.node.getComponent(UITransform).contentSize
-                this.HammerEffect.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
-                IngameLogic.getInstance().conffeti.active = true
-                IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
 
-                IngameLogic.getInstance().conffeti.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
-                IngameLogic.getInstance().scheduleOnce(() => {
-                    IngameLogic.getInstance().conffeti.active = false
-                    AudioManager.getInstance().playRocketHit()
+            await delay(2);
 
-                }, 0.5)
+            this.HammerEffect.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
+            IngameLogic.getInstance().conffeti.active = true
+            IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
+
+            IngameLogic.getInstance().conffeti.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
 
 
-                // Chọn ngẫu nhiên 1 ô
-                const randomCell = cells[Math.floor(Math.random() * cells.length)];
+            // Chọn ngẫu nhiên 1 ô
+            const randomCell = cells[Math.floor(Math.random() * cells.length)];
 
-                // Phá ô đó
-                e.breakCell(randomCell);
+            // Phá ô đó
+            e.breakCell(randomCell);
 
-                // Kết thúc booster
-                e.onBoosterFinish(null);
-            }, 2)
-            // Không có ô nào thì thoát
+            // Kết thúc booster
+            e.onBoosterFinish(null);
+
+            await delay(0.5);
+
+            IngameLogic.getInstance().conffeti.active = false
+            AudioManager.getInstance().playRocketHit()
 
             return;
         }
@@ -1001,7 +1019,6 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     // Khởi động từ string (ví dụ "1:30" hoặc "90")
     public startFromString(timeStr: string, finishCb?: FinishCallback) {
-        AudioManager.getInstance().playTimer()
         const parts = timeStr.split(':').map(p => p.trim());
         let total = 0;
         if (parts.length === 2) {
@@ -1157,10 +1174,11 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     PauseGame() {
         BlockJamManager.getInstance().ShowPausingPopup();
+        AudioManager.getInstance().playButtonClickPop();
     }
 
     FreezeBooster() {
-        AudioManager.getInstance().playIceBroken()
+        AudioManager.getInstance().playTimer();
         IngameLogic.getInstance().isUseTool = false
         this.boosters[0].setPosition(this.boosters[0].position.x, 0, 0)
         this.freezeEff.active = true
@@ -1352,7 +1370,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             IngameLogic.getInstance().boosters[2].setPosition(IngameLogic.getInstance().boosters[2].position.x, 0)
 
 
-        }, 1)
+        }, 0.6)
 
     }
 

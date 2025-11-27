@@ -2,6 +2,7 @@ import { _decorator, Component, Label, Node, Button, log, sys } from 'cc';
 import { IAPManager, ProductInfo } from '../Manager/IAPManager';
 import { CallNative } from '../CallNative';
 import { BlockJamManager } from '../Manager/BlockJamManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('buyCoinButton')
@@ -39,6 +40,7 @@ export class buyCoinButton extends Component {
     }
 
     onClick() {
+        AudioManager.getInstance().playButtonClickPop();
         if (sys.isNative)
             CallNative.CallIAP(this.dataIAP.id)
         else {

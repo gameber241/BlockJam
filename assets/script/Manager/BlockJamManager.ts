@@ -188,6 +188,7 @@ export class BlockJamManager extends BaseSingleton<BlockJamManager> {
     }
 
     updateScore(scorePlush) {
+        AudioManager.getInstance().playCollectBooster();
         this.coin += scorePlush
         this.save()
     }
