@@ -1817,8 +1817,8 @@
       "__uuid__": "8f0ba925-93c4-438a-92a0-5b5856a387cd",
       "__expectedType__": "cc.AudioClip"
     },
-    "iceBroken": {
-      "__uuid__": "4c68f12f-9558-4f44-b488-97c09df22ef1",
+    "iceBreak": {
+      "__uuid__": "b22ad1c8-de28-430d-9e01-68a0e7e25388",
       "__expectedType__": "cc.AudioClip"
     },
     "_id": "07IEp9TwdFNbewNzzwVCNR"

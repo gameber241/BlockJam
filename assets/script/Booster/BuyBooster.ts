@@ -12,6 +12,9 @@ export class BuyBooster extends BaseSingleton<BuyBooster> {
     @property(Label)
     buyLb: Label = null
     typeBooster
+
+    @property([Number])
+    prices: number[] = [200, 400, 600, 900]
     protected start(): void {
 
     }
@@ -23,9 +26,11 @@ export class BuyBooster extends BaseSingleton<BuyBooster> {
         this.node.active = true
         this.buyBoosters.children.forEach(e => e.active = false)
         this.buyBoosters.children[typeBooster].active = true
+        let boosterPrice = this.prices[typeBooster]
+        this.buyLb.string = boosterPrice.toString()
 
 
-        if (BlockJamManager.getInstance().coin >= 900) {
+        if (BlockJamManager.getInstance().coin >= boosterPrice) {
             this.buyLb.color = Color.WHITE
         }
         else {
@@ -34,8 +39,9 @@ export class BuyBooster extends BaseSingleton<BuyBooster> {
     }
 
     btnBuy() {
-        if (BlockJamManager.getInstance().coin >= 900) {
-            BlockJamManager.getInstance().updateScore(-900)
+        let boosterPrice = this.prices[this.typeBooster];
+        if (BlockJamManager.getInstance().coin >= boosterPrice) {
+            BlockJamManager.getInstance().updateScore(-boosterPrice)
             if (this.isSuppor == false) {
                 DataManager.SaveBooster(this.typeBooster, 1)
                 director.emit("UPDATE_BOOSTER")

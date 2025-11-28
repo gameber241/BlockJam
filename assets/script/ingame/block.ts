@@ -1207,6 +1207,7 @@ export class block extends Component {
         );
         const newUIPos = IngameLogic.getInstance().getRealPos(targetPos2D);
         this.node.setPosition(newUIPos);
+        this.refreshMovementAnchors(newUIPos);
 
         IngameLogic.getInstance().updateBlockLimitData(this, true);
         this.isDestroying = false
@@ -1270,6 +1271,7 @@ export class block extends Component {
             );
             const uiPos = IngameLogic.getInstance().getRealPos(targetPos2D);
             newBlockNode.setPosition(uiPos);
+            newBlock.refreshMovementAnchors(uiPos);
             console.log(newGridX, newGridY)
             // đánh dấu chiếm diện grid
             IngameLogic.getInstance().updateBlockLimitData(newBlock, true);
@@ -1389,6 +1391,11 @@ export class block extends Component {
         if (shape[rowBottom][col] !== 1) return null;
 
         return new Vec2(col, rowBottom);
+    }
+
+    public refreshMovementAnchors(worldPos: Vec3) {
+        this.initPos = new Vec3(worldPos.x, worldPos.y, worldPos.z);
+        this.originalPos = new Vec3(worldPos.x, worldPos.y, worldPos.z);
     }
 
 

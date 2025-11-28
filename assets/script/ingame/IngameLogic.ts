@@ -135,7 +135,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     }
 
-    showLoadingUI() {
+    async showLoadingUI() {
         if (!this.loadingUI) {
             return;
         }
@@ -144,6 +144,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         opacityComp.opacity = 255;
         this.loadingUI.active = true;
 
+        await delay(1);
 
         tween(opacityComp)
             .delay(0.5)
@@ -151,8 +152,12 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             .call(() => {
                 this.loadingUI.active = false;
                 AudioManager.getInstance().playGameMusic();
+
             })
             .start();
+        await delay(1);
+
+        await this.UseTools();
     }
 
     protected onDestroy(): void {
@@ -186,10 +191,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             this.levelLabel.string = "Level " + (BlockJamManager.getInstance().level).toString()
             this.startFromString('05:30', this.ShowOutOfTime.bind(this));
             this.coinLb.string = BlockJamManager.getInstance().coin.toString()
-            this.scheduleOnce(() => {
-                this.UseTools()
 
-            }, 0.2)
 
         }, 0.1)
 
@@ -240,17 +242,21 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             let e = MenuLayer.getInstance().idBoosters[i]
 
             if (e == 0) {
-                this.FreezeBooster()
-
+                await this.FreezeBooster()
+                
             }
 
             if (e == 1) {
-                await this.UserocketRandom()
+                await this.UserocketRandom();
 
             }
-            if(e == 2) await this.UsetHammer();
-            
-            if (e == 3) await this.UseMagnet();
+            if (e == 2) {
+                await this.UsetHammer();
+            }
+
+            if (e == 3) {
+                await this.UseMagnet();
+            }
 
 
             DataManager.SaveBoosterSupport(e, BlockJamManager.getInstance().level, -1)
@@ -373,7 +379,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             IngameLogic.getInstance().moveToTarget(this.node, new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
 
             await delay(2);
-
+            AudioManager.getInstance().playRocketHit()
             this.HammerEffect.setWorldPosition(new Vec3(e.node.getWorldPosition().x + size.width / 2, e.node.getWorldPosition().y + size.height / 2))
             IngameLogic.getInstance().conffeti.active = true
             IngameLogic.getInstance().conffeti.getComponent(sp.Skeleton).setAnimation(0, "animation", false)
@@ -393,7 +399,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
             await delay(0.5);
 
             IngameLogic.getInstance().conffeti.active = false
-            AudioManager.getInstance().playRocketHit()
+
 
             return;
         }
@@ -925,6 +931,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
                 }
                 this.levelComplete.active = true;
+                AudioManager.getInstance().stopGameMusic();
                 BlockJamManager.getInstance().UpdateLevel();
 
                 this.pause();
@@ -1177,7 +1184,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         AudioManager.getInstance().playButtonClickPop();
     }
 
-    FreezeBooster() {
+    async FreezeBooster() {
         AudioManager.getInstance().playTimer();
         IngameLogic.getInstance().isUseTool = false
         this.boosters[0].setPosition(this.boosters[0].position.x, 0, 0)
@@ -1185,7 +1192,9 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
         this.freezeEff.getComponent(sp.Skeleton).setAnimation(0, "start", false)
         this.freezeEff.getComponent(sp.Skeleton).addAnimation(0, "idle", true)
         this.pause()
+
         this.scheduleOnce(this.resume, 10)
+        await delay(1);
 
     }
 
@@ -1195,6 +1204,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
 
     isBooster = false
     typebooster = -1
+
     Magnet() {
         this.typebooster = 1
     }
@@ -1460,7 +1470,7 @@ export class IngameLogic extends BaseSingleton<IngameLogic> {
                     .to(2, { worldPosition: new Vec3(event.x, event.y) }, { easing: 'quadIn' })
                     .call(() => {
                         this.rocketEffect.active = false
-                        AudioManager.getInstance().playRocketHit()
+                        //AudioManager.getInstance().playRocketHit()
 
                     })
                     .start();

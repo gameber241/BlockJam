@@ -1,4 +1,4 @@
-import { _decorator, Asset, AudioClip, Component, isValid, JsonAsset, Node, Prefab, resources, Sprite, SpriteFrame, TextAsset } from 'cc';
+import { _decorator, Asset, AudioClip, Component, isValid, JsonAsset, Node, Prefab, resources, Sprite, SpriteFrame, sys, TextAsset } from 'cc';
 import { BaseSingleton } from '../Base/BaseSingleton';
 import { PoolManager } from './PoolManager';
 const { ccclass, property } = _decorator;
@@ -13,6 +13,7 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
     private jsonMap: Record<string, any> = {};
     private txtMap: Record<string, string> = {};
     public readonly loadSpriteProgress = {}
+    private hasPreloadedWebSprites = false;
 
     private readonly spritePaths: string[] = [
         "fish",
@@ -42,62 +43,83 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
 
     public async loadAllResources(onProgress?: (progress: number) => void) {
         // Chỉ preload Json/Text/Prefab theo yêu cầu
+    const shouldPreloadSprites = !sys.isNative && !this.isRunningOnLocalhost();
+        const spritePhaseWeight = shouldPreloadSprites ? 0.58 : 0;
+        let prefabWeight = shouldPreloadSprites ? 0.2 : 0.78;
         const phases: Array<{
             weight: number,
-            loader: () => Promise<void>
+            loader: (notify: (phaseProgress: number) => void) => Promise<void>
         }> = [
                 {
-                    weight: 0.35,
-                    loader: () => this.loadAssetsByType(JsonAsset, (asset) => {
+                    weight: 0.12,
+                    loader: (notify) => this.loadAssetsByType(JsonAsset, (asset) => {
                         if (!this.jsonMap[asset.name]) {
                             this.jsonMap[asset.name] = asset.json;
                         }
-                    })
+                    }, notify)
                 },
                 {
-                    weight: 0.35,
-                    loader: () => this.loadAssetsByType(TextAsset, (asset) => {
+                    weight: 0.1,
+                    loader: (notify) => this.loadAssetsByType(TextAsset, (asset) => {
                         const textArr = asset.text.split(/[(\r\n)\r\n]+/);
                         for (let j = 0; j < textArr.length; j++) {
                             const level = j + 1;
                             this.txtMap[`word_${level}`] = textArr[j];
                         }
-                    })
+                    }, notify)
                 },
                 {
-                    weight: 0.30,
-                    loader: () => this.loadAssetsByType(Prefab, (asset) => {
+                    weight: prefabWeight,
+                    loader: (notify) => this.loadAssetsByType(Prefab, (asset) => {
                         PoolManager.getInstance().setPrefab(asset.name, asset);
-                    })
-                }
+                    }, notify)
+                },
+                
             ];
 
+        if (shouldPreloadSprites) {
+            phases.push({
+                weight: spritePhaseWeight,
+                loader: (notify) => this.preloadSpriteFramesForWeb(notify)
+            });
+        }
+
         let completedWeight = 0;
+        const emitProgress = (weightPortion: number) => {
+            if (onProgress) {
+                onProgress(Math.min(100, weightPortion * 100));
+            }
+        };
 
         for (const phase of phases) {
-            await phase.loader();
+            await phase.loader((phaseProgress) => {
+                emitProgress(completedWeight + phase.weight * phaseProgress);
+            });
             completedWeight += phase.weight;
-            if (onProgress) {
-                onProgress(completedWeight * 100);
-            }
+            emitProgress(completedWeight);
         }
 
-        if (onProgress) {
-            onProgress(100);
-        }
+        emitProgress(1);
     }
 
-    private async loadAssetsByType<T extends Asset>(typeCtor: AssetConstructor<T>, onAssetLoaded: (asset: T) => void): Promise<void> {
+    private async loadAssetsByType<T extends Asset>(typeCtor: AssetConstructor<T>, onAssetLoaded: (asset: T) => void, onPhaseProgress?: (progress: number) => void): Promise<void> {
         return new Promise((resolve, reject) => {
-            resources.loadDir("", typeCtor, (err, assets: T[]) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+            resources.loadDir("", typeCtor,
+                (completedCount: number, totalCount: number) => {
+                    if (onPhaseProgress && totalCount > 0) {
+                        onPhaseProgress(completedCount / totalCount);
+                    }
+                },
+                (err, assets: T[]) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
 
-                assets.forEach(onAssetLoaded);
-                resolve();
-            });
+                    assets.forEach(onAssetLoaded);
+                    onPhaseProgress && onPhaseProgress(1);
+                    resolve();
+                });
         });
     }
 
@@ -111,6 +133,63 @@ export class ResourcesManager extends BaseSingleton<ResourcesManager> {
         }
         return undefined;
 
+    }
+
+    private async preloadSpriteFramesForWeb(onPhaseProgress?: (progress: number) => void): Promise<void> {
+        if (this.hasPreloadedWebSprites) {
+            onPhaseProgress && onPhaseProgress(1);
+            return;
+        }
+
+        const totalFolders = this.spritePaths.length;
+        let processedFolders = 0;
+
+        for (const folder of this.spritePaths) {
+            const dir = `sprites/${folder}`;
+            await new Promise<void>((resolve) => {
+                resources.loadDir(dir, SpriteFrame,
+                    (completedCount: number, totalCount: number) => {
+                        if (!onPhaseProgress || totalFolders === 0) {
+                            return;
+                        }
+                        const folderProgress = totalCount > 0 ? completedCount / totalCount : 1;
+                        const overallProgress = (processedFolders + folderProgress) / totalFolders;
+                        onPhaseProgress(Math.min(1, overallProgress));
+                    },
+                    (err, assets: SpriteFrame[]) => {
+                        if (err) {
+                            console.warn(`[ResourcesManager] Failed to preload sprite dir ${dir}`, err);
+                        } else {
+                            assets.forEach((asset) => {
+                                this.spriteMap[asset.name] = asset;
+                            });
+                        }
+
+                        processedFolders += 1;
+                        if (onPhaseProgress && totalFolders > 0) {
+                            onPhaseProgress(Math.min(1, processedFolders / totalFolders));
+                        }
+
+                        resolve();
+                    });
+            });
+        }
+
+        this.hasPreloadedWebSprites = true;
+        onPhaseProgress && onPhaseProgress(1);
+    }
+
+    private isRunningOnLocalhost(): boolean {
+        if (sys.isNative) {
+            return false;
+        }
+
+        const hostname: string | undefined = (globalThis as any)?.location?.hostname;
+        if (!hostname) {
+            return false;
+        }
+
+        return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
     }
 
     public getSprite(name: string) {
