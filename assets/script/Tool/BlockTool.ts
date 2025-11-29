@@ -89,11 +89,11 @@ export class BlockTool extends Component {
         else {
             this.key.active = false
         }
-        this.scheduleOnce(() => {
-            if (this.corlorWire.length > 0) {
-                this.initWires()
-            }
-        }, 0.16)
+        // this.scheduleOnce(() => {
+        //     if (this.corlorWire.length > 0) {
+        //         this.initWires()
+        //     }
+        // }, 0.16)
 
         this.dragIndex = dragIndex
 

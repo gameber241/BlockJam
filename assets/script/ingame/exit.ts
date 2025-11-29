@@ -99,7 +99,7 @@ export class exit extends Component {
         let collider = this.colliderNode.getComponent(BoxCollider2D)
         collider.size = sizeCollider
         collider.offset = new Vec2(sizeCollider.width / 2, sizeCollider.height / 2)
-    ResourcesManager.getInstance().setSprite(`exit_${this.colorIndex}_${this.typeIndex}`, this.sprite, 'gameplay')
+        ResourcesManager.getInstance().setSprite(`exit_${this.colorIndex}_${this.typeIndex}`, this.sprite, 'gameplay')
         collider.on(Contact2DType.STAY_CONTACT, this.onCollisionStay, this);
         this.star.getComponent(UITransform).setContentSize(sizeNode)
         this.star.parent.getComponent(UITransform).setContentSize(sizeNode)
@@ -153,8 +153,9 @@ export class exit extends Component {
             return false;
         }
         console.log(block.isStar, this.isStar)
-        if (block.isStar !== this.isStar) {
-            return false
+        if (block.isStar == true) {
+            if (this.isStar == false)
+                return false
         }
 
 
